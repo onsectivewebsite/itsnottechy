@@ -1,7 +1,9 @@
 import type { Metadata } from "next";
 import Script from "next/script";
 import { ContactForm } from "@/components/ContactForm";
-import { Reveal } from "@/components/Reveal";
+import { Reveal, WordReveal, StaggerGroup } from "@/components/Reveal";
+import { TiltCard } from "@/components/TiltCard";
+import { Marquee } from "@/components/Marquee";
 import { SITE } from "@/lib/site";
 import { Mail, Phone, MapPin, Instagram, Linkedin, Facebook } from "lucide-react";
 
@@ -32,11 +34,13 @@ export default function ContactPage() {
           <div className="lg:col-span-2">
             <Reveal>
               <span className="text-xs uppercase tracking-[0.2em] text-brand">Contact</span>
-              <h1 className="mt-3 font-display text-5xl font-bold tracking-tight text-white md:text-6xl">
-                Let's <span className="gradient-text">talk.</span>
-              </h1>
+            </Reveal>
+            <h1 className="mt-3 font-display text-5xl font-bold tracking-tight text-white md:text-6xl">
+              <WordReveal text="Let's talk." accentWords={["talk."]} />
+            </h1>
+            <Reveal delay={0.25}>
               <p className="mt-6 text-white/70">
-                Share a few details and we'll reply within one business day. Prefer a call?
+                Share a few details and we&apos;ll reply within one business day. Prefer a call?
                 Pick up the phone — a real person always answers.
               </p>
             </Reveal>
@@ -84,17 +88,30 @@ export default function ContactPage() {
         </div>
       </section>
 
-      <section className="section pt-0">
-        <div className="grid gap-4 md:grid-cols-4">
+      <div className="border-y border-white/5 bg-white/[0.02]">
+        <Marquee
+          items={[
+            "24-hour response",
+            "Free 30-min strategy call",
+            "No pitch decks",
+            "Senior-led discovery",
+            "NDA on request",
+            "Global delivery",
+          ]}
+        />
+      </div>
+
+      <section className="section pt-16">
+        <StaggerGroup className="grid gap-4 md:grid-cols-4" stagger={0.05}>
           {SITE.offices.map((o) => (
-            <div key={o.city} className="card">
-              <div className="text-2xl">{o.flag}</div>
+            <TiltCard key={o.city} className="card h-full" max={8}>
+              <div className="text-2xl transition-transform group-hover:scale-110">{o.flag}</div>
               <div className="mt-3 font-display text-lg font-semibold text-white">{o.city}</div>
               <div className="text-sm text-brand">{o.role}</div>
               <div className="mt-1 text-xs text-white/50">{o.country}</div>
-            </div>
+            </TiltCard>
           ))}
-        </div>
+        </StaggerGroup>
       </section>
     </>
   );

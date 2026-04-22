@@ -2,9 +2,11 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { services } from "@/data/services";
 import { ServiceIcon } from "@/components/ServiceIcon";
-import { Reveal } from "@/components/Reveal";
+import { Reveal, WordReveal, StaggerGroup } from "@/components/Reveal";
 import { CTA } from "@/components/CTA";
 import { ServiceCategories } from "@/components/ServiceCategories";
+import { TiltCard } from "@/components/TiltCard";
+import { Marquee } from "@/components/Marquee";
 import { ArrowUpRight, Check } from "lucide-react";
 import { SITE } from "@/lib/site";
 
@@ -88,10 +90,14 @@ export default function ServicesPage() {
           <span className="text-xs uppercase tracking-[0.2em] text-brand">
             Services
           </span>
-          <h1 className="mt-3 max-w-4xl font-display text-5xl font-bold tracking-tight text-white md:text-7xl">
-            Every marketing capability{" "}
-            <span className="gradient-text">your brand needs.</span>
-          </h1>
+        </Reveal>
+        <h1 className="mt-3 max-w-4xl font-display text-5xl font-bold tracking-tight text-white md:text-7xl">
+          <WordReveal
+            text="Every marketing capability your brand needs."
+            accentWords={["your", "brand", "needs."]}
+          />
+        </h1>
+        <Reveal delay={0.25}>
           <p className="mt-6 max-w-3xl text-lg text-white/70">
             {services.length} specialized services across four phases —
             attract, convert, engage, and operate. Each service is owned by
@@ -112,6 +118,25 @@ export default function ServicesPage() {
         </Reveal>
       </section>
 
+      <div className="border-y border-white/5 bg-white/[0.02]">
+        <Marquee
+          items={[
+            "SEO",
+            "Paid Marketing",
+            "Social Media",
+            "Video Production",
+            "Brand Design",
+            "Web Development",
+            "Email Marketing",
+            "Content",
+            "Influencer",
+            "Marketing Platforms",
+            "CRO",
+            "Analytics",
+          ]}
+        />
+      </div>
+
       <div id="categories">
         <ServiceCategories />
       </div>
@@ -130,40 +155,41 @@ export default function ServicesPage() {
           </p>
         </Reveal>
 
-        <div className="mt-14 grid gap-5 md:grid-cols-2 lg:grid-cols-3">
-          {services.map((s, i) => (
-            <Reveal key={s.slug} delay={(i % 6) * 0.04}>
+        <StaggerGroup className="mt-14 grid gap-5 md:grid-cols-2 lg:grid-cols-3" stagger={0.04}>
+          {services.map((s) => (
+            <TiltCard key={s.slug} className="h-full" max={5}>
               <Link
                 href={`/services/${s.slug}`}
-                className="card group block h-full"
+                className="card group relative block h-full overflow-hidden"
               >
-                <div className="flex items-center justify-between">
-                  <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-brand/15 text-brand">
+                <div className="pointer-events-none absolute -right-8 -top-8 h-32 w-32 rounded-full bg-brand/10 blur-2xl opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
+                <div className="relative flex items-center justify-between">
+                  <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-brand/15 text-brand transition-transform duration-500 group-hover:scale-110 group-hover:bg-brand/25">
                     <ServiceIcon name={s.icon} />
                   </div>
-                  <ArrowUpRight className="h-4 w-4 text-white/30 transition group-hover:text-brand" />
+                  <ArrowUpRight className="h-4 w-4 text-white/30 transition group-hover:-translate-y-0.5 group-hover:translate-x-0.5 group-hover:text-brand" />
                 </div>
-                <h3 className="mt-5 font-display text-xl font-semibold text-white">
+                <h3 className="relative mt-5 font-display text-xl font-semibold text-white">
                   {s.title}
                 </h3>
-                <p className="mt-2 text-sm text-white/60">{s.tagline}</p>
-                <p className="mt-3 line-clamp-3 text-sm text-white/50">
+                <p className="relative mt-2 text-sm text-white/60">{s.tagline}</p>
+                <p className="relative mt-3 line-clamp-3 text-sm text-white/50">
                   {s.summary}
                 </p>
-                <div className="mt-6 flex flex-wrap gap-2">
+                <div className="relative mt-6 flex flex-wrap gap-2">
                   {s.keywords.slice(0, 3).map((k) => (
                     <span
                       key={k}
-                      className="rounded-full border border-white/10 px-2 py-0.5 text-[10px] text-white/60"
+                      className="rounded-full border border-white/10 px-2 py-0.5 text-[10px] text-white/60 transition group-hover:border-brand/30 group-hover:text-brand"
                     >
                       {k}
                     </span>
                   ))}
                 </div>
               </Link>
-            </Reveal>
+            </TiltCard>
           ))}
-        </div>
+        </StaggerGroup>
       </section>
 
       <section className="section">
@@ -181,14 +207,14 @@ export default function ServicesPage() {
           </p>
         </Reveal>
 
-        <div className="mt-12 grid gap-5 md:grid-cols-3">
+        <StaggerGroup className="mt-12 grid gap-5 md:grid-cols-3" stagger={0.1}>
           {ENGAGEMENT_TIERS.map((t) => (
             <div
               key={t.name}
-              className={`relative flex h-full flex-col rounded-3xl border p-8 ${
+              className={`relative flex h-full flex-col rounded-3xl border p-8 transition hover:-translate-y-1 ${
                 t.featured
                   ? "border-brand/50 bg-brand/5 shadow-glow"
-                  : "border-white/10 bg-white/[0.03]"
+                  : "border-white/10 bg-white/[0.03] hover:border-brand/30"
               }`}
             >
               {t.featured && (
@@ -222,7 +248,7 @@ export default function ServicesPage() {
               </Link>
             </div>
           ))}
-        </div>
+        </StaggerGroup>
       </section>
 
       <section className="section">

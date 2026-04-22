@@ -1,7 +1,9 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { Reveal } from "@/components/Reveal";
+import { Reveal, WordReveal, StaggerGroup } from "@/components/Reveal";
 import { CTA } from "@/components/CTA";
+import { TiltCard } from "@/components/TiltCard";
+import { Marquee } from "@/components/Marquee";
 import { SITE } from "@/lib/site";
 import { ArrowUpRight, TrendingUp, Users, DollarSign } from "lucide-react";
 
@@ -87,48 +89,74 @@ export default function PortfolioPage() {
       <section className="section pt-32">
         <Reveal>
           <span className="text-xs uppercase tracking-[0.2em] text-brand">Portfolio</span>
-          <h1 className="mt-3 max-w-4xl font-display text-5xl font-bold tracking-tight text-white md:text-7xl">
-            Work that <span className="gradient-text">moves numbers.</span>
-          </h1>
+        </Reveal>
+        <h1 className="mt-3 max-w-4xl font-display text-5xl font-bold tracking-tight text-white md:text-7xl">
+          <WordReveal
+            text="Work that moves numbers."
+            accentWords={["moves", "numbers."]}
+          />
+        </h1>
+        <Reveal delay={0.2}>
           <p className="mt-6 max-w-2xl text-lg text-white/70">
             A sample of recent engagements. Full case studies available on request — we respect
             client confidentiality and share detail under NDA.
           </p>
         </Reveal>
+      </section>
 
-        <div className="mt-14 grid gap-6 md:grid-cols-2">
-          {CASES.map((c, i) => (
-            <Reveal key={c.client} delay={(i % 4) * 0.05}>
-              <div className="card h-full">
-                <div className="flex items-center justify-between">
-                  <span className="text-[10px] uppercase tracking-[0.2em] text-brand">{c.industry}</span>
+      <div className="-mt-4 border-y border-white/5 bg-white/[0.02]">
+        <Marquee
+          items={[
+            "+412% organic",
+            "−63% CAC",
+            "4x revenue",
+            "$8.2M pipeline",
+            "3x direct bookings",
+            "+3.8x followers",
+            "+330% impressions",
+            "< 11mo payback",
+          ]}
+        />
+      </div>
+
+      <section className="section pt-20">
+        <StaggerGroup className="grid gap-6 md:grid-cols-2" stagger={0.08}>
+          {CASES.map((c) => (
+            <TiltCard key={c.client} className="h-full" max={4}>
+              <div className="card group relative h-full overflow-hidden">
+                <div className="pointer-events-none absolute -right-16 -top-16 h-48 w-48 rounded-full bg-brand/10 blur-3xl opacity-0 transition-opacity duration-700 group-hover:opacity-100" />
+                <div className="relative flex items-center justify-between">
+                  <span className="inline-flex items-center gap-1.5 rounded-full border border-brand/30 bg-brand/10 px-2.5 py-1 text-[10px] font-medium uppercase tracking-[0.2em] text-brand">
+                    <span className="h-1.5 w-1.5 rounded-full bg-brand" />
+                    {c.industry}
+                  </span>
                   <span className="text-xs text-white/50">Confidential</span>
                 </div>
-                <h2 className="mt-4 font-display text-2xl font-semibold text-white">{c.client}</h2>
-                <p className="mt-2 text-white/70">{c.headline}</p>
-                <div className="mt-5 flex flex-wrap gap-2">
+                <h2 className="relative mt-4 font-display text-2xl font-semibold text-white">{c.client}</h2>
+                <p className="relative mt-2 text-white/70">{c.headline}</p>
+                <div className="relative mt-5 flex flex-wrap gap-2">
                   {c.services.map((s) => (
-                    <span key={s} className="rounded-full border border-white/10 bg-white/5 px-2.5 py-0.5 text-[11px] text-white/70">
+                    <span key={s} className="rounded-full border border-white/10 bg-white/5 px-2.5 py-0.5 text-[11px] text-white/70 transition group-hover:border-brand/30">
                       {s}
                     </span>
                   ))}
                 </div>
-                <div className="mt-6 grid grid-cols-3 gap-3">
+                <div className="relative mt-6 grid grid-cols-3 gap-3">
                   {c.metrics.map(({ icon: Icon, label, value }) => (
-                    <div key={label} className="rounded-2xl border border-white/10 bg-white/[0.03] p-3 text-center">
+                    <div key={label} className="rounded-2xl border border-white/10 bg-white/[0.03] p-3 text-center transition group-hover:border-brand/30 group-hover:bg-brand/5">
                       <Icon className="mx-auto h-4 w-4 text-brand" />
                       <div className="mt-2 font-display text-xl font-semibold text-white">{value}</div>
                       <div className="text-[10px] uppercase tracking-wider text-white/50">{label}</div>
                     </div>
                   ))}
                 </div>
-                <Link href="/contact" className="mt-6 inline-flex items-center gap-1 text-xs text-brand hover:underline">
-                  Request full case study <ArrowUpRight className="h-3 w-3" />
+                <Link href="/contact" className="relative mt-6 inline-flex items-center gap-1 text-xs text-brand hover:underline">
+                  Request full case study <ArrowUpRight className="h-3 w-3 transition group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
                 </Link>
               </div>
-            </Reveal>
+            </TiltCard>
           ))}
-        </div>
+        </StaggerGroup>
       </section>
 
       <CTA />

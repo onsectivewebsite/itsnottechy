@@ -73,10 +73,15 @@ export function Nav() {
             >
               <Link
                 href={item.href}
-                className="flex items-center gap-1 rounded-full px-2.5 py-2 text-sm text-white/80 hover:bg-white/5 hover:text-white xl:px-3"
+                className="group flex items-center gap-1 rounded-full px-2.5 py-2 text-sm text-white/80 transition-colors hover:bg-white/5 hover:text-white xl:px-3"
               >
-                {item.label}
-                {item.mega && <ChevronDown className="h-3.5 w-3.5 opacity-70" />}
+                <span className="relative">
+                  {item.label}
+                  <span className="pointer-events-none absolute inset-x-0 -bottom-0.5 mx-auto h-px w-0 bg-brand transition-all duration-300 group-hover:w-full" />
+                </span>
+                {item.mega && (
+                  <ChevronDown className="h-3.5 w-3.5 opacity-70 transition-transform duration-300 group-hover:rotate-180" />
+                )}
               </Link>
             </div>
           ))}

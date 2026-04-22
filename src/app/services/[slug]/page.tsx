@@ -6,8 +6,9 @@ import { services, getServiceBySlug } from "@/data/services";
 import { industries } from "@/data/industries";
 import { blogPosts, blogCategories } from "@/data/blogs";
 import { offices } from "@/data/offices";
-import { Reveal } from "@/components/Reveal";
+import { Reveal, WordReveal, StaggerGroup } from "@/components/Reveal";
 import { CTA } from "@/components/CTA";
+import { TiltCard } from "@/components/TiltCard";
 import { ServiceIcon } from "@/components/ServiceIcon";
 import { IndustryIcon } from "@/components/IndustryIcon";
 import { ArrowUpRight, Check, Sparkles } from "lucide-react";
@@ -158,7 +159,7 @@ export default async function ServicePage({
             <span className="text-xs uppercase tracking-[0.2em] text-brand">{service.shortTitle}</span>
           </div>
           <h1 className="mt-6 max-w-4xl font-display text-5xl font-bold tracking-tight text-white md:text-7xl">
-            {service.title}
+            <WordReveal text={service.title} />
           </h1>
           <p className="mt-4 max-w-3xl text-xl text-white/80">{service.tagline}</p>
           <p className="mt-6 max-w-3xl text-white/70">{service.summary}</p>
@@ -269,21 +270,19 @@ export default async function ServicePage({
             A transparent, six-step cadence we run for every engagement — adapted to your business.
           </p>
         </Reveal>
-        <div className="mt-10 grid gap-4 md:grid-cols-2">
+        <StaggerGroup className="mt-10 grid gap-4 md:grid-cols-2" stagger={0.05}>
           {service.process.map((p, i) => (
-            <Reveal key={p.step} delay={i * 0.05}>
-              <div className="card">
-                <div className="flex items-center gap-3">
-                  <div className="flex h-8 w-8 items-center justify-center rounded-full bg-brand text-ink-900 text-sm font-semibold">
-                    {i + 1}
-                  </div>
-                  <h3 className="font-display text-lg font-semibold text-white">{p.step}</h3>
+            <TiltCard key={p.step} className="card group" max={4}>
+              <div className="flex items-center gap-3">
+                <div className="flex h-8 w-8 items-center justify-center rounded-full bg-brand text-ink-900 text-sm font-semibold transition-transform duration-500 group-hover:scale-110">
+                  {i + 1}
                 </div>
-                <p className="mt-2 text-white/70">{p.detail}</p>
+                <h3 className="font-display text-lg font-semibold text-white">{p.step}</h3>
               </div>
-            </Reveal>
+              <p className="mt-2 text-white/70">{p.detail}</p>
+            </TiltCard>
           ))}
-        </div>
+        </StaggerGroup>
       </section>
 
       <section className="section pt-0">
@@ -365,23 +364,24 @@ export default async function ServicePage({
               Click through for the playbook we use in your category.
             </p>
           </Reveal>
-          <div className="mt-8 grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+          <StaggerGroup className="mt-8 grid gap-4 md:grid-cols-2 lg:grid-cols-4" stagger={0.05}>
             {servingIndustries.map((i) => (
-              <Link
-                key={i.slug}
-                href={`/industries/${i.slug}`}
-                className="card group block"
-              >
-                <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-white/10 text-white">
-                  <IndustryIcon name={i.icon} />
-                </div>
-                <h3 className="mt-3 font-display text-base font-semibold text-white">
-                  {i.name}
-                </h3>
-                <p className="mt-1 text-xs text-brand">{i.tagline}</p>
-              </Link>
+              <TiltCard key={i.slug} className="h-full" max={6}>
+                <Link
+                  href={`/industries/${i.slug}`}
+                  className="card group block h-full transition hover:-translate-y-1 hover:border-brand/30"
+                >
+                  <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-white/10 text-white transition-transform duration-500 group-hover:scale-110 group-hover:bg-brand/20 group-hover:text-brand">
+                    <IndustryIcon name={i.icon} />
+                  </div>
+                  <h3 className="mt-3 font-display text-base font-semibold text-white">
+                    {i.name}
+                  </h3>
+                  <p className="mt-1 text-xs text-brand">{i.tagline}</p>
+                </Link>
+              </TiltCard>
             ))}
-          </div>
+          </StaggerGroup>
         </section>
       )}
 
@@ -457,20 +457,22 @@ export default async function ServicePage({
           <Reveal>
             <h2 className="font-display text-3xl font-semibold tracking-tight text-white md:text-5xl">Related services</h2>
           </Reveal>
-          <div className="mt-8 grid gap-4 md:grid-cols-3">
+          <StaggerGroup className="mt-8 grid gap-4 md:grid-cols-3" stagger={0.06}>
             {related.map((r) => (
-              <Link key={r.slug} href={`/services/${r.slug}`} className="card group block">
-                <div className="flex items-center justify-between">
-                  <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-brand/15 text-brand">
-                    <ServiceIcon name={r.icon} />
+              <TiltCard key={r.slug} className="h-full" max={5}>
+                <Link href={`/services/${r.slug}`} className="card group block h-full transition hover:-translate-y-1 hover:border-brand/30">
+                  <div className="flex items-center justify-between">
+                    <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-brand/15 text-brand transition-transform duration-500 group-hover:scale-110 group-hover:bg-brand/25">
+                      <ServiceIcon name={r.icon} />
+                    </div>
+                    <ArrowUpRight className="h-4 w-4 text-white/30 transition group-hover:-translate-y-0.5 group-hover:translate-x-0.5 group-hover:text-brand" />
                   </div>
-                  <ArrowUpRight className="h-4 w-4 text-white/30 transition group-hover:text-brand" />
-                </div>
-                <h3 className="mt-4 font-display text-lg font-semibold text-white">{r.shortTitle}</h3>
-                <p className="mt-1 text-sm text-white/60">{r.tagline}</p>
-              </Link>
+                  <h3 className="mt-4 font-display text-lg font-semibold text-white">{r.shortTitle}</h3>
+                  <p className="mt-1 text-sm text-white/60">{r.tagline}</p>
+                </Link>
+              </TiltCard>
             ))}
-          </div>
+          </StaggerGroup>
         </section>
       )}
 

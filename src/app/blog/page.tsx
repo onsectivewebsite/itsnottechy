@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { blogPosts, blogCategories } from "@/data/blogs";
-import { Reveal } from "@/components/Reveal";
+import { Reveal, WordReveal, StaggerGroup } from "@/components/Reveal";
 import { CTA } from "@/components/CTA";
 import { SITE } from "@/lib/site";
 import { ArrowUpRight } from "lucide-react";
@@ -65,9 +65,14 @@ export default async function BlogPage({
       <section className="section pt-32">
         <Reveal>
           <span className="text-xs uppercase tracking-[0.2em] text-brand">Blog</span>
-          <h1 className="mt-3 max-w-4xl font-display text-5xl font-bold tracking-tight text-white md:text-7xl">
-            {blogPosts.length}+ playbooks. <span className="gradient-text">Zero fluff.</span>
-          </h1>
+        </Reveal>
+        <h1 className="mt-3 max-w-4xl font-display text-5xl font-bold tracking-tight text-white md:text-7xl">
+          <WordReveal
+            text={`${blogPosts.length}+ playbooks. Zero fluff.`}
+            accentWords={["Zero", "fluff."]}
+          />
+        </h1>
+        <Reveal delay={0.2}>
           <p className="mt-6 max-w-2xl text-lg text-white/70">
             Fresh thinking on SEO, paid, social, video, brand, AI, and everything in between —
             written by the practitioners who ship client work every week.
@@ -107,27 +112,30 @@ export default async function BlogPage({
           ))}
         </div>
 
-        <div className="mt-10 grid gap-5 md:grid-cols-2 lg:grid-cols-3">
-          {paged.map((p, i) => (
-            <Reveal key={p.slug} delay={(i % 6) * 0.03}>
-              <Link href={`/blog/${p.slug}`} className="card group flex h-full flex-col">
-                <span className="inline-flex w-fit items-center gap-1 rounded-full border border-brand/30 bg-brand/10 px-2.5 py-0.5 text-[10px] font-medium uppercase tracking-wider text-brand">
-                  {p.category}
+        <StaggerGroup className="mt-10 grid gap-5 md:grid-cols-2 lg:grid-cols-3" stagger={0.03}>
+          {paged.map((p) => (
+            <Link
+              key={p.slug}
+              href={`/blog/${p.slug}`}
+              className="card group relative flex h-full flex-col overflow-hidden transition hover:-translate-y-1 hover:border-brand/30"
+            >
+              <div className="pointer-events-none absolute -right-10 -top-10 h-32 w-32 rounded-full bg-brand/10 blur-2xl opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
+              <span className="relative inline-flex w-fit items-center gap-1 rounded-full border border-brand/30 bg-brand/10 px-2.5 py-0.5 text-[10px] font-medium uppercase tracking-wider text-brand">
+                {p.category}
+              </span>
+              <h2 className="relative mt-4 line-clamp-2 font-display text-lg font-semibold text-white transition group-hover:text-brand">
+                {p.title}
+              </h2>
+              <p className="relative mt-2 line-clamp-3 text-sm text-white/60">{p.excerpt}</p>
+              <div className="relative mt-auto flex items-center justify-between pt-6 text-xs text-white/50">
+                <span>{new Date(p.publishedAt).toLocaleDateString("en", { month: "short", day: "numeric", year: "numeric" })}</span>
+                <span className="inline-flex items-center gap-1">
+                  {p.readMinutes} min <ArrowUpRight className="h-3 w-3 transition group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
                 </span>
-                <h2 className="mt-4 line-clamp-2 font-display text-lg font-semibold text-white group-hover:text-brand">
-                  {p.title}
-                </h2>
-                <p className="mt-2 line-clamp-3 text-sm text-white/60">{p.excerpt}</p>
-                <div className="mt-auto flex items-center justify-between pt-6 text-xs text-white/50">
-                  <span>{new Date(p.publishedAt).toLocaleDateString("en", { month: "short", day: "numeric", year: "numeric" })}</span>
-                  <span className="inline-flex items-center gap-1">
-                    {p.readMinutes} min <ArrowUpRight className="h-3 w-3" />
-                  </span>
-                </div>
-              </Link>
-            </Reveal>
+              </div>
+            </Link>
           ))}
-        </div>
+        </StaggerGroup>
 
         {paged.length === 0 && (
           <div className="mt-16 rounded-3xl border border-white/10 bg-white/[0.03] p-10 text-center text-white/60">

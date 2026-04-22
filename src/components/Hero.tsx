@@ -5,6 +5,7 @@ import { motion, useScroll, useTransform } from "framer-motion";
 import { ArrowUpRight, Sparkles, Play, Star } from "lucide-react";
 import { ThreeScene } from "./ThreeScene";
 import { ClientOnly } from "./ClientOnly";
+import { Magnetic, FloatOrb } from "./Reveal";
 import { useRef } from "react";
 
 const HEADLINE = ["Digital", "marketing", "that", "speaks", "human."];
@@ -46,7 +47,9 @@ export function Hero() {
         />
       </motion.div>
       <AnimatedMesh />
-      <div className="absolute inset-0 -z-20 grid-bg opacity-40" />
+      <FloatOrb className="-z-20 left-[8%] top-[12%]" size={280} color="rgba(0, 179, 164, 0.18)" duration={11} />
+      <FloatOrb className="-z-20 right-[6%] bottom-[14%]" size={340} color="rgba(102, 231, 218, 0.12)" duration={15} />
+      <div className="absolute inset-0 -z-20 grid-bg animated opacity-40" />
       <div aria-hidden className="absolute inset-0 -z-10 noise" />
 
       <motion.div
@@ -99,23 +102,27 @@ export function Hero() {
         </p>
 
         <div className="hero-rise hero-delay-8 mt-10 flex flex-wrap items-center justify-center gap-3">
-          <Link href="/contact" className="btn-primary">
-            Book a free strategy call
-            <ArrowUpRight className="h-4 w-4" />
-          </Link>
-          <Link href="/services" className="btn-ghost">
-            <Play className="h-4 w-4" />
-            Explore services
-          </Link>
+          <Magnetic strength={0.35}>
+            <Link href="/contact" className="btn-primary pulse-glow">
+              Book a free strategy call
+              <ArrowUpRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
+            </Link>
+          </Magnetic>
+          <Magnetic strength={0.25}>
+            <Link href="/services" className="btn-ghost">
+              <Play className="h-4 w-4" />
+              Explore services
+            </Link>
+          </Magnetic>
         </div>
 
         <div className="hero-rise hero-delay-9 mt-16 grid w-full max-w-4xl grid-cols-2 gap-4 md:grid-cols-4">
           {STATS.map((s) => (
             <div
               key={s.label}
-              className="rounded-2xl border border-white/10 bg-white/[0.03] p-5 text-left backdrop-blur transition hover:-translate-y-1 hover:border-brand/50"
+              className="ring-hover group rounded-2xl border border-white/10 bg-white/[0.03] p-5 text-left backdrop-blur transition-all duration-300 hover:-translate-y-1 hover:border-brand/50 hover:bg-white/[0.05]"
             >
-              <div className="font-display text-3xl font-semibold text-brand md:text-4xl">
+              <div className="font-display text-3xl font-semibold text-brand transition-transform group-hover:scale-105 md:text-4xl">
                 {s.value}
               </div>
               <div className="mt-1 text-xs uppercase tracking-wider text-white/50">

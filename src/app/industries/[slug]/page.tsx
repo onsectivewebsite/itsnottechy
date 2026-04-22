@@ -7,8 +7,9 @@ import { services } from "@/data/services";
 import { blogPosts, blogCategories } from "@/data/blogs";
 import { ServiceIcon } from "@/components/ServiceIcon";
 import { IndustryIcon } from "@/components/IndustryIcon";
-import { Reveal } from "@/components/Reveal";
+import { Reveal, WordReveal, StaggerGroup } from "@/components/Reveal";
 import { CTA } from "@/components/CTA";
+import { TiltCard } from "@/components/TiltCard";
 import { ArrowUpRight, Check } from "lucide-react";
 import { SITE } from "@/lib/site";
 
@@ -182,7 +183,7 @@ export default async function IndustryPage({
             <span className="text-xs uppercase tracking-[0.2em] text-brand">Industry</span>
           </div>
           <h1 className="mt-6 max-w-4xl font-display text-5xl font-bold tracking-tight text-white md:text-7xl">
-            {industry.name} Marketing
+            <WordReveal text={`${industry.name} Marketing`} accentWords={["Marketing"]} />
           </h1>
           <p className="mt-4 max-w-3xl text-xl text-brand">{industry.tagline}</p>
           <p className="mt-6 max-w-3xl text-white/70">{industry.summary}</p>
@@ -231,20 +232,22 @@ export default async function IndustryPage({
             tools, and FAQs.
           </p>
         </Reveal>
-        <div className="mt-10 grid gap-4 md:grid-cols-3">
+        <StaggerGroup className="mt-10 grid gap-4 md:grid-cols-3" stagger={0.05}>
           {mapped.map((s) => (
-            <Link key={s.slug} href={`/services/${s.slug}`} className="card group block">
-              <div className="flex items-center justify-between">
-                <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-brand/15 text-brand">
-                  <ServiceIcon name={s.icon} />
+            <TiltCard key={s.slug} className="h-full" max={5}>
+              <Link href={`/services/${s.slug}`} className="card group block h-full transition hover:-translate-y-1 hover:border-brand/30">
+                <div className="flex items-center justify-between">
+                  <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-brand/15 text-brand transition-transform duration-500 group-hover:scale-110 group-hover:bg-brand/25">
+                    <ServiceIcon name={s.icon} />
+                  </div>
+                  <ArrowUpRight className="h-4 w-4 text-white/30 transition group-hover:-translate-y-0.5 group-hover:translate-x-0.5 group-hover:text-brand" />
                 </div>
-                <ArrowUpRight className="h-4 w-4 text-white/30 transition group-hover:text-brand" />
-              </div>
-              <h3 className="mt-4 font-display text-lg font-semibold text-white">{s.shortTitle}</h3>
-              <p className="mt-1 text-sm text-white/60">{s.tagline}</p>
-            </Link>
+                <h3 className="mt-4 font-display text-lg font-semibold text-white">{s.shortTitle}</h3>
+                <p className="mt-1 text-sm text-white/60">{s.tagline}</p>
+              </Link>
+            </TiltCard>
           ))}
-        </div>
+        </StaggerGroup>
       </section>
 
       <section className="section pt-0">
@@ -349,23 +352,24 @@ export default async function IndustryPage({
             Other industries we serve
           </h2>
         </Reveal>
-        <div className="mt-8 grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+        <StaggerGroup className="mt-8 grid gap-4 md:grid-cols-2 lg:grid-cols-4" stagger={0.05}>
           {otherIndustries.map((o) => (
-            <Link
-              key={o.slug}
-              href={`/industries/${o.slug}`}
-              className="card group block"
-            >
-              <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-white/10 text-white">
-                <IndustryIcon name={o.icon} />
-              </div>
-              <h3 className="mt-3 font-display text-base font-semibold text-white">
-                {o.name}
-              </h3>
-              <p className="text-xs text-brand">{o.tagline}</p>
-            </Link>
+            <TiltCard key={o.slug} className="h-full" max={6}>
+              <Link
+                href={`/industries/${o.slug}`}
+                className="card group block h-full transition hover:-translate-y-1 hover:border-brand/30"
+              >
+                <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-white/10 text-white transition-transform duration-500 group-hover:scale-110 group-hover:bg-brand/20 group-hover:text-brand">
+                  <IndustryIcon name={o.icon} />
+                </div>
+                <h3 className="mt-3 font-display text-base font-semibold text-white">
+                  {o.name}
+                </h3>
+                <p className="text-xs text-brand">{o.tagline}</p>
+              </Link>
+            </TiltCard>
           ))}
-        </div>
+        </StaggerGroup>
         <div className="mt-6">
           <Link
             href="/industries"
