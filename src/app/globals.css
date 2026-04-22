@@ -1,0 +1,223 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --brand: #00b3a4;
+  --brand-dark: #006d63;
+  --ink: #1C1F26;
+  --ink-2: #0d0e13;
+  --white: #ffffff;
+}
+
+html {
+  scroll-behavior: smooth;
+  background: var(--ink-2);
+  color-scheme: dark;
+}
+
+body {
+  background: var(--ink-2);
+  color: #e6e8ec;
+  font-feature-settings: "ss01", "cv11";
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+::selection {
+  background: rgba(0, 179, 164, 0.35);
+  color: #fff;
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+::-webkit-scrollbar-track {
+  background: #0d0e13;
+}
+::-webkit-scrollbar-thumb {
+  background: #1f2330;
+  border-radius: 999px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #00b3a4;
+}
+
+.noise::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-image: url("data:image/svg+xml;utf8,<svg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9'/><feColorMatrix values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.4 0'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>");
+  opacity: 0.08;
+  pointer-events: none;
+  mix-blend-mode: overlay;
+}
+
+.gradient-text {
+  background: linear-gradient(90deg, #00b3a4 0%, #66e7da 50%, #ffffff 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+/* Hero headline legibility — subtle shadow so text stays readable over the 3D scene */
+.hero-headline {
+  text-shadow:
+    0 1px 0 rgba(0, 0, 0, 0.25),
+    0 4px 24px rgba(0, 0, 0, 0.55),
+    0 0 80px rgba(0, 0, 0, 0.35);
+}
+.hero-headline .gradient-text {
+  text-shadow: none;
+  filter: drop-shadow(0 4px 20px rgba(0, 0, 0, 0.5));
+}
+
+/* Soft radial vignette placed behind hero text for extra contrast on busy 3D */
+.hero-vignette {
+  background: radial-gradient(
+    ellipse 60% 55% at 50% 50%,
+    rgba(13, 14, 19, 0.55) 0%,
+    rgba(13, 14, 19, 0.25) 45%,
+    transparent 75%
+  );
+}
+
+.btn-primary {
+  @apply inline-flex items-center justify-center gap-2 rounded-full bg-brand px-6 py-3 font-medium text-ink-900 shadow-glow transition hover:-translate-y-0.5 hover:shadow-[0_0_60px_-5px_rgba(0,179,164,0.7)] active:translate-y-0;
+}
+
+.btn-ghost {
+  @apply inline-flex items-center justify-center gap-2 rounded-full border border-white/15 bg-white/5 px-6 py-3 font-medium text-white backdrop-blur transition hover:border-brand hover:text-brand;
+}
+
+.card {
+  @apply relative overflow-hidden rounded-3xl border border-white/10 bg-white/[0.03] p-6 backdrop-blur-sm transition-all duration-300;
+  will-change: transform;
+}
+
+.card:hover {
+  @apply border-brand/40 shadow-glow;
+  transform: translateY(-4px);
+}
+
+/* Gradient border that animates on hover */
+.border-gradient-brand {
+  position: relative;
+}
+.border-gradient-brand::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  padding: 1px;
+  background: linear-gradient(130deg, rgba(0, 179, 164, 0.6), transparent 40%, rgba(102, 231, 218, 0.5));
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  pointer-events: none;
+}
+.border-gradient-brand:hover::before {
+  opacity: 1;
+}
+
+.section {
+  @apply relative mx-auto w-full max-w-7xl px-6 py-20 md:px-10 md:py-28;
+}
+
+.kbd {
+  @apply rounded-md border border-white/15 bg-white/5 px-1.5 py-0.5 text-[11px] font-medium text-white/80;
+}
+
+/* Prose fallback (no typography plugin installed) */
+.prose-invert :where(h1, h2, h3, h4, h5, h6) {
+  color: #fff;
+}
+.prose-invert :where(p, li) {
+  color: rgba(255, 255, 255, 0.8);
+  line-height: 1.75;
+}
+.prose-invert :where(h2) {
+  font-size: 1.75rem;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  margin-top: 2.5rem;
+  margin-bottom: 1rem;
+}
+.prose-invert :where(h3) {
+  font-size: 1.25rem;
+  font-weight: 600;
+  margin-top: 1.5rem;
+  margin-bottom: 0.75rem;
+}
+.prose-invert :where(p) {
+  margin-bottom: 1rem;
+}
+.prose-invert :where(a) {
+  color: #00b3a4;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+.prose-invert :where(ul) {
+  list-style: disc;
+  padding-left: 1.5rem;
+  margin-bottom: 1rem;
+}
+.prose-invert :where(strong) {
+  color: #fff;
+  font-weight: 600;
+}
+
+.shimmer {
+  background: linear-gradient(
+    90deg,
+    rgba(255, 255, 255, 0.03) 0%,
+    rgba(0, 179, 164, 0.25) 50%,
+    rgba(255, 255, 255, 0.03) 100%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 2.5s linear infinite;
+}
+
+.grid-bg {
+  background-image: linear-gradient(to right, rgba(255, 255, 255, 0.06) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(255, 255, 255, 0.06) 1px, transparent 1px);
+  background-size: 56px 56px;
+}
+
+/* Hero is visible immediately — no opacity:0 initial state, no JS gating.
+   A tiny rise animation runs from a visible state so content never flashes blank. */
+@keyframes hero-rise {
+  0% { transform: translateY(16px); }
+  100% { transform: translateY(0); }
+}
+.hero-rise {
+  opacity: 1;
+  animation: hero-rise 0.6s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+.hero-delay-1 { animation-delay: 0.02s; }
+.hero-delay-2 { animation-delay: 0.06s; }
+.hero-delay-3 { animation-delay: 0.10s; }
+.hero-delay-4 { animation-delay: 0.14s; }
+.hero-delay-5 { animation-delay: 0.18s; }
+.hero-delay-6 { animation-delay: 0.22s; }
+.hero-delay-7 { animation-delay: 0.26s; }
+.hero-delay-8 { animation-delay: 0.30s; }
+.hero-delay-9 { animation-delay: 0.34s; }
+
+/* Reduce motion */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+  .hero-rise {
+    opacity: 1 !important;
+    transform: none !important;
+  }
+}
