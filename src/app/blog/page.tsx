@@ -1,8 +1,17 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { blogPosts, blogCategories } from "@/data/blogs";
-import { Reveal, WordReveal, StaggerGroup } from "@/components/Reveal";
+import {
+  Reveal,
+  WordReveal,
+  StaggerGroup,
+  FloatOrb,
+  DrawLine,
+  Spotlight,
+} from "@/components/Reveal";
 import { CTA } from "@/components/CTA";
+import { ClientOnly } from "@/components/ClientOnly";
+import { ParticleField } from "@/components/ThreeAccents";
 import { SITE } from "@/lib/site";
 import { ArrowUpRight } from "lucide-react";
 
@@ -62,7 +71,11 @@ export default async function BlogPage({
 
   return (
     <>
-      <section className="section pt-32">
+      <section className="section relative overflow-hidden pt-32">
+        <FloatOrb className="-right-32 top-10" size={480} color="rgba(102, 231, 218, 0.14)" />
+        <ClientOnly>
+          <ParticleField className="inset-y-0 right-[-6%] hidden w-[36%] md:block" />
+        </ClientOnly>
         <Reveal>
           <span className="text-xs uppercase tracking-[0.2em] text-brand">Blog</span>
         </Reveal>
@@ -72,6 +85,7 @@ export default async function BlogPage({
             accentWords={["Zero", "fluff."]}
           />
         </h1>
+        <DrawLine className="mt-6 w-24" delay={0.5} />
         <Reveal delay={0.2}>
           <p className="mt-6 max-w-2xl text-lg text-white/70">
             Fresh thinking on SEO, paid, social, video, brand, AI, and everything in between —
@@ -114,10 +128,10 @@ export default async function BlogPage({
 
         <StaggerGroup className="mt-10 grid gap-5 md:grid-cols-2 lg:grid-cols-3" stagger={0.03}>
           {paged.map((p) => (
+            <Spotlight key={p.slug} className="h-full rounded-3xl">
             <Link
-              key={p.slug}
               href={`/blog/${p.slug}`}
-              className="card group relative flex h-full flex-col overflow-hidden transition hover:-translate-y-1 hover:border-brand/30"
+              className="card ring-hover group relative flex h-full flex-col overflow-hidden transition hover:-translate-y-1 hover:border-brand/30"
             >
               <div className="pointer-events-none absolute -right-10 -top-10 h-32 w-32 rounded-full bg-brand/10 blur-2xl opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
               <span className="relative inline-flex w-fit items-center gap-1 rounded-full border border-brand/30 bg-brand/10 px-2.5 py-0.5 text-[10px] font-medium uppercase tracking-wider text-brand">
@@ -134,6 +148,7 @@ export default async function BlogPage({
                 </span>
               </div>
             </Link>
+            </Spotlight>
           ))}
         </StaggerGroup>
 

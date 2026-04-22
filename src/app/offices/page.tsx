@@ -1,11 +1,21 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { offices } from "@/data/offices";
-import { Reveal, WordReveal, StaggerGroup } from "@/components/Reveal";
+import {
+  Reveal,
+  WordReveal,
+  StaggerGroup,
+  FloatOrb,
+  DrawLine,
+  Spotlight,
+  Parallax,
+} from "@/components/Reveal";
 import { CTA } from "@/components/CTA";
 import { TiltCard } from "@/components/TiltCard";
 import { Marquee } from "@/components/Marquee";
 import { AnimatedNumber } from "@/components/AnimatedNumber";
+import { ClientOnly } from "@/components/ClientOnly";
+import { Globe } from "@/components/Globe";
 import { ArrowUpRight, MapPin } from "lucide-react";
 import { SITE } from "@/lib/site";
 
@@ -24,7 +34,13 @@ export const metadata: Metadata = {
 export default function OfficesPage() {
   return (
     <>
-      <section className="section pt-32">
+      <section className="section relative overflow-hidden pt-32">
+        <FloatOrb className="-left-40 top-20" size={520} />
+        <Parallax offset={50} direction="up" className="pointer-events-none absolute right-0 top-16 hidden w-[38%] md:block">
+          <ClientOnly>
+            <Globe />
+          </ClientOnly>
+        </Parallax>
         <Reveal>
           <span className="text-xs uppercase tracking-[0.2em] text-brand">
             Our offices
@@ -36,6 +52,7 @@ export default function OfficesPage() {
             accentWords={["One", "global", "team."]}
           />
         </h1>
+        <DrawLine className="mt-6 w-24" delay={0.5} />
         <Reveal delay={0.25}>
           <p className="mt-6 max-w-2xl text-lg text-white/70">
             Every engagement gets senior practitioners in the right time zone,
@@ -79,13 +96,15 @@ export default function OfficesPage() {
         />
       </div>
 
-      <section className="section pt-20">
+      <section className="section relative pt-20">
+        <FloatOrb className="right-0 top-1/3" size={360} color="rgba(102, 231, 218, 0.10)" duration={18} />
         <StaggerGroup className="grid gap-5 md:grid-cols-2 lg:grid-cols-3" stagger={0.06}>
           {offices.map((o) => (
             <TiltCard key={o.slug} className="h-full" max={8}>
+              <Spotlight className="h-full rounded-3xl">
               <Link
                 href={`/offices/${o.slug}`}
-                className="card group relative block h-full overflow-hidden"
+                className="card ring-hover group relative block h-full overflow-hidden"
               >
                 <div className="pointer-events-none absolute -right-16 -top-16 h-48 w-48 rounded-full bg-brand/10 blur-3xl opacity-0 transition-opacity duration-700 group-hover:opacity-100" />
                 <div className="relative flex items-start justify-between">
@@ -101,6 +120,7 @@ export default function OfficesPage() {
                 </h2>
                 <p className="relative mt-2 text-sm text-white/60">{o.heroTagline}</p>
               </Link>
+              </Spotlight>
             </TiltCard>
           ))}
         </StaggerGroup>

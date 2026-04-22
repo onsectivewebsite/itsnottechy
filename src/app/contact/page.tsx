@@ -1,9 +1,19 @@
 import type { Metadata } from "next";
 import Script from "next/script";
 import { ContactForm } from "@/components/ContactForm";
-import { Reveal, WordReveal, StaggerGroup } from "@/components/Reveal";
+import {
+  Reveal,
+  WordReveal,
+  StaggerGroup,
+  FloatOrb,
+  DrawLine,
+  Magnetic,
+  Spotlight,
+} from "@/components/Reveal";
 import { TiltCard } from "@/components/TiltCard";
 import { Marquee } from "@/components/Marquee";
+import { ClientOnly } from "@/components/ClientOnly";
+import { PrismAccent } from "@/components/ThreeAccents";
 import { SITE } from "@/lib/site";
 import { Mail, Phone, MapPin, Instagram, Linkedin, Facebook } from "lucide-react";
 
@@ -29,7 +39,11 @@ export default function ContactPage() {
         {JSON.stringify(contactSchema)}
       </Script>
 
-      <section className="section pt-32">
+      <section className="section relative overflow-hidden pt-32">
+        <FloatOrb className="-left-32 top-20" size={440} />
+        <ClientOnly>
+          <PrismAccent className="inset-y-8 right-[-8%] hidden w-[34%] md:block" />
+        </ClientOnly>
         <div className="grid gap-10 lg:grid-cols-5">
           <div className="lg:col-span-2">
             <Reveal>
@@ -38,6 +52,7 @@ export default function ContactPage() {
             <h1 className="mt-3 font-display text-5xl font-bold tracking-tight text-white md:text-6xl">
               <WordReveal text="Let's talk." accentWords={["talk."]} />
             </h1>
+            <DrawLine className="mt-6 w-24" delay={0.5} />
             <Reveal delay={0.25}>
               <p className="mt-6 text-white/70">
                 Share a few details and we&apos;ll reply within one business day. Prefer a call?
@@ -70,15 +85,21 @@ export default function ContactPage() {
             </div>
 
             <div className="mt-6 flex gap-2">
-              <a href={SITE.socials.instagram} className="btn-ghost text-sm" target="_blank" rel="noreferrer">
-                <Instagram className="h-4 w-4" /> Instagram
-              </a>
-              <a href={SITE.socials.linkedin} className="btn-ghost text-sm" target="_blank" rel="noreferrer">
-                <Linkedin className="h-4 w-4" /> LinkedIn
-              </a>
-              <a href={SITE.socials.facebook} className="btn-ghost text-sm" target="_blank" rel="noreferrer">
-                <Facebook className="h-4 w-4" /> Facebook
-              </a>
+              <Magnetic>
+                <a href={SITE.socials.instagram} className="btn-ghost text-sm" target="_blank" rel="noreferrer">
+                  <Instagram className="h-4 w-4" /> Instagram
+                </a>
+              </Magnetic>
+              <Magnetic>
+                <a href={SITE.socials.linkedin} className="btn-ghost text-sm" target="_blank" rel="noreferrer">
+                  <Linkedin className="h-4 w-4" /> LinkedIn
+                </a>
+              </Magnetic>
+              <Magnetic>
+                <a href={SITE.socials.facebook} className="btn-ghost text-sm" target="_blank" rel="noreferrer">
+                  <Facebook className="h-4 w-4" /> Facebook
+                </a>
+              </Magnetic>
             </div>
           </div>
 
@@ -104,12 +125,14 @@ export default function ContactPage() {
       <section className="section pt-16">
         <StaggerGroup className="grid gap-4 md:grid-cols-4" stagger={0.05}>
           {SITE.offices.map((o) => (
-            <TiltCard key={o.city} className="card h-full" max={8}>
-              <div className="text-2xl transition-transform group-hover:scale-110">{o.flag}</div>
-              <div className="mt-3 font-display text-lg font-semibold text-white">{o.city}</div>
-              <div className="text-sm text-brand">{o.role}</div>
-              <div className="mt-1 text-xs text-white/50">{o.country}</div>
-            </TiltCard>
+            <Spotlight key={o.city} className="h-full rounded-3xl">
+              <TiltCard className="card ring-hover h-full" max={8}>
+                <div className="text-2xl transition-transform hover:scale-110">{o.flag}</div>
+                <div className="mt-3 font-display text-lg font-semibold text-white">{o.city}</div>
+                <div className="text-sm text-brand">{o.role}</div>
+                <div className="mt-1 text-xs text-white/50">{o.country}</div>
+              </TiltCard>
+            </Spotlight>
           ))}
         </StaggerGroup>
       </section>

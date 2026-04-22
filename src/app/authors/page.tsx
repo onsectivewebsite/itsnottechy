@@ -2,9 +2,18 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import Image from "next/image";
 import { authors } from "@/data/authors";
-import { Reveal, WordReveal, StaggerGroup } from "@/components/Reveal";
+import {
+  Reveal,
+  WordReveal,
+  StaggerGroup,
+  FloatOrb,
+  DrawLine,
+  Spotlight,
+} from "@/components/Reveal";
 import { CTA } from "@/components/CTA";
 import { TiltCard } from "@/components/TiltCard";
+import { ClientOnly } from "@/components/ClientOnly";
+import { OrbitAccent } from "@/components/ThreeAccents";
 import { SITE } from "@/lib/site";
 import { ArrowUpRight } from "lucide-react";
 
@@ -18,7 +27,11 @@ export const metadata: Metadata = {
 export default function AuthorsPage() {
   return (
     <>
-      <section className="section pt-32">
+      <section className="section relative overflow-hidden pt-32">
+        <FloatOrb className="-right-32 top-10" size={460} color="rgba(102, 231, 218, 0.12)" />
+        <ClientOnly>
+          <OrbitAccent className="inset-y-0 right-[-10%] hidden w-[38%] md:block" />
+        </ClientOnly>
         <Reveal>
           <span className="text-xs uppercase tracking-[0.2em] text-brand">
             Authors
@@ -30,6 +43,7 @@ export default function AuthorsPage() {
             accentWords={["write", "our", "words."]}
           />
         </h1>
+        <DrawLine className="mt-6 w-24" delay={0.5} />
         <Reveal delay={0.2}>
           <p className="mt-6 max-w-2xl text-lg text-white/70">
             Every post on this site is written — or at minimum edited — by a
@@ -41,9 +55,10 @@ export default function AuthorsPage() {
         <StaggerGroup className="mt-14 grid gap-6 md:grid-cols-2 lg:grid-cols-3" stagger={0.07}>
           {authors.map((a) => (
             <TiltCard key={a.slug} className="h-full" max={6}>
+              <Spotlight className="h-full rounded-3xl">
               <Link
                 href={`/authors/${a.slug}`}
-                className="card group relative block h-full overflow-hidden"
+                className="card ring-hover group relative block h-full overflow-hidden"
               >
                 <div className="pointer-events-none absolute -right-16 -top-16 h-40 w-40 rounded-full bg-brand/10 blur-3xl opacity-0 transition-opacity duration-700 group-hover:opacity-100" />
                 <div className="relative flex items-center gap-4">
@@ -76,6 +91,7 @@ export default function AuthorsPage() {
                   ))}
                 </div>
               </Link>
+              </Spotlight>
             </TiltCard>
           ))}
         </StaggerGroup>

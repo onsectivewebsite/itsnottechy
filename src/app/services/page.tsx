@@ -2,11 +2,23 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { services } from "@/data/services";
 import { ServiceIcon } from "@/components/ServiceIcon";
-import { Reveal, WordReveal, StaggerGroup } from "@/components/Reveal";
+import {
+  Reveal,
+  WordReveal,
+  StaggerGroup,
+  CharReveal,
+  Spotlight,
+  FloatOrb,
+  DrawLine,
+  Magnetic,
+  Parallax,
+} from "@/components/Reveal";
 import { CTA } from "@/components/CTA";
 import { ServiceCategories } from "@/components/ServiceCategories";
 import { TiltCard } from "@/components/TiltCard";
 import { Marquee } from "@/components/Marquee";
+import { ClientOnly } from "@/components/ClientOnly";
+import { OrbitAccent } from "@/components/ThreeAccents";
 import { ArrowUpRight, Check } from "lucide-react";
 import { SITE } from "@/lib/site";
 
@@ -85,7 +97,11 @@ const FAQS = [
 export default function ServicesPage() {
   return (
     <>
-      <section className="section pt-32">
+      <section className="section relative overflow-hidden pt-32">
+        <FloatOrb className="-left-40 top-10" size={520} />
+        <ClientOnly>
+          <OrbitAccent className="inset-y-0 right-[-10%] hidden w-[40%] md:block" />
+        </ClientOnly>
         <Reveal>
           <span className="text-xs uppercase tracking-[0.2em] text-brand">
             Services
@@ -97,6 +113,7 @@ export default function ServicesPage() {
             accentWords={["your", "brand", "needs."]}
           />
         </h1>
+        <DrawLine className="mt-6 w-24" delay={0.5} />
         <Reveal delay={0.25}>
           <p className="mt-6 max-w-3xl text-lg text-white/70">
             {services.length} specialized services across four phases —
@@ -107,13 +124,17 @@ export default function ServicesPage() {
             FAQs.
           </p>
           <div className="mt-8 flex flex-wrap gap-3">
-            <a href="#categories" className="btn-primary">
-              Browse by phase
-              <ArrowUpRight className="h-4 w-4" />
-            </a>
-            <a href="#all" className="btn-ghost">
-              See the full list
-            </a>
+            <Magnetic strength={0.3}>
+              <a href="#categories" className="btn-primary pulse-glow">
+                Browse by phase
+                <ArrowUpRight className="h-4 w-4" />
+              </a>
+            </Magnetic>
+            <Magnetic>
+              <a href="#all" className="btn-ghost">
+                See the full list
+              </a>
+            </Magnetic>
           </div>
         </Reveal>
       </section>
@@ -141,14 +162,18 @@ export default function ServicesPage() {
         <ServiceCategories />
       </div>
 
-      <section id="all" className="section">
+      <section id="all" className="section relative">
+        <FloatOrb className="right-0 top-20" size={400} color="rgba(102, 231, 218, 0.12)" duration={14} />
         <Reveal>
           <span className="text-xs uppercase tracking-[0.2em] text-brand">
             All {services.length} services
           </span>
-          <h2 className="mt-2 font-display text-4xl font-semibold tracking-tight text-white md:text-6xl">
-            The full capability stack.
-          </h2>
+        </Reveal>
+        <h2 className="mt-2 font-display text-4xl font-semibold tracking-tight text-white md:text-6xl">
+          <CharReveal text="The full capability stack." accentWords={["capability", "stack."]} />
+        </h2>
+        <DrawLine className="mt-4 w-24" delay={0.5} />
+        <Reveal delay={0.2}>
           <p className="mt-4 max-w-2xl text-white/70">
             Every service gets a dedicated page with what it is, why it
             matters, our process, deliverables, tools, outcomes, and FAQs.
@@ -158,9 +183,10 @@ export default function ServicesPage() {
         <StaggerGroup className="mt-14 grid gap-5 md:grid-cols-2 lg:grid-cols-3" stagger={0.04}>
           {services.map((s) => (
             <TiltCard key={s.slug} className="h-full" max={5}>
+              <Spotlight className="h-full rounded-3xl">
               <Link
                 href={`/services/${s.slug}`}
-                className="card group relative block h-full overflow-hidden"
+                className="card ring-hover group relative block h-full overflow-hidden"
               >
                 <div className="pointer-events-none absolute -right-8 -top-8 h-32 w-32 rounded-full bg-brand/10 blur-2xl opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
                 <div className="relative flex items-center justify-between">
@@ -187,21 +213,26 @@ export default function ServicesPage() {
                   ))}
                 </div>
               </Link>
+              </Spotlight>
             </TiltCard>
           ))}
         </StaggerGroup>
       </section>
 
-      <section className="section">
+      <section className="section relative">
+        <Parallax offset={40} direction="down" className="pointer-events-none absolute -left-20 top-20 h-80 w-80 rounded-full bg-brand/10 blur-3xl" />
         <Reveal>
           <span className="text-xs uppercase tracking-[0.2em] text-brand">
             Engagement tiers
           </span>
-          <h2 className="mt-2 max-w-3xl font-display text-4xl font-semibold tracking-tight text-white md:text-6xl">
-            Three ways to work with us.
-          </h2>
+        </Reveal>
+        <h2 className="mt-2 max-w-3xl font-display text-4xl font-semibold tracking-tight text-white md:text-6xl">
+          <CharReveal text="Three ways to work with us." accentWords={["work", "with", "us."]} />
+        </h2>
+        <DrawLine className="mt-4 w-24" delay={0.5} />
+        <Reveal delay={0.2}>
           <p className="mt-4 max-w-2xl text-white/70">
-            Every engagement starts with a discovery call and a scope that's
+            Every engagement starts with a discovery call and a scope that&apos;s
             right-sized to your business — not a pre-packaged tier someone else
             designed.
           </p>
@@ -256,10 +287,11 @@ export default function ServicesPage() {
           <span className="text-xs uppercase tracking-[0.2em] text-brand">
             FAQs
           </span>
-          <h2 className="mt-2 max-w-3xl font-display text-4xl font-semibold tracking-tight text-white md:text-6xl">
-            Questions buyers always ask.
-          </h2>
         </Reveal>
+        <h2 className="mt-2 max-w-3xl font-display text-4xl font-semibold tracking-tight text-white md:text-6xl">
+          <CharReveal text="Questions buyers always ask." accentWords={["buyers", "always", "ask."]} />
+        </h2>
+        <DrawLine className="mt-4 w-24" delay={0.5} />
         <div className="mt-10 space-y-3">
           {FAQS.map((f) => (
             <details

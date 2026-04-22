@@ -1,10 +1,22 @@
 import type { Metadata } from "next";
 import Image from "next/image";
-import { Reveal, WordReveal, StaggerGroup, ScrollFloat } from "@/components/Reveal";
+import {
+  Reveal,
+  WordReveal,
+  StaggerGroup,
+  ScrollFloat,
+  FloatOrb,
+  DrawLine,
+  Spotlight,
+  CharReveal,
+  Parallax,
+} from "@/components/Reveal";
 import { CTA } from "@/components/CTA";
 import { TiltCard } from "@/components/TiltCard";
 import { AnimatedNumber } from "@/components/AnimatedNumber";
 import { Marquee } from "@/components/Marquee";
+import { ClientOnly } from "@/components/ClientOnly";
+import { CrystalCluster } from "@/components/ThreeAccents";
 import { SITE } from "@/lib/site";
 import { Handshake, Globe2, Zap, ShieldCheck } from "lucide-react";
 
@@ -37,6 +49,10 @@ export default function AboutPage() {
         <ScrollFloat className="pointer-events-none absolute -right-40 top-10 -z-10 h-[520px] w-[520px] rounded-full bg-brand/20 blur-3xl" distance={120}>
           <span className="sr-only" />
         </ScrollFloat>
+        <ClientOnly>
+          <CrystalCluster className="inset-y-0 right-[-6%] hidden w-[34%] md:block" />
+        </ClientOnly>
+        <DrawLine className="w-24" delay={0.5} />
         <Reveal>
           <span className="text-xs uppercase tracking-[0.2em] text-brand">About us</span>
         </Reveal>
@@ -75,11 +91,13 @@ export default function AboutPage() {
             { icon: Zap, title: "AI-Augmented", body: "We blend AI speed with human craft across every service we ship." },
             { icon: ShieldCheck, title: "No lock-in", body: "All files, data, and accounts live in your systems. You own the work." },
           ].map(({ icon: Icon, title, body }) => (
-            <TiltCard key={title} className="card h-full" max={6}>
-              <Icon className="h-6 w-6 text-brand" />
-              <h3 className="mt-4 font-display text-lg font-semibold text-white">{title}</h3>
-              <p className="mt-1 text-sm text-white/60">{body}</p>
-            </TiltCard>
+            <Spotlight key={title} className="h-full rounded-3xl">
+              <TiltCard className="card ring-hover h-full" max={6}>
+                <Icon className="h-6 w-6 text-brand" />
+                <h3 className="mt-4 font-display text-lg font-semibold text-white">{title}</h3>
+                <p className="mt-1 text-sm text-white/60">{body}</p>
+              </TiltCard>
+            </Spotlight>
           ))}
         </StaggerGroup>
       </section>
@@ -99,12 +117,13 @@ export default function AboutPage() {
         />
       </div>
 
-      <section className="section pt-20">
-        <Reveal>
-          <h2 className="max-w-4xl font-display text-3xl font-semibold tracking-tight text-white md:text-5xl">
-            Enterprise engineering,{" "}
-            <span className="gradient-text">when you need it.</span>
-          </h2>
+      <section className="section relative pt-20">
+        <FloatOrb className="-left-20 top-10" size={360} color="rgba(0, 179, 164, 0.10)" duration={14} />
+        <h2 className="max-w-4xl font-display text-3xl font-semibold tracking-tight text-white md:text-5xl">
+          <CharReveal text="Enterprise engineering, when you need it." accentWords={["when", "you", "need", "it."]} />
+        </h2>
+        <DrawLine className="mt-4 w-24" delay={0.5} />
+        <Reveal delay={0.2}>
           <p className="mt-4 max-w-2xl text-white/70">
             For clients whose growth depends on custom platforms, cloud
             architecture, or AI engineering beyond the marketing stack, we
@@ -115,32 +134,33 @@ export default function AboutPage() {
       </section>
 
       <section className="section pt-0">
-        <Reveal>
-          <h2 className="font-display text-3xl font-semibold tracking-tight text-white md:text-5xl">
-            Our global offices
-          </h2>
-        </Reveal>
+        <h2 className="font-display text-3xl font-semibold tracking-tight text-white md:text-5xl">
+          <CharReveal text="Our global offices" />
+        </h2>
+        <DrawLine className="mt-4 w-24" delay={0.5} />
         <StaggerGroup className="mt-8 grid gap-4 md:grid-cols-2 lg:grid-cols-4" stagger={0.05}>
           {SITE.offices.map((o) => (
-            <TiltCard key={o.city} className="card h-full" max={8}>
-              <div className="text-3xl transition-transform group-hover:scale-110">{o.flag}</div>
-              <h3 className="mt-3 font-display text-lg font-semibold text-white">{o.city}</h3>
-              <p className="text-sm text-brand">{o.role}</p>
-              <p className="mt-1 text-xs text-white/50">{o.country}</p>
-            </TiltCard>
+            <Spotlight key={o.city} className="h-full rounded-3xl">
+              <TiltCard className="card ring-hover h-full" max={8}>
+                <div className="text-3xl transition-transform hover:scale-110">{o.flag}</div>
+                <h3 className="mt-3 font-display text-lg font-semibold text-white">{o.city}</h3>
+                <p className="text-sm text-brand">{o.role}</p>
+                <p className="mt-1 text-xs text-white/50">{o.country}</p>
+              </TiltCard>
+            </Spotlight>
           ))}
         </StaggerGroup>
       </section>
 
-      <section className="section pt-0">
-        <Reveal>
-          <h2 className="font-display text-3xl font-semibold tracking-tight text-white md:text-5xl">
-            Meet the <span className="gradient-text">humans</span> behind it.
-          </h2>
-        </Reveal>
+      <section className="section relative pt-0">
+        <Parallax offset={60} direction="down" className="pointer-events-none absolute right-0 top-10 h-72 w-72 rounded-full bg-brand/10 blur-3xl" />
+        <h2 className="font-display text-3xl font-semibold tracking-tight text-white md:text-5xl">
+          <CharReveal text="Meet the humans behind it." accentWords={["humans"]} />
+        </h2>
+        <DrawLine className="mt-4 w-24" delay={0.5} />
         <StaggerGroup className="mt-10 grid gap-6 md:grid-cols-3 lg:grid-cols-5" stagger={0.08}>
           {TEAM.map((m) => (
-            <TiltCard key={m.name} className="card text-center" max={10}>
+            <TiltCard key={m.name} className="card ring-hover text-center" max={10}>
               <div className="group relative mx-auto aspect-square w-full overflow-hidden rounded-2xl">
                 <Image
                   src={m.image}
@@ -159,11 +179,10 @@ export default function AboutPage() {
       </section>
 
       <section className="section pt-0">
-        <Reveal>
-          <h2 className="font-display text-3xl font-semibold tracking-tight text-white md:text-5xl">
-            Values we <span className="gradient-text">hire for.</span>
-          </h2>
-        </Reveal>
+        <h2 className="font-display text-3xl font-semibold tracking-tight text-white md:text-5xl">
+          <CharReveal text="Values we hire for." accentWords={["hire", "for."]} />
+        </h2>
+        <DrawLine className="mt-4 w-24" delay={0.5} />
         <StaggerGroup className="mt-8 grid gap-5 md:grid-cols-3" stagger={0.06}>
           {[
             { t: "Speak human", d: "We explain the complicated without jargon — it's literally our name." },
@@ -173,10 +192,12 @@ export default function AboutPage() {
             { t: "Craft + speed", d: "AI for speed, humans for craft. The combo is our edge." },
             { t: "Transparency by default", d: "Live dashboards, open Slack, weekly readouts. No surprises." },
           ].map(({ t, d }) => (
-            <TiltCard key={t} className="card h-full" max={6}>
-              <h3 className="font-display text-lg font-semibold text-white">{t}</h3>
-              <p className="mt-2 text-sm text-white/60">{d}</p>
-            </TiltCard>
+            <Spotlight key={t} className="h-full rounded-3xl">
+              <TiltCard className="card ring-hover h-full" max={6}>
+                <h3 className="font-display text-lg font-semibold text-white">{t}</h3>
+                <p className="mt-2 text-sm text-white/60">{d}</p>
+              </TiltCard>
+            </Spotlight>
           ))}
         </StaggerGroup>
       </section>

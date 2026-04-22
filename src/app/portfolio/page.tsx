@@ -1,9 +1,19 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { Reveal, WordReveal, StaggerGroup } from "@/components/Reveal";
+import {
+  Reveal,
+  WordReveal,
+  StaggerGroup,
+  FloatOrb,
+  DrawLine,
+  Spotlight,
+  Magnetic,
+} from "@/components/Reveal";
 import { CTA } from "@/components/CTA";
 import { TiltCard } from "@/components/TiltCard";
 import { Marquee } from "@/components/Marquee";
+import { ClientOnly } from "@/components/ClientOnly";
+import { CubeField } from "@/components/ThreeAccents";
 import { SITE } from "@/lib/site";
 import { ArrowUpRight, TrendingUp, Users, DollarSign } from "lucide-react";
 
@@ -86,7 +96,11 @@ const CASES = [
 export default function PortfolioPage() {
   return (
     <>
-      <section className="section pt-32">
+      <section className="section relative overflow-hidden pt-32">
+        <FloatOrb className="-left-32 top-0" size={520} />
+        <ClientOnly>
+          <CubeField className="inset-y-0 right-[-8%] hidden w-[42%] md:block" />
+        </ClientOnly>
         <Reveal>
           <span className="text-xs uppercase tracking-[0.2em] text-brand">Portfolio</span>
         </Reveal>
@@ -96,11 +110,20 @@ export default function PortfolioPage() {
             accentWords={["moves", "numbers."]}
           />
         </h1>
+        <DrawLine className="mt-6 w-24" delay={0.5} />
         <Reveal delay={0.2}>
           <p className="mt-6 max-w-2xl text-lg text-white/70">
             A sample of recent engagements. Full case studies available on request — we respect
             client confidentiality and share detail under NDA.
           </p>
+          <div className="mt-8">
+            <Magnetic strength={0.3}>
+              <Link href="/contact" className="btn-primary pulse-glow">
+                Request a case study
+                <ArrowUpRight className="h-4 w-4" />
+              </Link>
+            </Magnetic>
+          </div>
         </Reveal>
       </section>
 
@@ -119,11 +142,13 @@ export default function PortfolioPage() {
         />
       </div>
 
-      <section className="section pt-20">
+      <section className="section relative pt-20">
+        <FloatOrb className="right-0 top-1/2" size={380} color="rgba(102, 231, 218, 0.10)" duration={16} />
         <StaggerGroup className="grid gap-6 md:grid-cols-2" stagger={0.08}>
           {CASES.map((c) => (
             <TiltCard key={c.client} className="h-full" max={4}>
-              <div className="card group relative h-full overflow-hidden">
+              <Spotlight className="h-full rounded-3xl">
+              <div className="card ring-hover group relative h-full overflow-hidden">
                 <div className="pointer-events-none absolute -right-16 -top-16 h-48 w-48 rounded-full bg-brand/10 blur-3xl opacity-0 transition-opacity duration-700 group-hover:opacity-100" />
                 <div className="relative flex items-center justify-between">
                   <span className="inline-flex items-center gap-1.5 rounded-full border border-brand/30 bg-brand/10 px-2.5 py-1 text-[10px] font-medium uppercase tracking-[0.2em] text-brand">
@@ -150,10 +175,11 @@ export default function PortfolioPage() {
                     </div>
                   ))}
                 </div>
-                <Link href="/contact" className="relative mt-6 inline-flex items-center gap-1 text-xs text-brand hover:underline">
+                <Link href="/contact" className="relative mt-6 inline-flex items-center gap-1 text-xs text-brand underline-slide">
                   Request full case study <ArrowUpRight className="h-3 w-3 transition group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
                 </Link>
               </div>
+              </Spotlight>
             </TiltCard>
           ))}
         </StaggerGroup>

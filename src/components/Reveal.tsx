@@ -294,7 +294,7 @@ export function Parallax({
   offset = 60,
   direction = "up",
 }: {
-  children: React.ReactNode;
+  children?: React.ReactNode;
   className?: string;
   offset?: number;
   direction?: "up" | "down" | "left" | "right";
