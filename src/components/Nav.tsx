@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Logo } from "./Logo";
 import { Menu, X, ChevronDown, ArrowUpRight } from "lucide-react";
 import { services } from "@/data/services";
@@ -21,6 +21,20 @@ export function Nav() {
   const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
   const [mega, setMega] = useState<"services" | "industries" | null>(null);
+  const closeTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  const openMega = (type: "services" | "industries") => {
+    if (closeTimerRef.current) {
+      clearTimeout(closeTimerRef.current);
+      closeTimerRef.current = null;
+    }
+    setMega(type);
+  };
+
+  const scheduleCloseMega = () => {
+    if (closeTimerRef.current) clearTimeout(closeTimerRef.current);
+    closeTimerRef.current = setTimeout(() => setMega(null), 150);
+  };
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 8);
@@ -32,6 +46,12 @@ export function Nav() {
   useEffect(() => {
     document.body.style.overflow = open ? "hidden" : "";
   }, [open]);
+
+  useEffect(() => {
+    return () => {
+      if (closeTimerRef.current) clearTimeout(closeTimerRef.current);
+    };
+  }, []);
 
   return (
     <header
@@ -47,9 +67,9 @@ export function Nav() {
           {NAV.map((item) => (
             <div
               key={item.label}
-              className="relative"
-              onMouseEnter={() => item.mega && setMega(item.mega)}
-              onMouseLeave={() => setMega(null)}
+              className="relative flex h-full items-center"
+              onMouseEnter={() => (item.mega ? openMega(item.mega) : scheduleCloseMega())}
+              onMouseLeave={() => item.mega && scheduleCloseMega()}
             >
               <Link
                 href={item.href}
@@ -58,9 +78,6 @@ export function Nav() {
                 {item.label}
                 {item.mega && <ChevronDown className="h-3.5 w-3.5 opacity-70" />}
               </Link>
-
-              {item.mega === "services" && mega === "services" && <ServicesMega />}
-              {item.mega === "industries" && mega === "industries" && <IndustriesMega />}
             </div>
           ))}
         </nav>
@@ -81,6 +98,19 @@ export function Nav() {
           <Menu className="h-5 w-5" />
         </button>
       </div>
+
+      {mega && (
+        <div
+          className="pointer-events-none fixed inset-x-0 top-16 z-40 hidden justify-center px-4 sm:top-20 lg:flex"
+          onMouseEnter={() => openMega(mega)}
+          onMouseLeave={scheduleCloseMega}
+        >
+          <div className="pointer-events-auto pt-2">
+            {mega === "services" && <ServicesMega />}
+            {mega === "industries" && <IndustriesMega />}
+          </div>
+        </div>
+      )}
 
       {open && (
         <div className="fixed inset-0 z-50 flex flex-col overflow-y-auto overscroll-contain bg-ink-900/95 backdrop-blur-xl">
@@ -119,7 +149,7 @@ export function Nav() {
 
 function ServicesMega() {
   return (
-    <div className="absolute left-1/2 top-full w-[min(960px,calc(100vw-2rem))] -translate-x-1/2 pt-2">
+    <div className="w-[min(960px,calc(100vw-2rem))]">
       <div className="grid grid-cols-2 gap-2 rounded-3xl border border-white/10 bg-ink-900/95 p-4 shadow-2xl backdrop-blur-xl md:grid-cols-3">
         {services.slice(0, 21).map((s) => (
           <Link
@@ -148,7 +178,7 @@ function ServicesMega() {
 
 function IndustriesMega() {
   return (
-    <div className="absolute left-1/2 top-full w-[min(720px,calc(100vw-2rem))] -translate-x-1/2 pt-2">
+    <div className="w-[min(720px,calc(100vw-2rem))]">
       <div className="grid grid-cols-1 gap-2 rounded-3xl border border-white/10 bg-ink-900/95 p-4 shadow-2xl backdrop-blur-xl sm:grid-cols-2">
         {industries.map((i) => (
           <Link
