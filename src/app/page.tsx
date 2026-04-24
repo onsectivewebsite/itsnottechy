@@ -58,6 +58,81 @@ export default function HomePage() {
     <>
       <Hero />
 
+      <section className="section pt-12 pb-0">
+        <div className="grid gap-10 md:grid-cols-[1.1fr,0.9fr] md:items-start">
+          <Reveal>
+            <div className="prose prose-invert max-w-none prose-p:text-white/80 prose-strong:text-white prose-h2:font-display prose-h2:text-3xl prose-h2:tracking-tight prose-h2:text-white md:prose-h2:text-4xl">
+              <h2>What is It&apos;s Not Techy?</h2>
+              <p>
+                <strong>It&apos;s Not Techy is a global full-service digital
+                marketing agency</strong> headquartered in Toronto, Canada,
+                with eight offices across the Americas, EMEA, APAC, and
+                Oceania. We serve growth-stage brands — typically $1M–$100M
+                ARR SaaS, DTC, and B2B services companies — with web design,
+                SEO, social media, video production, brand design, paid
+                marketing, and marketing platforms. We operate as the
+                official marketing partner of Onsective Inc., a global IT
+                consultancy delivering enterprise engineering, cloud, AI, and
+                digital transformation.
+              </p>
+              <p>
+                Unlike traditional agencies that sell a templated retainer,
+                we staff senior practitioners directly on every account and
+                measure success in pipeline, revenue, CAC, and payback — not
+                impressions or reach. Clients own all files, accounts, and
+                data; media cost is always broken out from agency fees.
+                Engagements run in three shapes: Sprint (2–4 weeks, fixed
+                fee), Program (3–12 months, multi-channel retainer), or
+                Embedded (ongoing fractional CMO + specialist pod).
+              </p>
+            </div>
+          </Reveal>
+          <Reveal delay={0.1}>
+            <div className="rounded-3xl border border-white/10 bg-white/[0.03] p-6">
+              <div className="text-xs uppercase tracking-[0.2em] text-brand">
+                At a glance
+              </div>
+              <dl className="mt-4 grid grid-cols-2 gap-4 text-sm">
+                <div>
+                  <dt className="text-white/50">Founded</dt>
+                  <dd className="mt-1 font-display text-xl text-white">
+                    {SITE.founded}
+                  </dd>
+                </div>
+                <div>
+                  <dt className="text-white/50">Offices</dt>
+                  <dd className="mt-1 font-display text-xl text-white">
+                    {SITE.offices.length}
+                  </dd>
+                </div>
+                <div>
+                  <dt className="text-white/50">Services</dt>
+                  <dd className="mt-1 font-display text-xl text-white">
+                    {services.length}
+                  </dd>
+                </div>
+                <div>
+                  <dt className="text-white/50">HQ</dt>
+                  <dd className="mt-1 font-display text-xl text-white">
+                    Toronto
+                  </dd>
+                </div>
+              </dl>
+              <p className="mt-5 text-xs text-white/50">
+                Marketing partner of{" "}
+                <a
+                  href={SITE.partner.website}
+                  className="text-brand hover:underline"
+                >
+                  {SITE.partner.name}
+                </a>
+                .
+              </p>
+            </div>
+          </Reveal>
+        </div>
+      </section>
+
       <section className="section">
         <LogoTicker />
       </section>

@@ -35,6 +35,8 @@ const ENGAGEMENT_TIERS = [
   {
     name: "Sprint",
     duration: "2–4 weeks",
+    priceRange: "$5K – $25K",
+    priceDetail: "Fixed fee, one-time",
     body: "A focused single-workstream sprint — a rebrand, an SEO audit, a landing page build, a paid account audit. Fixed scope, fixed fee, fast turnaround.",
     includes: [
       "Dedicated senior lead",
@@ -46,6 +48,8 @@ const ENGAGEMENT_TIERS = [
   {
     name: "Program",
     duration: "3–12 months",
+    priceRange: "$15K – $80K / mo",
+    priceDetail: "Monthly retainer",
     body: "A multi-workstream program for growing brands — e.g. paid + creative + CRO, or SEO + content + PR. Weekly cadence, monthly business reviews.",
     includes: [
       "Account lead + specialist pod",
@@ -58,6 +62,8 @@ const ENGAGEMENT_TIERS = [
   {
     name: "Embedded",
     duration: "Ongoing",
+    priceRange: "$30K+ / mo",
+    priceDetail: "Monthly retainer + optional equity",
     body: "We operate as your in-house marketing team. Fractional CMO at the top, senior specialists across every channel, shared roadmap with your execs.",
     includes: [
       "Fractional CMO leadership",
@@ -317,7 +323,10 @@ export default function ServicesPage() {
           <p className="mt-4 max-w-2xl text-white/70">
             Every engagement starts with a discovery call and a scope that&apos;s
             right-sized to your business — not a pre-packaged tier someone else
-            designed.
+            designed. Pricing ranges below are typical starting points; the
+            exact fee depends on scope, urgency, and team composition. Media
+            cost (ad spend) is always billed separately from agency fees —
+            we never take a percentage of your ad spend.
           </p>
         </Reveal>
 
@@ -342,6 +351,14 @@ export default function ServicesPage() {
               <p className="mt-1 text-xs uppercase tracking-wider text-brand">
                 {t.duration}
               </p>
+              <div className="mt-4 flex items-baseline gap-3">
+                <span className="font-display text-2xl font-semibold text-white">
+                  {t.priceRange}
+                </span>
+                <span className="text-[11px] uppercase tracking-wider text-white/50">
+                  {t.priceDetail}
+                </span>
+              </div>
               <p className="mt-4 text-white/70">{t.body}</p>
               <ul className="mt-6 space-y-2">
                 {t.includes.map((inc) => (

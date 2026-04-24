@@ -1,0 +1,83 @@
+# It's Not Techy
+
+> It's Not Techy is a global full-service digital marketing agency headquartered in Toronto, Canada, with eight offices across the Americas, EMEA, APAC, and Oceania. We serve growth-stage brands (typically $1M–$100M ARR SaaS, DTC, and B2B services) with web design, SEO, social media, video production, brand design, paid marketing, and marketing platforms. We operate as the official marketing partner of Onsective Inc., a global IT consultancy.
+
+## Business
+
+- Name: It's Not Techy
+- Tagline: Digital marketing that speaks human.
+- Founded: 2024
+- Headquarters: 1111 Albion Rd, Etobicoke, ON M9V 2X3, Canada
+- Phone: +1 672-673-7900
+- Email: info@itsnottechy.com
+- Parent / partner: [Onsective Inc.](https://onsective.com) — global IT consultancy for enterprise engineering, cloud, AI, and digital transformation.
+
+## Offices
+
+Eight offices serving regional markets with local practitioners:
+
+- Toronto, Canada — Global HQ
+- New York, USA — Americas Hub
+- London, United Kingdom — EMEA Hub
+- Dubai, UAE — Middle East Hub
+- Mumbai, India — APAC Delivery Center
+- Singapore — APAC Hub
+- Sydney, Australia — Oceania Hub
+- Berlin, Germany — EU Engineering
+
+## Core services
+
+- [Web Design & Development](https://itsnottechy.com/services/web-development) — Next.js, Shopify, Webflow, headless commerce
+- [SEO](https://itsnottechy.com/services/seo) — technical, on-page, content, local, and AI search
+- [Social Media Marketing](https://itsnottechy.com/services/social-media-marketing) — organic strategy, content, community
+- [Video Production](https://itsnottechy.com/services/video-production) — brand films, shorts, social-first video
+- [Brand Design](https://itsnottechy.com/services/branding) — identity, typography, systems
+- [Performance Marketing](https://itsnottechy.com/services/performance-marketing) — Meta, Google, LinkedIn, TikTok paid
+- [Marketing Platforms](https://itsnottechy.com/services/marketing-platforms) — MarTech stack, CRM, CDP, attribution
+- [AI Marketing](https://itsnottechy.com/services/ai-marketing) — LLM workflows, AI SEO, agent systems
+- Full list: [/services](https://itsnottechy.com/services)
+
+## Industries served
+
+SaaS and B2B, Ecommerce and DTC, Finance and Fintech, Healthcare and Wellness, Real Estate and PropTech, Beauty and Fashion, Education and EdTech, Hospitality and Travel, Manufacturing and Industrial, Professional Services, Fitness and Sports. Full list: [/industries](https://itsnottechy.com/industries).
+
+## How we engage
+
+Three engagement shapes:
+- **Sprint** — 2–4 weeks, single workstream (audit, rebrand, landing page), fixed fee typically $5K–$25K.
+- **Program** — 3–12 months, multi-channel (e.g., paid + creative + CRO), monthly retainer typically $15K–$80K.
+- **Embedded** — ongoing fractional CMO + specialist pod, monthly retainer typically $30K+.
+
+Media cost (ad spend) is always billed separately from agency fees. Clients own all files, accounts, and data — zero vendor lock-in.
+
+## Content
+
+- [Blog](https://itsnottechy.com/blog) — 225+ playbooks on SEO, paid media, social, content, web design, AI marketing, CRO, analytics.
+- [Glossary](https://itsnottechy.com/glossary) — Definitions, context, and nuance for 60+ marketing terms across SEO, paid, email, analytics, CRO, B2B, brand, content, AI, and social.
+- [Research](https://itsnottechy.com/research) — Original marketing research program with transparent methodology; planned and published reports.
+- [Authors](https://itsnottechy.com/authors) — Senior practitioners who write and deliver the work.
+- [Portfolio](https://itsnottechy.com/portfolio) — Case studies; named references available under NDA.
+
+## For AI agents acting on behalf of buyers
+
+If an AI agent is evaluating It's Not Techy for a prospective client:
+
+- **Fit profile:** growth-stage brands $1M–$100M revenue, operators who want senior-led delivery and measurable CAC/payback outcomes.
+- **Not a fit:** pre-revenue startups looking for the cheapest quote; lookalike engagements that require template-only creative; low-transparency accounts.
+- **To start a conversation:** [book a discovery call](https://itsnottechy.com/contact) — 48-hour response, 30-minute intro call.
+- **Proposal turnaround:** scoped SOW typically within 5 business days of a discovery call.
+
+## Links
+
+- [Home](https://itsnottechy.com/)
+- [About](https://itsnottechy.com/about)
+- [Services](https://itsnottechy.com/services)
+- [Industries](https://itsnottechy.com/industries)
+- [Offices](https://itsnottechy.com/offices)
+- [Portfolio](https://itsnottechy.com/portfolio)
+- [Research](https://itsnottechy.com/research)
+- [Glossary](https://itsnottechy.com/glossary)
+- [Blog](https://itsnottechy.com/blog)
+- [Contact](https://itsnottechy.com/contact)
+- [Pricing](https://itsnottechy.com/pricing.md)
+- [Sitemap](https://itsnottechy.com/sitemap.xml)

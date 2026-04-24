@@ -8,7 +8,14 @@ export type Industry = {
   ourApproach: string[];
   services: string[];
   keywords: string[];
+  updatedAt?: string;
 };
+
+/**
+ * Default refresh date for the industry playbooks — bump when methodology,
+ * benchmarks, or compliance guidance changes so schema + sitemap reflect freshness.
+ */
+export const INDUSTRIES_UPDATED_AT = "2026-04-24T00:00:00Z";
 
 export const industries: Industry[] = [
   {

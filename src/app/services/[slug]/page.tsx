@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import Script from "next/script";
-import { services, getServiceBySlug } from "@/data/services";
+import { services, getServiceBySlug, SERVICES_UPDATED_AT } from "@/data/services";
 import { industries } from "@/data/industries";
 import { blogPosts, blogCategories } from "@/data/blogs";
 import { offices } from "@/data/offices";
@@ -111,14 +111,16 @@ export default async function ServicePage({
     })),
   };
 
+  const updatedAt = service.updatedAt ?? SERVICES_UPDATED_AT;
   const serviceSchema = {
     "@context": "https://schema.org",
     "@type": "Service",
     serviceType: service.title,
-    provider: { "@type": "Organization", name: SITE.name, url: SITE.url },
+    provider: { "@type": "Organization", "@id": `${SITE.url}/#organization`, name: SITE.name, url: SITE.url },
     areaServed: "Worldwide",
     description: service.summary,
     url: `${SITE.url}/services/${service.slug}`,
+    dateModified: updatedAt,
   };
 
   const breadcrumb = {
@@ -151,11 +153,14 @@ export default async function ServicePage({
         </nav>
 
         <Reveal>
-          <div className="flex items-center gap-3">
+          <div className="flex flex-wrap items-center gap-3">
             <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-brand/15 text-brand">
               <ServiceIcon name={service.icon} className="h-6 w-6" />
             </div>
             <span className="text-xs uppercase tracking-[0.2em] text-brand">{service.shortTitle}</span>
+            <span className="rounded-full border border-white/10 bg-white/[0.03] px-2.5 py-0.5 text-[11px] text-white/60">
+              Updated {new Date(updatedAt).toLocaleDateString("en", { month: "long", year: "numeric" })}
+            </span>
           </div>
           <h1 className="mt-6 max-w-4xl font-display text-5xl font-bold tracking-tight text-white md:text-7xl">
             <WordReveal text={service.title} />
@@ -426,19 +431,24 @@ export default async function ServicePage({
         <section className="section pt-0">
           <Reveal>
             <h2 className="font-display text-3xl font-semibold tracking-tight text-white md:text-5xl">
-              Offices leading {service.shortTitle} work
+              {service.shortTitle} — by city
             </h2>
+            <p className="mt-3 max-w-2xl text-white/60">
+              Every office runs {service.shortTitle.toLowerCase()} with local
+              practitioners, regional compliance, and language coverage for
+              that market. Pick the city closest to you.
+            </p>
           </Reveal>
           <div className="mt-8 grid gap-4 md:grid-cols-2 lg:grid-cols-4">
             {leadingOffices.map((o) => (
               <Link
                 key={o.slug}
-                href={`/offices/${o.slug}`}
+                href={`/services/${service.slug}/${o.slug}`}
                 className="card group block"
               >
                 <div className="text-2xl">{o.flag}</div>
                 <h3 className="mt-3 font-display text-base font-semibold text-white">
-                  {o.city}
+                  {service.shortTitle} in {o.city}
                 </h3>
                 <p className="text-xs text-brand">{o.role}</p>
                 <p className="mt-1 text-xs text-white/60 line-clamp-2">

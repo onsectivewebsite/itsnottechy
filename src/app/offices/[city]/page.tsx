@@ -267,7 +267,7 @@ export default async function OfficeCityPage({
           {mappedServices.map((s) => (
             <Link
               key={s.slug}
-              href={`/services/${s.slug}`}
+              href={`/services/${s.slug}/${office.slug}`}
               className="card group block"
             >
               <div className="flex items-center justify-between">
@@ -277,7 +277,7 @@ export default async function OfficeCityPage({
                 <ArrowUpRight className="h-4 w-4 text-white/30 transition group-hover:text-brand" />
               </div>
               <h3 className="mt-4 font-display text-lg font-semibold text-white">
-                {s.shortTitle}
+                {s.shortTitle} in {office.city}
               </h3>
               <p className="mt-1 text-sm text-white/60">{s.tagline}</p>
             </Link>

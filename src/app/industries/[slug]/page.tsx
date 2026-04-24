@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import Script from "next/script";
-import { industries, getIndustryBySlug } from "@/data/industries";
+import { industries, getIndustryBySlug, INDUSTRIES_UPDATED_AT } from "@/data/industries";
 import { services } from "@/data/services";
 import { blogPosts, blogCategories } from "@/data/blogs";
 import { ServiceIcon } from "@/components/ServiceIcon";
@@ -140,6 +140,7 @@ export default async function IndustryPage({
     .slice(0, 6);
 
   const faqs = faqsFor(industry.slug);
+  const updatedAt = industry.updatedAt ?? INDUSTRIES_UPDATED_AT;
 
   const breadcrumb = {
     "@context": "https://schema.org",
@@ -159,6 +160,18 @@ export default async function IndustryPage({
       acceptedAnswer: { "@type": "Answer", text: f.a },
     })),
   };
+  const articleSchema = {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    headline: `${industry.name} Marketing Playbook`,
+    description: industry.summary,
+    url: `${SITE.url}/industries/${industry.slug}`,
+    author: { "@id": `${SITE.url}/#organization` },
+    publisher: { "@id": `${SITE.url}/#organization` },
+    inLanguage: "en",
+    dateModified: updatedAt,
+    datePublished: updatedAt,
+  };
 
   return (
     <>
@@ -168,6 +181,9 @@ export default async function IndustryPage({
       <Script id={`ld-faq-ind-${industry.slug}`} type="application/ld+json">
         {JSON.stringify(faqSchema)}
       </Script>
+      <Script id={`ld-article-ind-${industry.slug}`} type="application/ld+json">
+        {JSON.stringify(articleSchema)}
+      </Script>
 
       <section className="section pt-32">
         <nav className="mb-6 text-xs text-white/50">
@@ -176,11 +192,14 @@ export default async function IndustryPage({
           <span className="text-white">{industry.name}</span>
         </nav>
         <Reveal>
-          <div className="flex items-center gap-3">
+          <div className="flex flex-wrap items-center gap-3">
             <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-white/10 text-white">
               <IndustryIcon name={industry.icon} className="h-6 w-6" />
             </div>
             <span className="text-xs uppercase tracking-[0.2em] text-brand">Industry</span>
+            <span className="rounded-full border border-white/10 bg-white/[0.03] px-2.5 py-0.5 text-[11px] text-white/60">
+              Updated {new Date(updatedAt).toLocaleDateString("en", { month: "long", year: "numeric" })}
+            </span>
           </div>
           <h1 className="mt-6 max-w-4xl font-display text-5xl font-bold tracking-tight text-white md:text-7xl">
             <WordReveal text={`${industry.name} Marketing`} accentWords={["Marketing"]} />
