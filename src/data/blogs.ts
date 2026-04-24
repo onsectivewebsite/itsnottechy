@@ -8,6 +8,7 @@ export type BlogPost = {
   author: string;
   readMinutes: number;
   publishedAt: string;
+  updatedAt?: string;
   content: string[];
   keywords: string[];
 };
@@ -40,11 +41,19 @@ const AUTHORS = [
 ];
 
 // Unique posts — one carefully-written article per entry. No templating.
+// `sections[].body` supports a single string (short summary) or an array of
+// paragraphs (full-length article). Featured articles get `updatedAt` and
+// render as the long-form version.
+type SectionBody = string | string[];
 type Seed = {
   cat: string;
   title: string;
   excerpt: string;
-  sections: { h2: string; body: string }[];
+  sections: { h2: string; body: SectionBody }[];
+  intro?: string[];
+  keyTakeaways?: string[];
+  updatedAt?: string;
+  featured?: boolean;
 };
 
 const SEEDS: Seed[] = [
@@ -54,11 +63,50 @@ const SEEDS: Seed[] = [
     title: "The SEO Audit Framework We Run Before Touching a Single Page",
     excerpt:
       "A 14-step audit that reliably surfaces the 3–5 fixes responsible for most of a site's organic ceiling.",
+    featured: true,
+    updatedAt: "2026-04-24T00:00:00Z",
+    intro: [
+      "Most SEO audits are theater. A 60-page PDF lands on the marketing team's desk, nobody ships anything, and six months later the site still can't rank. We've done hundreds of audits for growth-stage brands across SaaS, DTC, healthcare, and fintech, and the pattern is always the same: three to five fixes explain 80% of the ceiling. The audit's job is to find those fixes fast and hand them to engineering in a form they can actually ship.",
+      "This piece walks through the 14 checks we run, in the order we run them, with the specific tools and queries at each step. It's the actual framework we use on paid engagements — not a generic checklist. If you want to pressure-test your own site, everything here is reproducible with Google Search Console, a Screaming Frog license, and about a week of focus.",
+    ],
     sections: [
-      { h2: "Why audits fail", body: "Most audits produce 80-page PDFs nobody reads. Ours ends in a prioritized punch list with estimated traffic lift, implementation difficulty, and owning team. If it doesn't fit on a single page, it isn't a plan." },
-      { h2: "The 14 checks we run", body: "Index coverage, rendering, Core Web Vitals, mobile parity, internal linking, orphan detection, crawl budget, structured data, canonical hygiene, duplicate meta, log file review, keyword cannibalization, title-tag CTR, and content depth vs intent. That's the order of operations." },
-      { h2: "Where we find the most lift", body: "9 times out of 10 the biggest unlock isn't technical — it's an information-architecture problem. Pages that should be one are three; pages that should be three are one. Fixing that regularly beats any other change." },
-      { h2: "How to run this yourself", body: "Start with Search Console's coverage report, cross-check with a Screaming Frog crawl, then pull top-performing URLs by query and group them by intent. 80% of the audit value comes from those three views." },
+      {
+        h2: "Why most SEO audits fail to move the needle",
+        body: [
+          "The average SEO audit fails because it confuses comprehensiveness with usefulness. Every issue gets flagged equally: a missing alt tag sits next to a site-wide indexation bug. The marketing lead reading the deliverable can't tell which three things would actually move organic traffic next quarter, so they pick the easy ones — meta descriptions, image alt text, a few internal links — and never ship the actual fix.",
+          "A useful audit does three things. First, it prioritizes ruthlessly: the output fits on one page, ordered by estimated traffic impact, implementation difficulty, and owning team. Second, it's written for engineers and product managers, not for SEO specialists: every fix has an owner, an acceptance criterion, and a rough ship estimate. Third, it names what NOT to do — the 40 low-priority items that look appealing but would consume engineering time without changing organic trajectory. We close every audit with a 'do not bother with this' section because it's often more valuable than the punch list itself.",
+        ],
+      },
+      {
+        h2: "The 14 checks we run, in order",
+        body: [
+          "The order matters. You don't spend an hour optimizing meta descriptions on a page that isn't indexed. You don't fix internal linking on a site with a rendering bug. Each check builds on the one before, and the first six are non-negotiable gates.",
+          "1) Index coverage — pull Search Console's coverage report and confirm which pages Google is actually indexing versus what the sitemap claims. Any discrepancy over 20% is a red flag. 2) Rendering — crawl with Screaming Frog in JavaScript mode, compare the DOM to source HTML, and confirm critical content isn't hidden behind client-side rendering that Googlebot skips. 3) Core Web Vitals — look at real-user data from Chrome UX Report, not lab scores. 4) Mobile parity — confirm the mobile version has the same content, internal links, and structured data as desktop. 5) Internal linking — map the link graph and flag money pages with under five inbound internal links. 6) Orphan detection — any indexed page with zero internal links is either a bug or something that should be deleted.",
+          "7) Crawl budget — sample the log files. Are bots spending their time on low-value URLs? 8) Structured data — validate with the Rich Results Test and Schema Validator; render-test JSON-LD because tools like curl miss JS-injected schema. 9) Canonical hygiene — every page has a self-referencing canonical, no cross-language canonicals, no canonicals pointing to 404s. 10) Duplicate meta — title and description tags that repeat across more than three pages. 11) Log file review — what's Googlebot actually crawling, and how often? 12) Keyword cannibalization — use GSC to find queries where multiple pages compete. 13) Title-tag CTR — filter GSC for pages with impressions over 1,000 and CTR below the category median. 14) Content depth versus intent — read the top three ranking competitors for every target query and honestly answer: does our page earn the click?",
+        ],
+      },
+      {
+        h2: "Where we actually find the biggest wins",
+        body: [
+          "Nine out of ten times, the highest-ROI fix isn't technical. It's an information-architecture problem. Pages that should be consolidated exist as three competing URLs that split authority. Pages that should be broken into three specific landing pages exist as one vague catch-all that ranks for nothing. We've seen sites pick up 40% organic growth from a single consolidation round — no new content, no link building, just the right pages pointing at the right queries.",
+          "The second-most-common unlock is title-tag CTR. A page ranking position three with a 3% CTR is leaking traffic that should be going to position-five pages with 6% CTR. Rewriting the title and meta description to match the actual query intent — not clever marketing copy — typically lifts CTR within a week and can push the page up a position or two as engagement signal flows back.",
+          "The third is internal linking to money pages. If your category pages and product pages aren't getting at least 10–15 internal links from high-authority content like blog posts and guides, you're strangling their ability to rank. A one-day project to audit internal links and add 40–60 new ones routinely delivers high-single-digit to low-double-digit organic lifts in 30–60 days.",
+        ],
+      },
+      {
+        h2: "How to run a lightweight version of this yourself",
+        body: [
+          "If you don't have an agency budget, you can capture 80% of the value with three tools: Google Search Console (free), a Screaming Frog license ($249/year), and a good spreadsheet. Start with GSC's coverage report and the top-performing URLs by query. Group those URLs by intent — what's the query actually asking? You'll immediately see which pages are satisfying intent and which are ranking by accident.",
+          "Next, run Screaming Frog with JavaScript rendering on and compare the indexed URLs to what's actually in your sitemap. Every discrepancy is a signal: an indexed page with no internal links, a sitemap URL that returns a soft 404, a canonical pointing somewhere unexpected. Fix the top 20 discrepancies and watch Search Console for two weeks.",
+          "Finally, for your top 20 money pages, read the three highest-ranking competitors end to end and write a one-sentence honest answer: is ours better? If not, that page is a content project, not an SEO project — and that's usually the real audit finding.",
+        ],
+      },
+    ],
+    keyTakeaways: [
+      "Most audits fail because they flag everything equally. A useful audit fits on one page and prioritizes by revenue impact.",
+      "Run the checks in order — indexation, rendering, and Core Web Vitals before anything else. There's no point optimizing an unindexed page.",
+      "The biggest wins are usually information architecture (page consolidation), title-tag CTR rewrites, and internal linking to money pages — not technical fixes.",
+      "You can replicate 80% of this audit yourself with Search Console, Screaming Frog, and a spreadsheet.",
     ],
   },
   {
@@ -66,11 +114,49 @@ const SEEDS: Seed[] = [
     title: "Topical Authority: How We Map Clusters That Actually Rank",
     excerpt:
       "A practical approach to pillar-and-cluster content that doesn't collapse into keyword stuffing.",
+    featured: true,
+    updatedAt: "2026-04-24T00:00:00Z",
+    intro: [
+      "Topical authority is the single most important concept in modern SEO, and also the most misunderstood. Most teams read a blog post about pillar-and-cluster content, dump 40 keywords into a spreadsheet, assign each one to a writer, and publish. Six months later they wonder why the cluster ranks briefly and collapses. The problem isn't effort — it's mental model.",
+      "We've built ranking clusters for dozens of brands across SaaS, healthcare, fintech, and ecommerce. The ones that hold are structured like a syllabus, not a keyword list. This piece explains how we actually scope, sequence, and measure a cluster so it compounds instead of decays.",
+    ],
     sections: [
-      { h2: "The problem with traditional clusters", body: "Most topic clusters are just keyword lists dressed up with a pillar page. They rank briefly and collapse because nothing connects the pieces in the way a reader — or an LLM — would traverse the space." },
-      { h2: "A better mental model", body: "Think of each cluster as a syllabus. The pillar is the course description; supporting pieces are the lectures. Every page should answer a specific question a reader would ask at a specific moment in their journey." },
-      { h2: "The 5-question sanity check", body: "Before publishing any cluster: can a reader answer these five questions without leaving the cluster? What is X, why does it matter, who needs it, how does it work, and what do I do next. If not, your cluster has holes." },
-      { h2: "Measuring topical authority", body: "Share of voice on head terms, branded queries referencing the cluster, and the number of queries where you rank on multiple pages. Those three signals, tracked quarterly, tell you if the cluster is compounding." },
+      {
+        h2: "Why most topic clusters fail within a year",
+        body: [
+          "Traditional cluster strategy treats keywords as the unit of work: find 20 related keywords, write one page per keyword, link them all to a pillar page. This produces a network of pages that look topically related but read as disconnected drafts. Google's quality systems catch this quickly. Pages rank for three to six months while the site earns new-content credit, then drop as engagement signals reveal the cluster doesn't actually help readers.",
+          "The second failure mode is keyword cannibalization within the cluster itself. If pages 3, 7, and 12 of your cluster all target 'small business accounting software,' Google picks one and ignores the other two. You've spent writer time producing pages that compete with each other instead of stacking authority.",
+          "The third failure is depth asymmetry — three rich, well-researched pages surrounded by 20 shallow stubs. The shallow stubs drag down the site-wide helpful-content signal and the strong pages never reach their ceiling because the cluster's overall topical depth looks weak to Google.",
+        ],
+      },
+      {
+        h2: "The mental model we use instead",
+        body: [
+          "Think of a topic cluster as a university syllabus. The pillar page is the course description — broad, orientational, and deliberately high-level. Supporting pages are individual lectures: each one teaches a specific concept that a reader needs at a specific stage of their learning journey. The sequence matters. A lecture on advanced tax strategy doesn't belong in week one; it belongs after the reader has understood what a deduction is and how cash-basis accounting works.",
+          "In practice, this means we map every cluster against a reader journey before writing a word. Who's the reader? What do they know at the start? What do they need to know to make the decision the pillar ultimately sells? Every supporting page answers one specific question at one specific stage. Pages don't target keywords; they target reader questions. Keywords are how we validate demand, not how we structure the work.",
+        ],
+      },
+      {
+        h2: "The five-question sanity check before publishing",
+        body: [
+          "Before any cluster ships, we run it through five questions. If the cluster can't answer all five cleanly, it isn't ready.",
+          "One: can a reader land on any page in the cluster and, through internal links alone, answer 'what is this topic?' — without leaving the site? Two: does the cluster clearly explain why the topic matters, with a concrete example the reader can relate to? Three: is there a page for 'who needs this,' so a reader can self-qualify whether the topic applies to them? Four: is there at least one page that goes deep on 'how does this work' at the level of detail an operator needs, not a glossary entry? Five: is there a clear 'what do I do next' page with a real next action, whether that's a tool, a service, or a decision framework?",
+          "If the cluster passes all five, it's a complete learning environment. If it fails even one, there's a hole — and that hole is where readers will bounce to a competitor.",
+        ],
+      },
+      {
+        h2: "How to measure whether your cluster is actually compounding",
+        body: [
+          "Rankings on individual queries are too noisy to measure cluster health. We track three signals instead, quarterly. Share of voice on head terms within the cluster — the composite ranking position of the top five queries, weighted by search volume. This tells you if the cluster's center of gravity is rising. Branded queries that reference the cluster topic — people searching '[your brand] + [topic]' means the cluster is becoming a known resource, not just a set of individual pages. Number of queries where two or more cluster pages rank in the top 20 — this is a healthy sign of topical breadth, not cannibalization, as long as the pages target different questions.",
+          "If all three are rising over a 12-month window, the cluster is compounding. If rankings rise but branded search doesn't, you're earning impressions without building brand memory — likely because the content is algorithmically optimized but not memorably useful. If branded search rises but ranking share doesn't, the cluster is building reputation but Google hasn't decided you're the authority yet — keep shipping supporting pages.",
+        ],
+      },
+    ],
+    keyTakeaways: [
+      "Most clusters fail because teams think in keywords, not reader journeys. Structure clusters like a syllabus instead.",
+      "Before publishing, run the five-question check: what / why / who / how / what next. Any gap is where readers bounce.",
+      "Measure cluster health quarterly with three signals: head-term share of voice, branded search for the topic, and number of queries where multiple pages rank.",
+      "A cluster that rises on rankings but not branded search is algorithmically optimized, not memorably useful. Fix the content depth.",
     ],
   },
   {
@@ -78,11 +164,48 @@ const SEEDS: Seed[] = [
     title: "Why Programmatic SEO Fails (and the Version That Works)",
     excerpt:
       "Why most programmatic pages are treated as spam by Google — and the discipline that separates scalable wins from penalized templates.",
+    featured: true,
+    updatedAt: "2026-04-24T00:00:00Z",
+    intro: [
+      "Programmatic SEO is the most misused tactic in growth marketing. Done right, it turns a structured dataset into thousands of pages that rank for high-intent long-tail queries — Zapier's integration pages, Tripadvisor's city guides, G2's category pages are textbook examples. Done wrong, it triggers Google's scaled content abuse policy and drags down every other page on your domain, including the ones that earned their rankings honestly.",
+      "The difference isn't technical — both approaches use templates and databases. The difference is data depth and publishing discipline. This piece covers what separates programmatic pages that compound from programmatic pages that get quietly deindexed six months after launch.",
+    ],
     sections: [
-      { h2: "The spam signal Google looks for", body: "Near-duplicate pages, thin content, and mass-generated templates. If your programmatic pages are 90% the same with only a city name swapped, you've built the textbook case for what Google demotes." },
-      { h2: "The data depth bar", body: "Every programmatic page needs unique, useful data. A 'Dentists in Austin' page should have Austin-specific reviews, photos, pricing ranges, insurance coverage, and hours — not a canned paragraph with the city swapped in." },
-      { h2: "Staging rollouts safely", body: "Launch in batches of 50–200, monitor Search Console coverage for two weeks, then proceed. If impressions plateau, something's wrong. Do not publish 20,000 pages in one shot and pray." },
-      { h2: "When programmatic is the wrong answer", body: "If your category has no unique data moat — no reviews, pricing, supply, or geography — skip programmatic. You'll just build a thin content liability that drags down every other page." },
+      {
+        h2: "The exact spam signal Google's systems look for",
+        body: [
+          "Google's scaled content abuse policy, tightened substantially in 2024 and again in 2025, targets three patterns: near-duplicate pages that differ only in a swapped variable, pages with no unique usefulness beyond what the database already contained, and content generated at scale without demonstrable human judgment. Programmatic SEO can tick all three if it's not designed carefully.",
+          "The specific test Google's quality systems run is 'would this page exist if search didn't exist?' If the only reason the page got published was to rank, it's a candidate for demotion. If the page exists because a real user with no search intent would still find it useful — the reviews are real, the pricing is current, the hours are accurate, the embeds are interactive — it passes. This is why Zapier's 'Connect Gmail to Slack' page ranks and a generic agency's 'SEO Services in Akron' page doesn't: one is a tool in a page, the other is a shell around a keyword.",
+        ],
+      },
+      {
+        h2: "The data depth bar you have to clear",
+        body: [
+          "Every programmatic page needs unique, non-trivial data that a user would genuinely want. The bar is high. A 'Dentists in Austin' page that works has patient reviews specific to Austin, accepted insurance details, photos of offices, live appointment availability, in-network vs out-of-network pricing, and a way to book. A page that fails has 'Looking for dentists in Austin? We have the best dentists in Austin. Contact us for dentists in Austin.' The city is swapped, everything else is template.",
+          "The practical rule: at least 60% of the rendered page content should be unique to that specific variable, not boilerplate. If your 'New York' page and your 'Chicago' page share more than 40% of their body text, you're in spam territory. This is why SaaS integration pages work so well — the actual setup steps, screenshots, and gotchas for connecting Gmail to Slack are totally different from those for connecting Notion to Slack. The data drives the content.",
+        ],
+      },
+      {
+        h2: "How to stage the rollout without tanking your site",
+        body: [
+          "Never publish thousands of programmatic pages in one deploy. Even if the quality is high, a sudden influx of URLs triggers Google's new-content evaluation mode, and if even a small percentage look thin, the site-wide helpful-content signal takes a hit that's hard to reverse.",
+          "The staged rollout we use: launch 50–200 pages in the first wave, mostly the highest-value queries you can identify via Search Console, Ahrefs, or the client's CRM. Let them sit for two weeks. Pull Search Console coverage and watch for four signals — impressions growing, average position stable or rising, zero indexing errors, and bounce rate below the site average. If all four hold, launch the next 200–500 pages. If any fail, stop and diagnose before shipping more.",
+          "A client of ours once had 14,000 programmatic pages ready to ship on day one. We convinced them to launch 200. Those 200 pages produced 80% of the traffic the full 14,000 would have earned, with a fraction of the risk. We launched the next 2,000 six weeks later. The remaining 11,800 got quietly cut because the data behind them wasn't strong enough — and that became the most valuable outcome of the project.",
+        ],
+      },
+      {
+        h2: "When programmatic is the wrong tool entirely",
+        body: [
+          "If your category has no unique data moat — no reviews, no pricing, no supply, no real geography, no first-party research — skip programmatic SEO. You will not beat the competitors who have those moats, and you'll build a thin content liability that drags down the rest of your site's ability to rank. Agencies, consultancies, and many B2B service businesses fall into this bucket. 'Consulting Services in Seattle' and 'Consulting Services in Boston' have nothing different to say. Don't try.",
+          "The alternative for those businesses is depth, not breadth. Five exceptional cornerstone pages will outrank 5,000 programmatic shells. Invest the same resources into first-party data collection — conducting industry surveys, analyzing client outcomes, producing original research — and publish a small number of truly unique pages that competitors can't easily replicate. That's the strategy for brands where the database doesn't naturally exist. Forcing programmatic when you don't have the data to back it is how small SEO investments become large compliance disasters.",
+        ],
+      },
+    ],
+    keyTakeaways: [
+      "Programmatic SEO fails when pages share more than 40% boilerplate across variables. The fix is deeper unique data per page, not smarter templates.",
+      "Stage launches in batches of 50–200. Watch Search Console for two weeks before each subsequent wave.",
+      "If your category has no real data moat, skip programmatic entirely and invest in depth instead.",
+      "The test Google's systems run: would this page exist if search didn't exist? If not, it's a candidate for demotion.",
     ],
   },
   {
@@ -90,11 +213,47 @@ const SEEDS: Seed[] = [
     title: "How AI Overviews Changed On-Page SEO (and What We Optimize For Now)",
     excerpt:
       "Concrete formatting, structure, and citation patterns that earn citations in Google's AI Overviews and Perplexity.",
+    featured: true,
+    updatedAt: "2026-04-24T00:00:00Z",
+    intro: [
+      "AI Overviews didn't kill SEO, but it did rewrite how on-page content has to be structured to earn visibility. The old pattern — a chatty intro, a long exposition, an answer buried in paragraph six — is invisible to the retrieval-augmented systems behind Google's AI Overviews, Perplexity, ChatGPT Search, and Claude's web citations. Those systems chunk content, extract answer passages, and synthesize summaries. Your page either provides clean, citable passages or it gets skipped.",
+      "This piece covers the specific on-page patterns we've seen earn the most AI citations across 50+ client sites since AI Overviews rolled out, plus the ones we've abandoned because they stopped working.",
+    ],
     sections: [
-      { h2: "What LLM search rewards", body: "Explicit answers, structured summaries, named entities, and sources. Articles that bury the answer in paragraph six get skipped by crawlers synthesizing snippets." },
-      { h2: "The answer-first pattern", body: "Open with a one-sentence direct answer. Follow with context. Close with caveats. That order — answer, context, caveat — matches how LLMs chunk and extract." },
-      { h2: "Entity-rich writing", body: "Name brands, people, places, and tools explicitly. Don't write 'the platform' — write 'HubSpot Marketing Hub Enterprise'. LLMs grade relevance on entity density." },
-      { h2: "Citation bait that isn't spam", body: "Original data, original definitions, and unusual but defensible claims get cited. Me-too summaries don't. If your piece could be deleted without the web losing anything, it won't be cited." },
+      {
+        h2: "What LLM-based search actually rewards",
+        body: [
+          "Retrieval-augmented generation (RAG) systems behind AI search work in three phases: retrieve candidate passages from an index, rank them by relevance to the query, synthesize a response citing the top passages. The unit of work isn't the page — it's the passage, typically a 100–300 token chunk. Pages that are structured as a series of distinct, citable passages earn citations. Pages that are a continuous wall of prose with no clear answer boundaries don't.",
+          "The specific features we've seen correlate with citation frequency: explicit question-and-answer framing (H2 as question, first paragraph as direct answer), structured lists for enumerable content, numeric specificity (real numbers beat 'many' or 'most'), named entities (product names, company names, people, places), and original data or definitions not available elsewhere. Articles optimized for human scanning tend to also work for LLM chunking — the two visual patterns overlap more than they diverge.",
+        ],
+      },
+      {
+        h2: "The answer-first pattern that gets cited",
+        body: [
+          "Every section that might answer a query should follow the same shape: one-sentence direct answer, two-to-four-sentence context, one-to-two-sentence caveat or nuance. This order — answer, context, caveat — matches how LLMs chunk and synthesize. The first sentence is what gets extracted; the surrounding context is what the LLM uses to confirm the answer is correct and complete.",
+          "Concrete example. Question: 'How long does SEO take to work?' Wrong opening: 'SEO is a long game that requires patience and strategic investment across many channels…' Right opening: 'Most SEO programs show meaningful traffic growth in 4–6 months, with full payback on investment in 9–14 months depending on category competitiveness.' The right answer is citable. The wrong answer is filler that AI summarizers skip.",
+        ],
+      },
+      {
+        h2: "Entity-rich writing is the new on-page gold standard",
+        body: [
+          "LLMs grade relevance partly on entity density. A page about email marketing that names Klaviyo, HubSpot, Customer.io, Iterable, Braze, Mailchimp, and Postmark by their full product names scores higher than a page that says 'the leading email platforms.' This isn't keyword stuffing — you're providing the specific entities that anchor the topic in the model's knowledge graph.",
+          "Write product names in full on first use. Include version or tier names where relevant. Name people with their role and organization. Cite specific tools, integrations, and data sources by name. If you're describing a process, use real step names from real documentation. All of this makes the page chunk-friendly because each passage carries enough entity context to stand alone when extracted.",
+        ],
+      },
+      {
+        h2: "What earns AI citations — and what doesn't",
+        body: [
+          "Original research, original definitions, and unusual-but-defensible claims get cited. Me-too summaries of other people's content don't. The test is brutal but clarifying: if your article were deleted tomorrow, would the web lose anything? If the answer is no, don't expect citations. The article might still rank for branded queries, but it won't earn the generative-engine visibility that's becoming the main source of long-tail discovery.",
+          "The content types we've seen earn the most AI citations across client projects: original survey data with statistically meaningful sample sizes, definitional pieces that crystallize a concept the industry talks about but hasn't formalized (think Andrew Chen's 'Cold Start Problem'), case studies with specific numbers and context, and opinionated-but-defensible frameworks that simplify a messy space. Content that gets cited least: listicles, generic how-tos that restate platform documentation, and AI-generated summaries of AI-generated summaries.",
+        ],
+      },
+    ],
+    keyTakeaways: [
+      "Structure content as citable passages: question H2s, direct-answer first sentences, supporting context, caveats last.",
+      "Entity density matters. Use full product names, real tool names, real versions — LLMs reward specificity.",
+      "Original data and original definitions get cited. Me-too summaries don't. If your page could be deleted without the web losing anything, expect minimal AI visibility.",
+      "The unit of retrieval is the passage, not the page. Optimize every H2 section to stand alone when extracted.",
     ],
   },
   {
@@ -128,11 +287,49 @@ const SEEDS: Seed[] = [
     title: "The Creative Hypothesis Template Every Good Paid Team Uses",
     excerpt:
       "How to structure paid creative tests so you're learning about your audience — not just rotating slightly-different banners.",
+    featured: true,
+    updatedAt: "2026-04-24T00:00:00Z",
+    intro: [
+      "Paid media teams that don't test are gambling. Paid media teams that test badly are gambling with extra paperwork. The difference between the two is a hypothesis template: a one-sentence articulation of what you're testing, what you expect to see, and why. Without it, you end up running 30 creative variations per month and learning nothing generalizable.",
+      "This piece shares the exact template we've used across dozens of client accounts, from $10K/month scrappy DTC brands to $500K/month paid media programs. It's the difference between rotating slightly-different banners and building a durable body of audience insight that pays off for years.",
+    ],
     sections: [
-      { h2: "Why most ad tests are useless", body: "They test button colors, font sizes, or minor copy tweaks. Even a 'winner' produces nothing the team can generalize to the next campaign. That's activity, not learning." },
-      { h2: "The four-variable framework", body: "Every test isolates ONE of: audience, offer, angle, or format. Never two at once. Document the hypothesis before launch in a single sentence: 'If we [change], we expect [metric] to [direction] because [theory of mind].'" },
-      { h2: "Sample size honesty", body: "Most ad accounts don't have the volume for statistically-significant tests. Accept that. Use directional learning, call it what it is, and invest in audiences big enough to give you real signal." },
-      { h2: "Writing up the learning", body: "After a test, write one paragraph answering: what did we test, what did we learn, what's the next test. Keep a shared doc. In 12 months this becomes your team's most valuable asset." },
+      {
+        h2: "Why most ad tests produce no real learning",
+        body: [
+          "The typical ad test goes like this: a designer makes five versions of a creative with different button colors, headlines, and hero images. The team runs them for two weeks. One variant wins by 8% on CTR. The team celebrates, kills the losers, and moves on. Three months later nobody can remember what that test was supposed to teach, and the same debate about hero imagery resurfaces with a new designer.",
+          "That's not testing. That's creative rotation with extra telemetry. Real testing produces knowledge that transfers: 'curiosity-framed hooks outperform outcome-framed hooks for first-time buyers in this category' is a learning you can apply to the next 10 campaigns. 'Variant B won' is not. The entire point of the hypothesis template is forcing the team to articulate the transferable learning before the test starts — because that act of articulation is what makes the test worth running.",
+        ],
+      },
+      {
+        h2: "The four-variable framework",
+        body: [
+          "Every paid creative test isolates exactly one variable from four categories: audience, offer, angle, or format. Never two at once. The moment you vary both the headline and the image, you've confounded the experiment — a winner could be winning because of the headline, the image, or the interaction, and you can't tell which. The cost of this confusion is real: most teams rerun the same confounded tests for years because they never isolate cleanly.",
+          "The template we use, written before the test launches: 'If we [specific change to one variable], we expect [specific metric] to [direction: rise/fall/hold] by approximately [magnitude], because [theory of mind about the audience].' Example: 'If we replace the outcome-framed hook (\"Cut your CAC by 40%\") with a curiosity-framed hook (\"The pricing mistake that's killing your DTC brand\"), we expect CTR to rise by 20–40% on cold traffic, because first-time buyers engage more with pattern-interrupt hooks than with specific promises they haven't learned to evaluate.'",
+          "That one sentence does three things simultaneously: it forces a falsifiable prediction, it names the audience you're learning about, and it produces a transferable insight regardless of which variant wins. If the prediction holds, you've learned something about your audience. If it's wrong, you've learned something about your audience. Either outcome is valuable.",
+        ],
+      },
+      {
+        h2: "Sample size honesty",
+        body: [
+          "Most ad accounts don't have the volume to run statistically significant tests in less than six weeks. A $20K/month Meta account running a 50/50 split with a 2% conversion rate needs about 9,000 conversions per variant to detect a 10% lift at 95% confidence. That's 18,000 total conversions, which at a $50 CAC is $900K of spend. Most accounts will never run a test that rigorous, and that's fine — but it means calling directional results 'directional,' not 'proven.'",
+          "The honest approach: accept you're making directional decisions, not statistical ones. State the sample size and confidence level explicitly in the writeup. Use longer test windows to increase power. Consolidate accounts where possible so tests have more volume. And crucially, don't stack decisions on stacked directional results — the compounding uncertainty will lead you astray within two or three test cycles.",
+        ],
+      },
+      {
+        h2: "The writeup that becomes your most valuable asset",
+        body: [
+          "After every test, one person writes one paragraph answering four questions: what did we test, what did we learn, what's the next test, and what's the confidence level. The paragraph goes into a shared doc — a Notion page, a Google Doc, whatever. Each entry is timestamped and tagged by campaign.",
+          "Twelve months into this discipline, the document becomes your team's most valuable proprietary asset. It's the institutional memory of how your specific audience responds to creative — something no agency, no consultant, and no competitor can replicate without running the same tests themselves. We've seen this document shorten new-creative briefs from two weeks to two days because the writer can read the history and know immediately which angles have been tried, which worked, and which need revisiting.",
+          "We also use the document in onboarding. A new paid media hire reads six months of test writeups and arrives at day one with a calibrated mental model of the audience. That's worth more than any training program you could build internally.",
+        ],
+      },
+    ],
+    keyTakeaways: [
+      "A test without a pre-written hypothesis is creative rotation, not learning. Write the hypothesis before launch.",
+      "Isolate exactly one variable per test: audience, offer, angle, or format. Never two at once.",
+      "Accept that most accounts only have the volume for directional results. Label them as such and don't stack decisions.",
+      "Keep a shared writeup doc. In 12 months it becomes the team's most valuable proprietary asset.",
     ],
   },
   {
@@ -140,11 +337,48 @@ const SEEDS: Seed[] = [
     title: "Meta's Advantage+ Changed the Game. Here's How We Structure Campaigns in 2026.",
     excerpt:
       "Our current Meta campaign structure for DTC and lead gen — consolidation, creative, and what we've stopped doing.",
+    featured: true,
+    updatedAt: "2026-04-24T00:00:00Z",
+    intro: [
+      "Meta's advertising product has changed more in the last three years than the previous ten. Advantage+ shopping campaigns, Advantage+ creative, and the underlying machine-learning optimization have made the old playbook — 30 ad sets per campaign, hyper-segmented lookalikes, manual bid caps — actively counterproductive. Teams still running 2020-era Meta structures are quietly losing money to teams that have adapted.",
+      "This is the campaign structure we're running in 2026 across DTC and B2B lead-gen accounts ranging from $20K to $500K per month in spend. It's simpler than what most teams are running, which is the point — the simplicity is what lets Meta's ML do its job.",
+    ],
     sections: [
-      { h2: "Why we consolidated", body: "Old-school structures with 30 ad sets per campaign are dead. Modern Meta optimizes best with consolidated budgets, broad audiences, and a steady stream of fresh creative. We ship one campaign per offer, three ad sets per campaign, lots of creative." },
-      { h2: "Creative volume over targeting precision", body: "We produce 8–12 new ads per week per account. Creative diversity beats audience segmentation. Meta's ML finds the right person for each ad better than we ever could." },
-      { h2: "What we stopped doing", body: "CBO vs ABO debates, lookalike-only targeting, hyper-segmented ad sets, and manual bid caps. All of these underperform consolidated broad campaigns now." },
-      { h2: "Reading the signal", body: "Look at post-purchase surveys, MER (Marketing Efficiency Ratio), and contribution margin. Meta's in-platform ROAS is a scorecard, not a truth." },
+      {
+        h2: "Why we consolidated budgets instead of segmenting",
+        body: [
+          "The old Meta playbook told you to run separate ad sets for every audience segment: cold interests, lookalikes at 1%, 3%, and 5%, warm remarketing, and so on. In 2026 that structure underperforms for a specific reason — Meta's optimization works best when it has large pools of conversion data to learn from. Splitting budget across 15 ad sets means each ad set is learning on a fraction of the data, and none of them reach the signal density Meta needs to optimize well.",
+          "What we run instead: one campaign per offer, three ad sets per campaign, broad audiences in each. One ad set targets the broadest relevant audience (often just country + age range). One uses Advantage+ Shopping for ecommerce or Advantage+ Lead for lead gen. One tests a specific angle or creative approach. Budget consolidates, learning compounds, and Meta's algorithm actually has enough signal to optimize.",
+          "When we converted a DTC client from a 22-ad-set structure to this 3-ad-set structure in Q3 2025, same total budget, MER rose 34% in the first month. That's not because we got smarter — it's because we stopped getting in Meta's way.",
+        ],
+      },
+      {
+        h2: "Creative volume beats targeting precision",
+        body: [
+          "The thing that moves Meta performance now isn't audience targeting — it's creative diversity. We ship 8–12 fresh creatives per week per account minimum. Short-form video, static images, UGC, founder clips, carousels, testimonial cuts, pattern-interrupt hooks, pain-point openers. Meta's ML sorts out which creative matches which person better than any audience segment we could build manually.",
+          "The operational challenge is producing at that volume. The solution is a creative operating system: a monthly shoot day that captures 40+ raw clips, a pre-built library of hooks and CTAs, a template system in Figma or Canva for static variations, and a weekly creative review that kills underperformers and doubles down on patterns that work. The clients who struggle with Meta in 2026 are almost always creative-constrained, not strategy-constrained.",
+        ],
+      },
+      {
+        h2: "What we've stopped doing entirely",
+        body: [
+          "Debates about CBO versus ABO. Doesn't matter anymore. Use CBO (Campaign Budget Optimization) as the default, because Meta wants to allocate budget dynamically and you should let it. Lookalike-only targeting. Interest-only targeting. Both underperform broad targeting in almost every account we've audited. Hyper-segmented ad sets with bespoke creative per segment. The extra production work doesn't pay back when Meta is already doing matching at the individual level.",
+          "Manual bid caps except for very specific cases (lead-gen accounts where a bad lead costs more than a good lead saves, or brand-sensitive accounts where placement control matters). Last-click attribution as the primary decision metric — use blended MER and GA4 data-driven attribution instead. Adding demographic exclusions without evidence they improve quality. Most exclusions just shrink the audience Meta can learn from.",
+        ],
+      },
+      {
+        h2: "How to actually read performance signal in 2026",
+        body: [
+          "Meta's in-platform ROAS is still useful, but it's a scorecard, not a truth. It overstates performance because of Meta's attribution window (7-day click, 1-day view) and because Meta credits itself for conversions that would have happened organically. The truth lives in three places. Post-purchase surveys — a simple 'How did you hear about us?' question on the thank-you page. After 500 responses you have a rough attribution reality check against what Meta claims.",
+          "Marketing Efficiency Ratio (MER) — total revenue divided by total paid media spend, tracked weekly. Less granular than attributed ROAS but less gameable. If MER is trending up as spend scales, you're directionally fine regardless of what any one platform claims. Contribution margin on new customers — revenue from first-time buyers minus COGS minus ad cost. Positive means the acquisition engine is profitable from day zero. Negative means you're relying on LTV to cover the gap, which requires honest repeat-purchase data you probably don't have.",
+        ],
+      },
+    ],
+    keyTakeaways: [
+      "Consolidate: one campaign per offer, three ad sets per campaign, broad audiences. Let Meta's ML have enough data to optimize.",
+      "Ship 8–12 fresh creatives per week. Creative diversity beats audience segmentation in 2026.",
+      "Stop: lookalike-only targeting, hyper-segmented ad sets, manual bid caps, last-click attribution as primary.",
+      "Measure truth with post-purchase surveys, MER, and new-customer contribution margin — not in-platform ROAS.",
     ],
   },
   {
@@ -152,11 +386,49 @@ const SEEDS: Seed[] = [
     title: "Stop Optimizing for ROAS. Optimize for CAC Payback.",
     excerpt:
       "Why ROAS is a vanity metric for any business with repeat purchase and a real lifetime value, and how to move your reporting to contribution margin.",
+    featured: true,
+    updatedAt: "2026-04-24T00:00:00Z",
+    intro: [
+      "ROAS is the most beloved and most misleading metric in paid media. Every platform reports it, every agency celebrates it, and most founders use it as the primary yardstick for ad spend. It's also deeply, structurally misleading for any business with repeat purchase, lifetime value, or product margin that varies by SKU — which is most businesses.",
+      "This piece makes the case for moving off ROAS as your primary lens and onto new-customer contribution margin and CAC payback windows. The change is not cosmetic. In our experience, clients who make this reporting switch typically reallocate budgets within 30 days and see bottom-line profitability improve within a quarter, sometimes without changing tactics at all.",
+    ],
     sections: [
-      { h2: "What ROAS hides", body: "ROAS treats all revenue the same. $100 from a first-time customer is not equal to $100 from a repeat customer. $100 before COGS is not $100 in the bank." },
-      { h2: "The metric we actually watch", body: "New-customer contribution margin. Revenue from first-time buyers minus COGS minus ad cost. If it's positive on day zero, you have a profitable acquisition engine. If not, you need LTV to cover the gap." },
-      { h2: "Payback windows that work", body: "Under 3 months for DTC with recurring purchase. Under 12 months for SaaS. Under 18 months for complex B2B. Anything beyond that is betting the company on a model you can't validate fast enough." },
-      { h2: "The reporting change we made", body: "We stopped showing ROAS on monthly decks. We show new-customer payback curves. Clients make better budget decisions within a month." },
+      {
+        h2: "What ROAS quietly hides",
+        body: [
+          "ROAS is revenue divided by ad spend. Simple, but every word hides a trap. 'Revenue' in ROAS calculations almost always means gross revenue, not net of returns, shipping, COGS, or discount codes. For a DTC brand running a 20% off code to acquire customers, a 3.5x ROAS is often a 1.2x gross-margin return — break-even at best. The founder reads 3.5x and thinks the campaign is printing money.",
+          "The second trap: ROAS treats first-time and repeat purchases the same. A $100 order from a new customer is worth about $40 in contribution margin after COGS, shipping, payment processing, and the ad cost that acquired them. A $100 repeat purchase from an existing customer is worth closer to $70 because the acquisition cost was amortized long ago. Meta's in-platform ROAS mashes these together, overstating performance by 20–40% depending on repeat rate.",
+          "The third trap: attribution windows. Meta's default 7-day-click, 1-day-view window credits the platform for conversions a lot of which would have happened anyway. Google's last-click model does the same. A 5x reported ROAS can be a 2.5x true incremental ROAS after adjusting for baseline organic demand. Optimizing hard for a number that overstates reality by 2x is how companies spend themselves into unprofitability while their dashboard still looks healthy.",
+        ],
+      },
+      {
+        h2: "The metric we actually watch — new-customer contribution margin",
+        body: [
+          "New-customer contribution margin is revenue from first-time buyers minus COGS, minus shipping and processing, minus ad cost. If it's positive on day zero, you have a profitable acquisition engine that doesn't require LTV assumptions to work. If it's negative, you're betting the company on future repeat purchases — which requires honest retention data you probably don't have yet.",
+          "The math is straightforward. For a DTC brand with 35% gross margin, a $50 first-order AOV, and a $20 blended CAC, new-customer contribution margin is $50 × 0.35 − $20 = −$2.50 per new customer. Break-even requires either a higher first-order AOV (upsells at checkout), lower CAC (better creative or channel mix), or real LTV from repeat purchases. The negative number doesn't mean the business is broken — it means you need to clearly see what has to be true for it to become profitable.",
+          "For SaaS, the equivalent is customer lifetime contribution margin minus CAC divided by CAC. Anything under 3x long-term is marginal. Anything under 1x is a company that won't survive.",
+        ],
+      },
+      {
+        h2: "Payback windows that hold up across cycles",
+        body: [
+          "The CAC payback window is the number of months it takes for a newly acquired customer's contribution margin to equal the cost of acquiring them. It's the single most important health metric for a paid acquisition engine because it determines how long your capital is tied up before you can redeploy it.",
+          "Reasonable benchmarks by category: under 3 months for DTC with strong recurring purchase (beauty, supplements, consumables). Under 6 months for DTC with moderate repeat (apparel, home goods). Under 12 months for SaaS with healthy expansion revenue. Under 18 months for complex B2B enterprise deals. Anything longer is a high-risk business model — you're betting the company on repeat behavior you can't validate fast enough, and capital markets won't forgive you if the model turns out to be wrong.",
+        ],
+      },
+      {
+        h2: "The reporting change that drives the behavior change",
+        body: [
+          "We stopped showing ROAS on monthly client decks about 18 months ago. What replaced it: new-customer payback curves by cohort, blended MER, contribution margin by channel, and an honest incrementality estimate once per quarter. The effect was immediate — clients started asking better questions. Instead of 'why is Meta ROAS down this month,' they'd ask 'why did cohort payback extend from 4.2 to 5.1 months, and which channels contributed to that.'",
+          "Better questions lead to better decisions. One DTC client cut Meta spend 30% and reinvested it in email and SMS based on the new reporting, which shortened payback by almost two months and lifted overall profitability 15% within a quarter. Same team, same product, same budget — just a better metric.",
+        ],
+      },
+    ],
+    keyTakeaways: [
+      "ROAS hides COGS, discounts, repeat-purchase blending, and attribution inflation. Reported ROAS typically overstates reality by 20–40%.",
+      "Track new-customer contribution margin instead — revenue minus COGS minus ad cost. Positive = profitable engine.",
+      "Target payback windows: DTC under 3–6 months, SaaS under 12, B2B under 18. Longer is a high-risk model.",
+      "Changing the report changes the questions. Questions change decisions. Decisions change profitability.",
     ],
   },
   {
@@ -176,11 +448,52 @@ const SEEDS: Seed[] = [
     title: "LinkedIn Ads Are Expensive. Here's How to Make Them Worth It.",
     excerpt:
       "LinkedIn is the most expensive B2B channel for a reason. Get the structure right and it pays back faster than anything else.",
+    featured: true,
+    updatedAt: "2026-04-24T00:00:00Z",
+    intro: [
+      "LinkedIn Ads are the most expensive B2B acquisition channel on a per-click basis, often $15–$30 CPC even in efficient accounts. That price tag scares most marketers off, which is exactly why LinkedIn works: your competitors are rate-limited by the CPC, which means when you get the structure right, you face less competitive pressure than anywhere else in B2B marketing.",
+      "We run LinkedIn programs for B2B SaaS and services clients with ACVs ranging from $25K to $500K+. The ones where it works pay back faster than any other channel. The ones where it doesn't are almost always misconfigured in one of four specific ways, covered below.",
+    ],
     sections: [
-      { h2: "The CPL trap", body: "Cheap LinkedIn leads are almost always low-intent. Optimize for cost per SQL, not cost per lead. Your sales team will tell you within 30 days if the quality is right." },
-      { h2: "What we run", body: "Single image ads for gated assets, document ads for proof points, conversation ads for high-intent outbound. We avoid video ads — they're more expensive without proportionately better signal." },
-      { h2: "Matched audiences are the secret", body: "Upload target-account lists from Clay or Apollo and run tight campaigns against them. LinkedIn's audience is the product — use it surgically." },
-      { h2: "Pairing with SDR outbound", body: "LinkedIn ads warm accounts for SDR outreach. When the outbound email lands on an account that's seen the ad three times, reply rates double. Track this explicitly." },
+      {
+        h2: "The CPL trap — why cheap leads signal bad leads on LinkedIn",
+        body: [
+          "Most B2B marketers optimize LinkedIn campaigns for cost per lead. This is backwards for the channel. LinkedIn's algorithm can absolutely find you cheap leads — but the cheap leads on LinkedIn are almost always lower-seniority people answering because they're curious, not because they're evaluating purchase decisions. You end up with a pipeline full of entry-level marketers from companies you'd never actually sell to.",
+          "The metric that matters is cost per SQL (sales-qualified lead). It's harder to instrument, because it requires tight integration between your ad platform and CRM, and it takes 30–60 days to get statistical signal. But the delta between optimizing for CPL and CPSQL is enormous. Clients who switch report 3–5x improvements in pipeline quality within a quarter without increasing spend.",
+          "The operational shift: feed conversion events from your CRM back into LinkedIn via the Conversions API or offline conversions upload. Tell LinkedIn's algorithm which leads actually qualified. Within a few weeks, the algorithm learns to find more of those people and fewer of the curious-but-unqualified ones. This is the single highest-ROI change most B2B LinkedIn advertisers aren't making.",
+        ],
+      },
+      {
+        h2: "What we actually run — formats, ranked by ROI",
+        body: [
+          "Single image ads driving to gated high-value assets (industry reports, benchmark data, frameworks) are our default. They consistently produce the best cost-per-SQL because the asset pre-qualifies the audience. A finance director downloading a report on CFO-level benchmarking is demonstrably in your ICP in a way a marketing manager liking a brand post isn't.",
+          "Document ads (also called native LinkedIn document slideshows) work exceptionally well for proof-heavy content: case studies, methodology explainers, and teaser chapters of larger reports. They keep the reader on LinkedIn, which reduces drop-off, and they generate higher save rates than external-link ads. For ICPs that research heavily before converting, document ads are a sleeper format.",
+          "Conversation ads (LinkedIn's messaging ad product) are underrated for high-intent outbound at specific accounts. We use them for named-account campaigns where we've identified 50–200 target accounts and want to open direct conversations. CPM is high but the reply rate on a well-written conversation ad to a cold account beats cold email by 2–4x.",
+          "What we avoid: video ads (disproportionately more expensive without commensurate improvement in signal quality), carousel ads (LinkedIn users rarely swipe past the first card), and event promotion (the channel has a lot of paid options that underperform because the organic reach on event posts is strong).",
+        ],
+      },
+      {
+        h2: "Matched audiences are the secret weapon",
+        body: [
+          "LinkedIn's targeting strength isn't interests or job functions — those are too broad. The strength is matched audiences: upload a list of target companies or specific people and run campaigns against exactly that list. For ABM programs, this is the thing that makes LinkedIn cost-effective despite the high CPC.",
+          "Our workflow: build a target account list of 500–2,000 companies in the client's ICP using Clay, Apollo, or ZoomInfo enrichment. Upload the company list to LinkedIn matched audiences. Layer a seniority filter (typically director and above for $50K+ ACV, VP and above for $250K+). Run campaigns exclusively against that intersection. The match rate is usually 30–60% of the uploaded list; even at the low end, you've narrowed your audience to your exact ICP with enough volume to generate signal.",
+          "For account-specific personalization, go further: use Clay to enrich each target company with their latest funding round, hiring signals, or product launches. Build 3–5 audience segments based on those signals and run different creative for each (e.g., 'post-Series-B' audience sees a scaling-focused message; 'hiring sales leaders' audience sees a message about enabling new hires). CPL rises slightly; CPSQL drops substantially because each segment sees a relevant message.",
+        ],
+      },
+      {
+        h2: "Pairing LinkedIn ads with SDR outbound compounds both",
+        body: [
+          "The highest-ROI LinkedIn structure we run isn't LinkedIn alone — it's LinkedIn ads as air cover for SDR outbound. When an SDR email lands on an account that's already seen the LinkedIn ad 3+ times, reply rates approximately double compared to cold accounts who haven't seen the ads. This is measurable: we track it by cross-referencing the ad-exposure audience with the SDR's outbound CRM records.",
+          "The operational pattern: run always-on LinkedIn ads against the SDR's target account list. When the SDR sequences an account, the prospect has already seen the brand a few times. The email doesn't need to introduce who you are — it can go straight to the relevant hook. This is what 'account-based marketing' actually means in practice, stripped of the ABM vendor jargon.",
+          "Budget guideline: plan for LinkedIn ad spend roughly equal to 15–25% of SDR team cost. Below that ratio, the ads don't show up often enough to generate brand familiarity. Above it, diminishing returns kick in. The sweet spot produces compounding effects across both channels that neither produces alone.",
+        ],
+      },
+    ],
+    keyTakeaways: [
+      "Stop optimizing for CPL on LinkedIn. Cheap leads are low-intent. Optimize for cost per SQL instead — it takes 30–60 days but changes the economics completely.",
+      "Default formats: single image ads for gated assets, document ads for proof content, conversation ads for high-intent outbound. Avoid video and carousel.",
+      "Matched audiences are the channel's strength. Upload target account lists from Clay or Apollo and run tight campaigns against them.",
+      "Pair LinkedIn ads with SDR outbound. Prospects who've seen the ad 3+ times reply at 2x rates. Budget LinkedIn ads at 15–25% of SDR team cost.",
     ],
   },
   {
@@ -202,11 +515,51 @@ const SEEDS: Seed[] = [
     title: "The Content Pillar System We Use to Stop the Weekly Panic Posting",
     excerpt:
       "Four pillars, six formats, one rule: every post maps to a pillar AND a format. If it doesn't, it doesn't ship.",
+    featured: true,
+    updatedAt: "2026-04-24T00:00:00Z",
+    intro: [
+      "Every week, somewhere in a small marketing team, someone opens Slack on Monday morning and asks: what are we posting this week? Four people brainstorm for 45 minutes, produce ideas nobody loves, schedule posts nobody remembers by Friday, and the same meeting happens the next Monday. This is weekly panic posting, and it's the default state of most social media operations — including a surprising number of well-resourced brands.",
+      "The fix is structural, not tactical. A content pillar system removes the weekly creative burden by predefining the categories your content has to fit, and forcing every idea through a check before it reaches the calendar. We use this system across every social client engagement. It's the single biggest operational change we make in the first 30 days of working together.",
+    ],
     sections: [
-      { h2: "Why random posting fails", body: "Without pillars, every post is a one-off. You build no narrative, no audience expectation, and no compounding equity." },
-      { h2: "Picking your four pillars", body: "Education, proof, personality, and point-of-view. Every brand we work with fits this shape — the content in each bucket varies, but the bucket structure is universal." },
-      { h2: "The six formats", body: "Tutorial, listicle, before-and-after, myth-busting, founder story, behind-the-scenes. Mixing format and pillar gives you 24 content slots — more than enough for any month." },
-      { h2: "Enforcement", body: "Every post has to name its pillar and format before it goes in the calendar. If it can't, it gets cut. Discipline here is worth 10x the fanciest strategy deck." },
+      {
+        h2: "Why random posting builds nothing",
+        body: [
+          "Without pillars, every post is a one-off. The brand publishes a founder story Monday, a product feature Tuesday, a meme Wednesday, an announcement Thursday. The audience can't predict what they'll see, so they don't build a mental model of what the brand is about. The algorithm can't figure out who should see the content, so distribution is random. Each post has to earn its audience from scratch.",
+          "Brands that compound on social media do the opposite. They pick a narrow set of things they consistently talk about, and over 6–12 months, the audience learns to expect that set of things. Duolingo does jokes about learning languages. Notion does workflow demos. Every brand that goes from small-to-medium to medium-to-large on social follows this pattern: commit to a small territory, defend it, compound.",
+        ],
+      },
+      {
+        h2: "Picking your four content pillars",
+        body: [
+          "Four pillars is the magic number. Three feels repetitive within a month; five feels unfocused. The four that fit nearly every B2B and DTC brand we've worked with: education, proof, personality, and point-of-view.",
+          "Education: how-to content that makes your audience better at their craft. For a fintech brand, this could be explainers on tax strategy, investment frameworks, or market analysis. For a DTC skincare brand, it's ingredient deep-dives and routine tutorials. The test: a competitor couldn't publish your educational content unchanged, because it's rooted in what your specific team knows.",
+          "Proof: evidence that your product or methodology works. Case studies, customer success stories, before-and-after comparisons, data excerpts. Proof content is what closes the audience members who've been lurking for six months and are finally ready to buy.",
+          "Personality: the human layer. Behind-the-scenes, team moments, founder perspectives, product design decisions explained casually. Personality content is what makes the brand feel like a group of people, not a logo.",
+          "Point-of-view: opinions your industry doesn't universally agree with. This is the pillar most brands underweight because it's scary — having a clear take can alienate people — but it's also the pillar that drives the strongest audience growth. The brands with loud social presences have loud opinions.",
+        ],
+      },
+      {
+        h2: "The six formats that fit every platform",
+        body: [
+          "Every piece of content fits one of six formats: tutorial (here's how to do something), listicle (here are N things about a topic), before-and-after (here's what changed), myth-busting (here's what most people get wrong), founder story (here's what I learned from doing this), behind-the-scenes (here's how we operate).",
+          "Multiplying four pillars by six formats produces 24 conceptual content slots. That's two per week for a year without repeating a slot. In practice, you'll lean on some combinations more than others — myth-busting pairs naturally with point-of-view, founder story with personality — and that's fine. The point isn't to force variety; it's to give the team a decision framework so planning sessions become 'which slot this week' instead of 'what should we post.'",
+        ],
+      },
+      {
+        h2: "The enforcement rule that makes the whole system work",
+        body: [
+          "Every post has to name its pillar and its format before it goes in the calendar. Written in the calendar card. Visible to the whole team. If a post can't be tagged, it doesn't ship. This rule is trivial to describe and extremely hard to enforce because brands love to make exceptions — someone has a good idea that doesn't fit any pillar, and the team rationalizes shipping it.",
+          "The discipline pays back within a quarter. You stop producing forgettable one-offs. Your audience starts recognizing the brand's territory. The algorithm starts showing content to the right people because the signals are consistent. Your designer, writer, and social manager all work from the same vocabulary, which cuts creative debate in half.",
+          "We've seen brands double their engagement rate in 90 days without changing anything else — no new content, no new budget, just enforcing pillar-and-format discipline on existing content plans. The system is worth more than the fanciest strategy deck because the strategy deck doesn't survive contact with Monday morning, and this system does.",
+        ],
+      },
+    ],
+    keyTakeaways: [
+      "Pick four pillars — education, proof, personality, point-of-view. Every brand we've worked with fits this shape.",
+      "Use six formats: tutorial, listicle, before-and-after, myth-busting, founder story, behind-the-scenes. 4×6 = 24 content slots per brand.",
+      "Enforce the rule: every post must name its pillar and format in the calendar. No exceptions, or the system collapses.",
+      "Brands that commit double their engagement rate within a quarter without changing content quality — just by adding structure.",
     ],
   },
   {
@@ -264,11 +617,48 @@ const SEEDS: Seed[] = [
     title: "The Brief-to-Draft Ratio That Separates Good Content Ops from Bad",
     excerpt:
       "If your content briefs are shorter than your drafts, you're not briefing. Here's the bar we hold ourselves to.",
+    featured: true,
+    updatedAt: "2026-04-24T00:00:00Z",
+    intro: [
+      "Most content operations run on underwritten briefs and overwritten drafts. A Google Doc with the target keyword, a vague audience description, three bullet points of 'what to cover,' and an unrealistic deadline gets sent to a writer who produces a draft that mostly misses. An editor rewrites 40% of it. The client asks for revisions. Two weeks later a piece ships that nobody is proud of.",
+      "The fix isn't hiring better writers. It's writing better briefs. This piece covers the brief quality bar we hold at It's Not Techy across every client engagement, and why front-loading brief work is the single highest-leverage change most content teams can make.",
+    ],
     sections: [
-      { h2: "The brief is the work", body: "A great brief makes the first draft 80% right. A bad brief makes writers guess, editors rewrite, and clients ask for revisions. Time spent on briefs saves 3x on the other side." },
-      { h2: "What a real brief contains", body: "The target reader in one sentence. The one question we're answering. The three proof points required. The format structure. Internal and external link targets. SME name and interview questions." },
-      { h2: "The interview you must do", body: "Before any piece on a specialty topic, we interview an SME for 20 minutes. That interview is the raw material. Without it, you're producing paraphrased blog posts anyone could write." },
-      { h2: "Time budgets that matter", body: "We budget 2 hours to brief, 4 to draft, 1 to edit. The front-loading feels wasteful until you realize the draft doesn't need three rounds of revisions." },
+      {
+        h2: "The brief is the work — not the prelude to the work",
+        body: [
+          "A great brief makes the first draft 80% right on arrival. A bad brief forces writers to guess about audience, scope, and structure, which leads editors to rewrite, which leads clients to revise, which leads to drafts that drift further from the original intent with each round. The cumulative cost is massive: we've measured it across dozens of engagements, and a well-briefed piece costs roughly 40% of the total hours a poorly-briefed piece of equivalent quality consumes.",
+          "The mental reframe that helps: the brief is the work. It's where you decide who the reader is, what question you're answering, what sources you're pulling from, what the opening paragraph should accomplish, and what a successful outcome looks like. If those decisions aren't made in the brief, they get made reactively during drafting — badly, and with less context than the brief stage offers.",
+        ],
+      },
+      {
+        h2: "What a real content brief contains",
+        body: [
+          "Our brief template has eight required fields. One: the target reader in one sentence, specific enough to exclude people ('mid-market ecommerce marketing directors evaluating agency partnerships' not 'marketers'). Two: the one question the piece answers — articulated in the reader's voice, not ours. Three: the three proof points the piece must include — specific claims, data, or examples that give the piece credibility. Four: the format structure — headline working hypothesis, H2 outline, approximate word count per section.",
+          "Five: internal link targets, chosen from the site's existing content, with anchor text suggestions. Six: external link targets for credibility, usually 2–4 authoritative sources. Seven: the SME (subject-matter expert) to interview, with pre-written interview questions. Eight: the piece's success metric — what would tell us six months from now that this piece worked (organic traffic threshold, backlinks, sales-cycle references, etc.). Without all eight, we don't ship the brief to a writer.",
+        ],
+      },
+      {
+        h2: "The 20-minute SME interview that separates our content from everyone else's",
+        body: [
+          "Before any piece on a specialty topic, we interview a subject-matter expert for 20–45 minutes. The interview is the raw material. Without it, you're producing paraphrased summaries of other people's content — which is what 90% of the content on the internet already is, and which has no chance of earning AI citations or durable rankings.",
+          "The interview format we use: recorded on Riverside for quality, seven prepared questions, permission to follow threads. Questions aren't 'what is X' — they're 'what's the most common mistake you see teams make with X,' 'what did you used to believe about X that you've changed your mind on,' 'what's a specific case where the textbook answer was wrong.' These questions surface pattern-matching that's never been written down. That's the moat.",
+          "The transcript becomes the source document. The writer's job is to structure and tighten the SME's thinking, not to generate new claims. Every paragraph should pass a 'would the SME actually say this' test. If not, cut it or rewrite from the transcript.",
+        ],
+      },
+      {
+        h2: "The time budgets that reveal whether you're briefing well",
+        body: [
+          "Our standard time budget for a 1,500-word piece: 2 hours brief, 45 minutes SME interview, 4 hours draft, 1 hour edit, 30 minutes final review. Total: about 8 hours of skilled time. If your equivalent piece takes 15+ hours end to end, the leakage is almost always in drafting (too much guessing) and editing (too much rewriting) — both symptoms of a thin brief.",
+          "The diagnostic question: in your current workflow, how often does the first draft require structural rewriting (not just line edits)? If more than 30% of drafts do, your brief quality is the bottleneck, not your writer's skill. Most teams keep hiring better writers trying to solve a briefing problem. It doesn't work.",
+        ],
+      },
+    ],
+    keyTakeaways: [
+      "A thin brief costs more than it saves. Well-briefed pieces ship in 40% of the hours a poorly-briefed equivalent takes.",
+      "Every brief needs eight components: reader, question, proof points, structure, links, SME, and success metric.",
+      "Interview subject-matter experts before writing. The transcript is the moat — without it you're paraphrasing other people's content.",
+      "If first drafts regularly need structural rewrites, the problem is briefing, not writing. Hiring better writers won't fix it.",
     ],
   },
   {
@@ -326,11 +716,50 @@ const SEEDS: Seed[] = [
     title: "Why We Build Every Marketing Site on Next.js — and When We Don't",
     excerpt:
       "The case for Next.js as a marketing site default in 2026, and the handful of scenarios where Webflow or Shopify still wins.",
+    featured: true,
+    updatedAt: "2026-04-24T00:00:00Z",
+    intro: [
+      "Our default stack for marketing sites in 2026 is Next.js 15 with the App Router, Tailwind, and MDX for blog content — deployed on Vercel or Cloudflare Pages. This isn't a fashion statement. It's the result of dozens of builds across clients ranging from seed-stage SaaS to enterprise brands, and it's the stack that consistently hits sub-1-second LCP with room to add rich interactions without falling apart.",
+      "But Next.js isn't the right answer for every business. This piece walks through when we pick it, the specific cases where Webflow or Shopify wins, and the stack we actively migrate clients off of.",
+    ],
     sections: [
-      { h2: "What Next.js unlocks", body: "Sub-1s LCP on every page, flexibility for custom interactions, edge rendering, and a component model that scales across marketing, app, and commerce surfaces." },
-      { h2: "When we choose Webflow instead", body: "Marketing teams with no engineering budget and a strong visual-first design language. Webflow is a great ceiling for teams that just need 'fast, pretty, and editable'." },
-      { h2: "When we choose Shopify", body: "DTC brands. The ecosystem, checkout, and merchandising features are worth the template constraints unless you're at $30M+ revenue with headless-worthy customization needs." },
-      { h2: "What to avoid", body: "WordPress for anything net-new. The plugin ecosystem is a maintenance tax and the performance ceiling is low. We migrate clients off it constantly." },
+      {
+        h2: "What Next.js unlocks in 2026",
+        body: [
+          "The App Router, server components, and streaming rendering combine to produce something no other marketing stack can match: dynamic-feeling, fast pages without client-side JavaScript bloat. Server components render on the server or at build time and ship zero JS to the client for sections that don't need interactivity. Client components hydrate selectively. The payoff is Core Web Vitals scores that stay green as sites grow — a 300-page marketing site on Next.js can hit LCP under 1 second on every page, INP under 100ms, CLS under 0.05. Those numbers are basically unattainable on WordPress or most themed Shopify setups.",
+          "The second unlock is the component model. Marketing, app, and commerce surfaces share a design system, which means a button change in one place updates everywhere. For growth-stage companies with overlapping marketing and product surfaces, this shortens design-to-ship cycles from weeks to days. For mature companies, it means the marketing team can ship new landing pages without engineering intervention because the component library is already proven.",
+          "Third: edge rendering. Vercel and Cloudflare both support running rendering at CDN edge, which means the first byte of any page reaches a visitor in Delhi or Dubai or Dublin with roughly the same latency a North American user sees. For global brands — and every brand is global now — this is a 200–400ms speed advantage that compounds across every interaction.",
+        ],
+      },
+      {
+        h2: "When Webflow is the better call",
+        body: [
+          "Webflow is the right default for three specific situations. First: marketing teams with no dedicated engineering resource who need a visually ambitious site they can edit without filing tickets. Webflow's visual CMS is genuinely best-in-class; marketers can ship new pages and modules in a day without touching code. For brands where the marketing site is a business-critical surface that changes weekly, that velocity is worth the performance and flexibility ceiling Webflow imposes.",
+          "Second: brand-forward sites where animation and visual design are the product. Webflow's interactions system, combined with its tight Figma integration, makes shipping genuinely striking design fast. The ceiling is lower than Next.js with Framer Motion, but for most brand marketing sites the ceiling is still well above what matters.",
+          "Third: sites with lifespans under 24 months — campaign sites, event sites, launch sites. The Next.js setup cost doesn't amortize. Webflow is faster to ship and the performance penalty is temporary. When the site sunsets, so does the tradeoff.",
+        ],
+      },
+      {
+        h2: "When Shopify still wins for commerce",
+        body: [
+          "For DTC brands under roughly $30M revenue, we recommend Shopify (or Shopify Plus) for the storefront and use Next.js only for the marketing layer around it. The reason is pragmatic: Shopify's ecosystem of apps, its checkout conversion optimization, its built-in inventory and fulfillment integrations, and its built-in merchandising tools add up to six-to-twelve-figure advantages over a custom build. You can replicate those features on Next.js with headless Shopify, but the cost to build and maintain parity is usually higher than the revenue gain justifies until you're well into the eight-figure range.",
+          "The tipping point we've seen: past about $30M in annual commerce revenue, or when the brand has customization needs Shopify can't support (advanced subscription logic, complex B2B ordering, multi-brand catalogs, novel checkout flows), headless with Next.js starts to pay off. Before that, stay on Shopify's native stack. The complexity discount is worth far more than engineering team credibility.",
+        ],
+      },
+      {
+        h2: "What to avoid — and why we migrate clients off of it",
+        body: [
+          "We do not build new WordPress sites in 2026, and we regularly migrate clients off WordPress to Next.js or Webflow. The reasons are not ideological; they're measurable. WordPress's plugin ecosystem is a maintenance tax — every plugin is a potential security vulnerability, a performance regression, and a future compatibility issue. Site security breaches on WordPress are dramatically more common than on Next.js or Webflow because the attack surface is enormous. Core Web Vitals scores are structurally worse because the stack wasn't designed around modern rendering.",
+          "The common objection is 'we have content editors who know WordPress.' Fair, but content editing in a modern headless CMS (Sanity, Contentful, Payload) takes a half-day to learn and delivers real benefits the editors will feel within a week. Migration projects typically take 6–10 weeks for a mid-sized site, cost less than a year of plugin maintenance fees, and produce sites that run 2–4x faster with roughly zero ongoing security surface.",
+          "The other stack we avoid for net-new marketing sites: drag-and-drop page builders glued onto themes (Elementor, Divi, anything that ends in 'Builder'). The performance and maintainability costs compound, and the design ceiling is miles below what a modern front-end stack can achieve.",
+        ],
+      },
+    ],
+    keyTakeaways: [
+      "Next.js is our default in 2026 for sub-1s LCP, clean component reuse, and edge rendering benefits global brands feel immediately.",
+      "Pick Webflow for marketing teams without engineering support, brand-forward design, or sites with under 24-month lifespans.",
+      "Stay on native Shopify for DTC under roughly $30M revenue. Go headless with Next.js only when customization needs cross that threshold.",
+      "Avoid new WordPress builds. The plugin tax, security surface, and performance ceiling aren't worth the apparent editing convenience.",
     ],
   },
   {
@@ -564,11 +993,50 @@ const SEEDS: Seed[] = [
     title: "The AI Workflows That Actually Save Marketers Time",
     excerpt:
       "A practical inventory of AI workflows we've deployed internally — ranked by hours saved per week.",
+    featured: true,
+    updatedAt: "2026-04-24T00:00:00Z",
+    intro: [
+      "Most AI marketing content is either hype ('AI will replace your whole team') or gimmick ('here are 10 ChatGPT prompts'). Neither is useful if you actually run a marketing operation. What we've learned across our own agency and dozens of client deployments is simpler: a small number of AI-assisted workflows produce genuinely large time savings, and a larger number produce work that looks fast but creates more editing cost than it saves.",
+      "This piece is the honest inventory — the workflows we've deployed internally at It's Not Techy, ranked by hours saved per week, plus the workflows we tried and killed.",
+    ],
     sections: [
-      { h2: "Brief generation", body: "A Claude-powered briefing agent that takes a URL + target keyword and produces a full content brief. Saves 2 hours per brief; we produce 20 briefs a week." },
-      { h2: "Ad creative first drafts", body: "GPT-4 with a few-shot library of winning ad copy generates 20 variations per request. Human editor picks and polishes. 10x output per designer." },
-      { h2: "Weekly report summaries", body: "A script that pulls GA4 + Search Console + ad platform data into a one-paragraph executive summary. Saves 4 hours per account per week." },
-      { h2: "The workflow that didn't work", body: "AI-generated full-length articles. Even with editing, they read flat. Content is the one place AI accelerates research but not writing." },
+      {
+        h2: "AI-assisted content briefs — our highest-leverage workflow",
+        body: [
+          "A Claude-powered briefing agent that takes a URL and a target keyword and produces a full content brief, structured in our template format (reader, question, proof points, outline, internal link targets, SME interview questions). The agent uses the target URL to understand the company's voice and positioning, pulls current SERP data for the keyword, and outputs a brief that's roughly 80% ready for a human editor to finalize.",
+          "Time saved: approximately 2 hours per brief over writing from scratch. Across an agency producing 20 briefs a week, that's 40 hours — an entire person-week reclaimed without adding headcount. The remaining 20% human time is doing the strategic parts AI can't do: deciding whether the brief's angle aligns with our overall content strategy for the client, adding nuance from SME interviews, and adjusting tone for the specific client relationship.",
+          "Why it works: briefs are structured artifacts with consistent components. LLMs are excellent at structured artifact generation. Briefs don't need original voice or hot takes; they need thoroughness and internal consistency. That's exactly what LLMs deliver reliably.",
+        ],
+      },
+      {
+        h2: "Ad creative variations — 10x output without 10x cost",
+        body: [
+          "A GPT-style workflow with a few-shot library of the client's highest-performing historical ad copy generates 20 variations per request, each varying one variable at a time (hook, angle, CTA, or format). The designer or copywriter picks 4–6 to polish and run. This compresses what used to be a full afternoon of copywriting into about 30 minutes of prompting and refining.",
+          "The critical detail that makes this work: the few-shot library has to be curated from winners, not just historical ads. Training a prompt on 20 mediocre ads produces 20 variations of mediocre. Training it on the 15 highest-ROAS ads over the last 12 months produces variations that keep the patterns the audience actually responds to while exploring new angles. The library becomes a compounding asset — the more historical winners you add, the better the output.",
+          "What we explicitly do not do: let the LLM generate the final ad copy that ships. Every piece of ad copy gets human edit, not because LLMs can't write serviceable copy (they can), but because the marginal polish from an experienced copywriter is what turns a 2x ROAS ad into a 4x ROAS ad. The LLM does the 80%; the human does the 20% that matters most.",
+        ],
+      },
+      {
+        h2: "Weekly report summaries — the 4-hour-per-week win",
+        body: [
+          "A Python script pulls GA4, Search Console, and ad platform data weekly, runs it through a Claude API call with the client's historical baselines and KPI targets in context, and produces a one-paragraph executive summary plus a three-bullet 'what changed' section. Saves approximately 4 hours per account per week, scaled across the 30+ accounts we report on.",
+          "The critical design decision: the LLM doesn't have access to 'think' about what the numbers mean beyond the summary statistics. It describes what changed; it doesn't diagnose causes or recommend actions. Causes and actions require context the LLM doesn't have (what's happening in the market, what the client's internal operations look like, what we tried last month). The senior strategist reads the summary and provides the strategic interpretation. This division of labor is durable because it respects what each party is actually good at.",
+        ],
+      },
+      {
+        h2: "The workflows we killed — AI does badly",
+        body: [
+          "AI-generated long-form articles. Even with extensive editing, the output reads flat. LLMs default to middle-of-the-distribution thinking, which is the opposite of what makes an article citable or rankable. We tried this for a year, measuring output against human-written content in the same categories, and AI-written pieces consistently underperformed on engagement, rankings, and citations. Content is the one place AI accelerates research but not writing. We still use it for outline generation, fact-checking, and paraphrase suggestions — but the draft itself is human work.",
+          "Also: AI-generated cold emails. B2B prospects identify AI-written outreach within seconds and reply rates collapse. We use AI to personalize a research paragraph at the top of outbound emails (the LLM reads the prospect's LinkedIn and writes a one-sentence relevant opener) but the rest of the email is templated human writing. The reply rates on this hybrid approach are 3x higher than pure AI outreach and roughly on par with fully human outreach at a fraction of the time.",
+          "Finally: AI-generated blog post images. They look generic, they trigger Google's AI image detection heuristics, and they add no signal. We use stock photography or custom design for anything that goes into a client's content library.",
+        ],
+      },
+    ],
+    keyTakeaways: [
+      "The highest-leverage AI workflows are structured artifacts: content briefs, ad variations, report summaries.",
+      "AI does the 80%. Humans do the 20% where craft and context matter. Skipping the human 20% tanks quality measurably.",
+      "The few-shot library is the moat. AI trained on curated winners outputs better variations than AI trained on general data.",
+      "Kill the workflows that produce work that looks fast but creates more edit cost than it saves: AI long-form articles, AI cold emails, AI blog post imagery.",
     ],
   },
   {
@@ -614,11 +1082,51 @@ const SEEDS: Seed[] = [
     title: "The Shopify Theme Audit That Finds $50k+ in Hidden Conversion",
     excerpt:
       "A 20-point theme audit we run on every new Shopify engagement — pays for the audit itself inside the first month.",
+    featured: true,
+    updatedAt: "2026-04-24T00:00:00Z",
+    intro: [
+      "Most Shopify stores are running themes that leave real money on the table. Not because the theme is bad — Dawn, Focal, Impulse, Prestige, Broadcast all have capable foundations — but because small misconfigurations compound into five-figure monthly conversion leakage. We've audited themes for dozens of DTC brands doing $2M to $100M in annual revenue, and the pattern is remarkably consistent.",
+      "The audit below finds at least $50K of annualized conversion impact on the majority of stores we run it on. It takes about two days to execute and the fixes are typically ready to ship within a sprint.",
+    ],
     sections: [
-      { h2: "Speed first", body: "LCP under 2s on mobile. That alone recovers 5–15% conversion on most themes. Everything else is secondary." },
-      { h2: "PDP essentials", body: "Product images with zoom, size guide, reviews above the fold, clear shipping info, and a prominent CTA. Most themes fail one or more." },
-      { h2: "Checkout friction", body: "Enable Shop Pay, remove surprise fees late in checkout, and expose shipping cost on PDP. Every added step costs 2–5% of conversion." },
-      { h2: "Cart drawer", body: "Upsells in the cart drawer (bundle-style, not pushy cross-sell) lift AOV 8–15%. Worth the work on every theme." },
+      {
+        h2: "Speed first — LCP under 2 seconds on mobile",
+        body: [
+          "Every second of mobile load time costs approximately 5–10% of conversion on ecommerce sites. Most Shopify themes load at 3–5 seconds LCP on mid-tier mobile devices (which is what your customers actually use), which means the conversion rate you're seeing is 15–30% lower than it could be.",
+          "The highest-ROI speed wins on Shopify are almost always: removing unused apps (each app typically adds 100–400ms of load time), compressing hero images to WebP with proper width-hint attributes, deferring non-critical JavaScript (review app widgets, chat bots, analytics tools beyond GA4), and using Shopify's native lazy-loading for below-the-fold content.",
+          "Target LCP on mobile: under 2 seconds on the PDP (product detail page) and under 2.5 seconds on the homepage. Measure with PageSpeed Insights using the mobile field data, not the lab data. Lab scores on your M2 MacBook don't predict what a customer on a mid-tier Android in a spotty connection experiences.",
+        ],
+      },
+      {
+        h2: "Product detail page essentials most themes miss",
+        body: [
+          "The PDP is where 70–80% of ecommerce conversion happens, and yet most themes treat it as an afterthought inherited from the theme's original design. The non-negotiables: product images with smooth zoom functionality (not a modal), size guide accessible within one tap, reviews visible above the fold (not buried at the bottom), clear shipping info with estimated delivery dates, and a prominent add-to-cart CTA that's sticky on mobile.",
+          "Additional PDP wins worth the implementation cost: variant images that swap when the customer selects a color or size, inventory urgency ('Only 3 left in this size') where genuinely true, reviews filtered by variant and sorted by helpful/recent (not a flat feed), FAQ or 'common questions' section below the fold to reduce support contacts, and payment options badge row (Shop Pay, Apple Pay, PayPal) near the buy button to reduce cognitive load at the decision moment.",
+          "A specific test we run on every audit: does the PDP answer every question a first-time buyer would have, or does it force them to hunt elsewhere on the site? Hunting is friction, and friction is drop-off.",
+        ],
+      },
+      {
+        h2: "Checkout friction — the highest-leverage fix",
+        body: [
+          "Shopify's checkout is better than most custom carts, but stores consistently undermine it with configuration choices that add friction. Enable Shop Pay Express Checkout at the top of the cart page — studies from Shopify themselves show 1.72x conversion on Shop Pay checkouts vs. regular. Enable Apple Pay and Google Pay for mobile visitors.",
+          "Never reveal shipping cost or tax in the last step of checkout. Show estimated totals on the PDP and in the cart. Customers hitting a surprise $15 shipping charge at checkout step 3 abandon at 30%+ rates. Transparency earlier in the funnel reduces that dramatically.",
+          "Avoid forced account creation. Guest checkout should always be the default. Account creation can be offered post-purchase with a one-click option. Forcing accounts pre-purchase typically drops conversion 10–15%.",
+        ],
+      },
+      {
+        h2: "Cart drawer upsells — the AOV lever most stores ignore",
+        body: [
+          "The cart drawer (the slide-out sidebar that appears when a customer adds to cart) is prime real estate for bundle-style upsells. Not cross-sells that feel pushy, but complementary products at a bundle discount — 'Add [moisturizer] for 15% off this order.' Done well, this lifts AOV 8–15% with no lift in checkout friction.",
+          "What works: one upsell offer at a time (not three competing options), genuine product complementarity (the algorithm should suggest products that actually go together based on purchase patterns), and a clear value framing ('bundle and save $8' rather than 'recommended for you'). Apps like Rebuy, Monk, or Shopify's native Bundle Builder all handle this well; the difference is in the configuration, not the tool.",
+          "What doesn't work: pop-up modals that interrupt the checkout flow, countdown timers that create false urgency, and upsells that don't match the primary product category. All three feel slimy to shoppers and damage brand trust more than they lift AOV.",
+        ],
+      },
+    ],
+    keyTakeaways: [
+      "Speed is the biggest single lever on Shopify. Target LCP under 2s on mobile field data; it's worth 5–15% conversion.",
+      "The PDP is where conversion is won or lost. Every question a first-time buyer would have must be answered without them hunting.",
+      "Checkout: enable Shop Pay, show shipping cost early, never force account creation pre-purchase.",
+      "Cart drawer upsells done well (bundle framing, one offer, complementary products) lift AOV 8–15%. Most stores leave this on the table.",
     ],
   },
   {
@@ -714,11 +1222,49 @@ const SEEDS: Seed[] = [
     title: "The GA4 Events Every Site Should Track (and the Ones Most Skip)",
     excerpt:
       "The minimal GA4 event taxonomy we deploy at every client — covers 95% of reporting needs with zero bloat.",
+    featured: true,
+    updatedAt: "2026-04-24T00:00:00Z",
+    intro: [
+      "GA4 tracking setups come in two flavors: skeletal (page views and not much else) and bloated (hundreds of events tracking every conceivable interaction). Both fail for the same underlying reason — neither maps to the actual questions the business needs answered. The right taxonomy is smaller than most teams think, with a specific set of parameters that make reporting trivially easy instead of a weekly archaeology project.",
+      "This is the GA4 event schema we deploy on every client engagement. It covers roughly 95% of reporting needs, stays maintainable as the site evolves, and works with the kind of attribution reality GA4 actually has in a post-third-party-cookie world.",
+    ],
     sections: [
-      { h2: "The core eight", body: "page_view, click_cta, form_submit, scroll_depth_75, video_play, file_download, signup, purchase. That's the foundation. Ship these before anything custom." },
-      { h2: "The parameters to include", body: "Every event: page_type, section, item_name. These three cover most downstream reporting. Skip them and you'll regret it at month three." },
-      { h2: "Event naming conventions", body: "snake_case, verb_noun, past tense where sensible. form_submitted, not 'Form Submit'. Consistency saves hours in reporting." },
-      { h2: "What not to track", body: "Every mouse movement, every click on every link, every form field focus. You'll drown in data. Track what maps to decisions." },
+      {
+        h2: "The core eight events every site needs",
+        body: [
+          "Start with these eight events, in this order of importance: page_view (already built into GA4, but ensure pathname is clean), click_cta (any click on a primary call-to-action button), form_submit (lead form, contact form, signup form), scroll_depth_75 (did the user get 75% down the page — a proxy for real engagement), video_play (if you have video content), file_download (PDFs, case studies, whitepapers), signup (account created), and purchase (transaction complete).",
+          "These eight cover the canonical marketing questions: are people arriving, engaging, converting, and buying? Every dashboard or report a marketing team actually needs can be built from these eight events plus consistent parameters. Ship them first, measure for 30 days, then add custom events only when you can articulate the specific decision they'll inform.",
+        ],
+      },
+      {
+        h2: "The three parameters that make reporting easy",
+        body: [
+          "Every event should carry three parameters: page_type (home, product, blog, category, checkout, etc.), section (which part of the page the interaction happened in — hero, pricing_table, faq), and item_name (the specific thing interacted with — 'pricing_cta', 'demo_video_intro'). These three parameters together let you answer almost any drill-down question without rebuilding the tracking.",
+          "Teams that skip parameters end up in a situation where they can see 'CTA clicks' in aggregate but can't tell which CTA on which page was clicked. That's useless for decision-making. By the time they realize, they've lost three months of parameter-less data that can't be retroactively enriched. Ship parameters on day one.",
+        ],
+      },
+      {
+        h2: "Naming conventions that prevent future pain",
+        body: [
+          "Use snake_case for event names, never camelCase or Title Case. GA4's reporting UI handles snake_case better, and inconsistent casing is the number-one source of broken dashboards 6 months into a tracking implementation.",
+          "Use verb_noun structure, past tense where it reads naturally: form_submitted, not 'Form Submit' or 'submitFormButton'. Make it obvious what the user did, not what the code did. Consistency across events means cross-event reports (funnels, paths) work out of the box.",
+          "Document the taxonomy somewhere non-GA4 — a Notion page or a README in the repo that ships tracking. When a new developer or marketer joins, they should be able to find the full event dictionary in one place. The cost of documenting is ten minutes; the cost of not documenting is measured in quarters of confused reporting.",
+        ],
+      },
+      {
+        h2: "What not to track — and why less is more",
+        body: [
+          "Don't track every mouse movement, every click on every link, every scroll event, or every form field focus. GA4's free tier caps events per month, and even if you're on the paid tier, data you don't use is data that makes reports slower and more confusing. Track what maps to decisions, nothing more.",
+          "Specifically: don't track outbound clicks to every external link unless you're debugging a specific partnership. Don't track scroll depth at every 10% increment — just 75% is enough signal for engagement. Don't track hover events unless you're doing specific UX research on a redesign. Don't track time on page as a custom event; GA4 engagement time is good enough.",
+          "The test we use: 'what decision would this event change?' If no one can answer it within 15 seconds, the event doesn't ship. This discipline keeps tracking sustainable and reports readable.",
+        ],
+      },
+    ],
+    keyTakeaways: [
+      "Eight core events cover 95% of needs: page_view, click_cta, form_submit, scroll_depth_75, video_play, file_download, signup, purchase.",
+      "Three parameters on every event: page_type, section, item_name. Without these, drill-down reporting is impossible.",
+      "snake_case, verb_noun, past tense. Document the taxonomy in a non-GA4 location so future team members can find it.",
+      "If you can't articulate the decision an event would change, don't track it. Noise in tracking is the biggest source of future reporting pain.",
     ],
   },
   {
@@ -790,11 +1336,59 @@ const SEEDS: Seed[] = [
     title: "The Five CRO Experiments We Run on Every New Client",
     excerpt:
       "The experiments that reliably produce lift in the first quarter — a running list refined across 80+ engagements.",
+    featured: true,
+    updatedAt: "2026-04-24T00:00:00Z",
+    intro: [
+      "CRO programs fail when teams invent experiments from scratch every time. The best-performing ones we've run across 80+ engagements have a well-worn playbook — a specific set of five experiments that reliably produce lift in the first quarter regardless of industry. These aren't the experiments that'll double your conversion rate. They're the ones that reliably produce 10–30% lifts fast, fund the program's ROI, and free up team bandwidth to run the harder, more interesting experiments afterward.",
+      "This piece walks through the five, with the specific hypotheses, implementation detail, and expected results for each. It's the closest thing to a plug-and-play CRO starter kit we've found.",
+    ],
     sections: [
-      { h2: "The five", body: "Hero headline clarity test, CTA button copy test, pricing page simplification, checkout form reduction, and mobile sticky CTA. These are the reliable 'winners'." },
-      { h2: "Headline clarity wins most", body: "Specific, outcome-focused headlines beat clever headlines 80% of the time. 'Book a call' loses to 'See pricing in 30 seconds' almost always." },
-      { h2: "Pricing page reduction", body: "Most pricing pages have too many tiers and too much detail. Cutting to 3 tiers with one-sentence descriptions consistently lifts pricing-page conversion." },
-      { h2: "Mobile sticky CTA", body: "Almost always a winner on mobile because users scroll past the initial CTA. 10–25% mobile conversion lift is routine." },
+      {
+        h2: "Experiment 1 — Hero headline clarity rewrite",
+        body: [
+          "The hero headline on most websites is written for the founder, not for the visitor. It's abstract, clever, or aspirational instead of concrete and outcome-focused. The clarity test replaces it with a headline that tells the visitor exactly what the product is, who it's for, and what outcome it produces — in one sentence, ideally under 10 words.",
+          "The pattern that wins most often: [outcome] + [audience] + [mechanism]. Example: 'Close 20% more deals — for B2B sales teams using HubSpot.' Compare that to the typical vague headline: 'Pipeline, reimagined.' The specific version tells the visitor whether to stay or leave; the vague one forces them to scroll and search for context, which most won't do.",
+          "Results: typical lift on the hero conversion action ranges from 15% to 60% in our experience. This is the single highest-ROI test because the hero is seen by 100% of visitors, so even modest lifts produce substantial downstream impact.",
+        ],
+      },
+      {
+        h2: "Experiment 2 — CTA button copy test",
+        body: [
+          "CTA buttons on most sites default to 'Get Started' or 'Learn More,' which tell the visitor nothing about what happens when they click. Replacing generic CTAs with specific ones describing the next action typically lifts click-through rates 10–25%.",
+          "The framework: write what happens in the visitor's words. If clicking leads to a scheduling page, the button should say 'Book a demo' or 'See pricing,' not 'Get Started.' If clicking leads to a signup flow, say 'Start free trial — no credit card' or 'Create free account.' The specificity reduces uncertainty, which reduces drop-off at the click moment.",
+          "A/B test the current CTA against three variations and let the data pick the winner. The loser often surprises the team; clever CTAs frequently underperform boring-but-clear ones, which is humbling but profitable.",
+        ],
+      },
+      {
+        h2: "Experiment 3 — Pricing page simplification",
+        body: [
+          "Most pricing pages have too many tiers, too much feature detail, and too much comparison friction. The simplification experiment reduces the page to three tiers maximum, with one-sentence descriptions per tier and feature lists limited to the five most differentiating features.",
+          "The core tradeoff: reducing information on the pricing page forces the high-intent visitors to book a call (where your sales team can qualify and close), while reducing cognitive load for the low-intent browsers who would have bounced anyway. Net effect across dozens of client tests: 15–40% lift in pricing-to-signup conversion, with a small increase in sales-call volume that's typically higher quality.",
+          "Important caveat: this test doesn't work as well for pure self-serve products where visitors need to fully compare tiers before buying. For those, the right test is often the opposite — more detail, clearer comparison tables, live chat for edge cases.",
+        ],
+      },
+      {
+        h2: "Experiment 4 — Checkout or signup form reduction",
+        body: [
+          "Form abandonment is the most-studied, least-fixed CRO problem. Every extra field drops completion by an average of 3–7%. Most signup and checkout forms have fields that aren't required for activation but somebody once thought would be nice to have — phone number, company size, industry, referral source.",
+          "The experiment: reduce the form to the minimum fields required to create the account or process the order. Move anything optional to a post-purchase or post-signup step. For B2B signup, this often means email + password + full name, full stop. For ecommerce, it means email + shipping info, with account creation optional after purchase.",
+          "Typical lift: 10–30% on form completion rate. This experiment also improves downstream conversion because the reduced friction attracts a broader top-of-funnel, and the best acquisition strategies usually start with wider funnels.",
+        ],
+      },
+      {
+        h2: "Experiment 5 — Mobile sticky CTA",
+        body: [
+          "On mobile devices, users scroll past the hero's primary CTA within 3–5 seconds and don't scroll back. A sticky CTA bar pinned to the bottom of the viewport ensures the conversion action remains one tap away no matter how far they've scrolled. Implementation is 30 lines of CSS and a few lines of JavaScript; the lift is typically 10–25% on mobile conversion.",
+          "Design notes that matter: the sticky bar should be dismissible (some users will find it annoying, and forcing it triggers backlash), it should not obscure important page content (use appropriate z-index and padding), and it should adapt its CTA to scroll depth (the initial hero CTA can change to 'Talk to sales' after a user has scrolled through pricing).",
+          "The reason this works is structural: mobile traffic is typically 60–80% of total traffic for most marketing sites, but mobile conversion rates are usually 30–50% lower than desktop. Any friction reduction on mobile compounds heavily. This test is almost always worth running.",
+        ],
+      },
+    ],
+    keyTakeaways: [
+      "Run the same five starter experiments on every new engagement: hero headline, CTA copy, pricing simplification, form reduction, mobile sticky CTA.",
+      "Hero headline rewrites (outcome + audience + mechanism) produce the biggest single lift — often 15–60%.",
+      "Pricing page simplification doesn't lose self-serve revenue; it shifts high-intent visitors to sales calls where close rates are higher.",
+      "Mobile sticky CTAs compound across 60–80% of traffic. Almost always worth the 30 lines of CSS to implement.",
     ],
   },
   {
@@ -1664,6 +2258,10 @@ function hash(str: string) {
 const START_DATE = new Date("2024-06-01T00:00:00Z").getTime();
 const END_DATE = new Date("2026-04-20T00:00:00Z").getTime();
 
+function bodyParagraphs(body: SectionBody): string[] {
+  return Array.isArray(body) ? body : [body];
+}
+
 function buildPosts(): BlogPost[] {
   const posts: BlogPost[] = [];
 
@@ -1678,17 +2276,25 @@ function buildPosts(): BlogPost[] {
     const h = hash(slug);
     const author = AUTHORS[h % AUTHORS.length];
     const publishedTs = START_DATE + (h % (END_DATE - START_DATE));
-    const words = seed.sections.reduce(
-      (sum, s) => sum + s.body.split(/\s+/).length,
-      0
-    );
-    const readMinutes = Math.max(4, Math.round(words / 220) + 4);
 
     const content: string[] = [];
+    if (seed.intro && seed.intro.length > 0) {
+      for (const p of seed.intro) content.push(p);
+    }
     for (const s of seed.sections) {
       content.push(`## ${s.h2}`);
-      content.push(s.body);
+      for (const p of bodyParagraphs(s.body)) content.push(p);
     }
+    if (seed.keyTakeaways && seed.keyTakeaways.length > 0) {
+      content.push("## Key takeaways");
+      for (const t of seed.keyTakeaways) content.push(`- ${t}`);
+    }
+
+    const totalWords = content.reduce(
+      (sum, block) => sum + block.split(/\s+/).length,
+      0,
+    );
+    const readMinutes = Math.max(3, Math.round(totalWords / 220));
 
     posts.push({
       slug,
@@ -1700,6 +2306,7 @@ function buildPosts(): BlogPost[] {
       author,
       readMinutes,
       publishedAt: new Date(publishedTs).toISOString(),
+      ...(seed.updatedAt ? { updatedAt: seed.updatedAt } : {}),
       content,
       keywords: [
         cat.name.toLowerCase(),

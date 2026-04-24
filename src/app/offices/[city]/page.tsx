@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import Script from "next/script";
-import { offices, getOfficeBySlug } from "@/data/offices";
+import { offices, getOfficeBySlug, getOfficesNeedingVerification } from "@/data/offices";
 import { services } from "@/data/services";
 import { industries } from "@/data/industries";
 import { blogPosts, blogCategories } from "@/data/blogs";
@@ -14,6 +14,15 @@ import { ArrowUpRight, MapPin, Globe2, Phone, Mail } from "lucide-react";
 import { SITE } from "@/lib/site";
 
 export async function generateStaticParams() {
+  // Build-time reminder: surface which offices still need verified address data.
+  const needsWork = getOfficesNeedingVerification();
+  if (needsWork.length > 0 && process.env.NODE_ENV !== "production") {
+    console.info(
+      `[offices] ${needsWork.length} office(s) still need verified street + phone data for Google Business Profile: ${needsWork
+        .map((o) => o.city)
+        .join(", ")}`,
+    );
+  }
   return offices.map((o) => ({ city: o.slug }));
 }
 
@@ -25,15 +34,23 @@ export async function generateMetadata({
   const { city } = await params;
   const o = getOfficeBySlug(city);
   if (!o) return {};
+  const languages: Record<string, string> = Object.fromEntries(
+    offices.map((x) => [x.locale, `${SITE.url}/offices/${x.slug}`]),
+  );
+  languages["x-default"] = SITE.url;
   return {
     title: `${o.city} Digital Marketing Agency — ${o.role}`,
     description: o.summary,
     keywords: o.keywords,
-    alternates: { canonical: `${SITE.url}/offices/${o.slug}` },
+    alternates: {
+      canonical: `${SITE.url}/offices/${o.slug}`,
+      languages,
+    },
     openGraph: {
       title: `${o.city} Digital Marketing — It's Not Techy`,
       description: o.summary,
       url: `${SITE.url}/offices/${o.slug}`,
+      locale: o.locale.replace("-", "_"),
     },
   };
 }
@@ -74,22 +91,73 @@ export default async function OfficeCityPage({
       },
     ],
   };
-  const placeSchema = {
-    "@context": "https://schema.org",
-    "@type": "LocalBusiness",
-    name: `${SITE.name} ${office.city}`,
-    image: `${SITE.url}/logo.png`,
-    url: `${SITE.url}/offices/${office.slug}`,
-    telephone: SITE.phone,
-    email: SITE.email,
-    address: {
-      "@type": "PostalAddress",
-      addressLocality: office.city,
-      addressCountry: office.country,
-    },
-    areaServed: office.city,
-    priceRange: "$$$",
-  };
+  // Schema shape depends on whether the office has a verified walk-in address.
+  // Verified offices emit full LocalBusiness with PostalAddress. Unverified
+  // offices (service-area, no walk-in) emit as a ProfessionalService with
+  // areaServed only — the honest and Google-compliant shape.
+  const placeSchema = office.verified
+    ? {
+        "@context": "https://schema.org",
+        "@type": "LocalBusiness",
+        "@id": `${SITE.url}/offices/${office.slug}#localbusiness`,
+        name: `${SITE.name} ${office.city}`,
+        image: `${SITE.url}/opengraph-image`,
+        url: `${SITE.url}/offices/${office.slug}`,
+        telephone: office.phone ?? SITE.phone,
+        email: SITE.email,
+        address: {
+          "@type": "PostalAddress",
+          ...(office.streetAddress ? { streetAddress: office.streetAddress } : {}),
+          addressLocality: office.city,
+          ...(office.addressRegion ? { addressRegion: office.addressRegion } : {}),
+          ...(office.postalCode ? { postalCode: office.postalCode } : {}),
+          addressCountry: office.countryCode,
+        },
+        ...(office.geo
+          ? {
+              geo: {
+                "@type": "GeoCoordinates",
+                latitude: office.geo.latitude,
+                longitude: office.geo.longitude,
+              },
+            }
+          : {}),
+        ...(office.openingHours && office.openingHours.length > 0
+          ? { openingHours: office.openingHours }
+          : {}),
+        areaServed: {
+          "@type": "Country",
+          name: office.country,
+        },
+        parentOrganization: { "@id": `${SITE.url}/#organization` },
+        priceRange: "$$$",
+      }
+    : {
+        "@context": "https://schema.org",
+        "@type": "ProfessionalService",
+        "@id": `${SITE.url}/offices/${office.slug}#service`,
+        name: `${SITE.name} ${office.city}`,
+        image: `${SITE.url}/opengraph-image`,
+        url: `${SITE.url}/offices/${office.slug}`,
+        telephone: office.phone ?? SITE.phone,
+        email: SITE.email,
+        areaServed: {
+          "@type": "Country",
+          name: office.country,
+        },
+        ...(office.geo
+          ? {
+              geo: {
+                "@type": "GeoCoordinates",
+                latitude: office.geo.latitude,
+                longitude: office.geo.longitude,
+              },
+            }
+          : {}),
+        serviceType: "Digital marketing agency",
+        parentOrganization: { "@id": `${SITE.url}/#organization` },
+        priceRange: "$$$",
+      };
 
   return (
     <>
@@ -127,8 +195,8 @@ export default async function OfficeCityPage({
               Talk to our {office.city} team
               <ArrowUpRight className="h-4 w-4" />
             </Link>
-            <a href={`tel:${SITE.phoneRaw}`} className="btn-ghost">
-              <Phone className="h-4 w-4" /> {SITE.phone}
+            <a href={`tel:${office.phoneRaw ?? SITE.phoneRaw}`} className="btn-ghost">
+              <Phone className="h-4 w-4" /> {office.phone ?? SITE.phone}
             </a>
             <a href={`mailto:${SITE.email}`} className="btn-ghost">
               <Mail className="h-4 w-4" /> {SITE.email}
@@ -143,9 +211,25 @@ export default async function OfficeCityPage({
               Location & time zone
             </h3>
             <p className="mt-2 text-sm text-white/70">
-              {office.city}, {office.country}
-              <br />
-              {office.tz}
+              {office.verified && office.streetAddress ? (
+                <>
+                  {office.streetAddress}
+                  <br />
+                  {office.city}
+                  {office.addressRegion ? `, ${office.addressRegion}` : ""}{" "}
+                  {office.postalCode ?? ""}
+                  <br />
+                  {office.country}
+                  <br />
+                  <span className="text-white/50">{office.tz}</span>
+                </>
+              ) : (
+                <>
+                  Meetings by appointment in {office.city}, {office.country}.
+                  <br />
+                  <span className="text-white/50">{office.tz}</span>
+                </>
+              )}
             </p>
           </div>
           <div className="card">
@@ -162,9 +246,13 @@ export default async function OfficeCityPage({
           <div className="card">
             <Phone className="h-5 w-5 text-brand" />
             <h3 className="mt-3 font-display text-lg font-semibold text-white">
-              Global HQ address
+              Global HQ
             </h3>
             <p className="mt-2 text-sm text-white/70">{SITE.address.full}</p>
+            <p className="mt-2 text-xs text-white/50">
+              Global HQ address. The {office.city} team operates
+              {office.verified ? " from the address above" : " regionally — book a meeting to arrange a local session"}.
+            </p>
           </div>
         </div>
       </section>

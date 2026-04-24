@@ -2,6 +2,8 @@ export type OfficeDetail = {
   slug: string;
   city: string;
   country: string;
+  countryCode: string;
+  locale: string;
   flag: string;
   role: string;
   tz: string;
@@ -13,13 +15,43 @@ export type OfficeDetail = {
   blogCategories: string[];
   nearbyCities: string[];
   keywords: string[];
+  /**
+   * Local-business signals. Fill these in with REAL verified registered
+   * addresses + per-office phone numbers before claiming each office's Google
+   * Business Profile. Fake or placeholder addresses are an SEO risk (Google
+   * cross-checks against business registries) and can result in GBP suspension.
+   *
+   * Leave blank for service-area offices with no walk-in location — the
+   * LocalBusiness schema will correctly emit as a service-area business with
+   * `areaServed`, which is the right schema.org shape for that situation.
+   */
+  streetAddress?: string;
+  postalCode?: string;
+  addressRegion?: string;
+  phone?: string;
+  phoneRaw?: string;
+  geo?: { latitude: number; longitude: number };
+  openingHours?: string[];
+  /** True if the office has a registered walk-in address. Emits richer LocalBusiness schema. */
+  verified?: boolean;
 };
+
+/**
+ * Offices that still need verified street address + regional phone data before
+ * we can claim their regional Google Business Profile listings. This list is
+ * generated at module load for validation / reporting.
+ */
+export function getOfficesNeedingVerification() {
+  return offices.filter((o) => !o.verified);
+}
 
 export const offices: OfficeDetail[] = [
   {
     slug: "toronto",
     city: "Toronto",
     country: "Canada",
+    countryCode: "CA",
+    locale: "en-CA",
     flag: "🇨🇦",
     role: "Global HQ",
     tz: "America/Toronto",
@@ -55,11 +87,21 @@ export const offices: OfficeDetail[] = [
       "Toronto web design",
       "Toronto social media agency",
     ],
+    streetAddress: "1111 Albion Rd",
+    postalCode: "M9V 2X3",
+    addressRegion: "ON",
+    phone: "+1 672-673-7900",
+    phoneRaw: "+16726737900",
+    geo: { latitude: 43.7444, longitude: -79.5636 },
+    openingHours: ["Mo-Fr 09:00-18:00"],
+    verified: true,
   },
   {
     slug: "new-york",
     city: "New York",
     country: "United States",
+    countryCode: "US",
+    locale: "en-US",
     flag: "🇺🇸",
     role: "Americas Hub",
     tz: "America/New_York",
@@ -94,11 +136,16 @@ export const offices: OfficeDetail[] = [
       "Brooklyn agency",
       "Manhattan marketing agency",
     ],
+    addressRegion: "NY",
+    geo: { latitude: 40.7128, longitude: -74.006 },
+    openingHours: ["Mo-Fr 09:00-18:00"],
   },
   {
     slug: "london",
     city: "London",
     country: "United Kingdom",
+    countryCode: "GB",
+    locale: "en-GB",
     flag: "🇬🇧",
     role: "EMEA Hub",
     tz: "Europe/London",
@@ -132,11 +179,15 @@ export const offices: OfficeDetail[] = [
       "EMEA marketing agency",
       "GDPR marketing agency",
     ],
+    geo: { latitude: 51.5074, longitude: -0.1278 },
+    openingHours: ["Mo-Fr 09:00-18:00"],
   },
   {
     slug: "dubai",
     city: "Dubai",
     country: "United Arab Emirates",
+    countryCode: "AE",
+    locale: "en-AE",
     flag: "🇦🇪",
     role: "Middle East Hub",
     tz: "Asia/Dubai",
@@ -170,11 +221,15 @@ export const offices: OfficeDetail[] = [
       "KSA marketing agency",
       "Arabic marketing agency",
     ],
+    geo: { latitude: 25.2048, longitude: 55.2708 },
+    openingHours: ["Su-Th 09:00-18:00"],
   },
   {
     slug: "mumbai",
     city: "Mumbai",
     country: "India",
+    countryCode: "IN",
+    locale: "en-IN",
     flag: "🇮🇳",
     role: "APAC Delivery Center",
     tz: "Asia/Kolkata",
@@ -208,11 +263,16 @@ export const offices: OfficeDetail[] = [
       "Bangalore marketing agency",
       "Delhi marketing agency",
     ],
+    addressRegion: "MH",
+    geo: { latitude: 19.076, longitude: 72.8777 },
+    openingHours: ["Mo-Fr 09:30-18:30"],
   },
   {
     slug: "singapore",
     city: "Singapore",
     country: "Singapore",
+    countryCode: "SG",
+    locale: "en-SG",
     flag: "🇸🇬",
     role: "APAC Hub",
     tz: "Asia/Singapore",
@@ -245,11 +305,15 @@ export const offices: OfficeDetail[] = [
       "Southeast Asia marketing",
       "Singapore SEO agency",
     ],
+    geo: { latitude: 1.3521, longitude: 103.8198 },
+    openingHours: ["Mo-Fr 09:00-18:00"],
   },
   {
     slug: "sydney",
     city: "Sydney",
     country: "Australia",
+    countryCode: "AU",
+    locale: "en-AU",
     flag: "🇦🇺",
     role: "Oceania Hub",
     tz: "Australia/Sydney",
@@ -282,11 +346,16 @@ export const offices: OfficeDetail[] = [
       "ANZ marketing agency",
       "Sydney SEO agency",
     ],
+    addressRegion: "NSW",
+    geo: { latitude: -33.8688, longitude: 151.2093 },
+    openingHours: ["Mo-Fr 09:00-18:00"],
   },
   {
     slug: "berlin",
     city: "Berlin",
     country: "Germany",
+    countryCode: "DE",
+    locale: "en-DE",
     flag: "🇩🇪",
     role: "EU Engineering",
     tz: "Europe/Berlin",
@@ -320,6 +389,8 @@ export const offices: OfficeDetail[] = [
       "EU marketing agency",
       "DACH marketing agency",
     ],
+    geo: { latitude: 52.52, longitude: 13.405 },
+    openingHours: ["Mo-Fr 09:00-18:00"],
   },
 ];
 

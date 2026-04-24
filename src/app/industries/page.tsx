@@ -10,11 +10,12 @@ import {
   DrawLine,
   Spotlight,
 } from "@/components/Reveal";
+import { BreadcrumbSchema } from "@/components/Breadcrumbs";
 import { CTA } from "@/components/CTA";
 import { TiltCard } from "@/components/TiltCard";
 import { Marquee } from "@/components/Marquee";
 import { ClientOnly } from "@/components/ClientOnly";
-import { CrystalCluster } from "@/components/ThreeAccents";
+import { LazyCrystalCluster as CrystalCluster } from "@/components/Lazy3D";
 import { ArrowUpRight } from "lucide-react";
 import { SITE } from "@/lib/site";
 
@@ -29,7 +30,8 @@ export const metadata: Metadata = {
 export default function IndustriesPage() {
   return (
     <>
-      <section className="section relative overflow-hidden pt-32">
+      <BreadcrumbSchema items={[{ name: "Home", path: "/" }, { name: "Industries", path: "/industries" }]} />
+      <section className="section relative isolate overflow-hidden pt-32">
         <FloatOrb className="-right-32 top-10" size={480} color="rgba(102, 231, 218, 0.14)" />
         <ClientOnly>
           <CrystalCluster className="inset-y-10 right-0 hidden w-[38%] md:block" />
@@ -57,6 +59,79 @@ export default function IndustriesPage() {
           items={industries.map((i) => i.name)}
         />
       </div>
+
+      <section className="section">
+        <div className="grid gap-10 md:grid-cols-[1.1fr,0.9fr]">
+          <Reveal>
+            <div className="prose prose-invert max-w-none prose-p:text-white/75 prose-strong:text-white prose-h2:font-display prose-h2:text-3xl prose-h2:tracking-tight prose-h2:text-white md:prose-h2:text-4xl">
+              <h2>Why an industry-specific marketing playbook matters</h2>
+              <p>
+                Generic marketing advice treats every business the same.
+                Every industry has its own buyer journey, sales cycle, unit
+                economics, compliance rules, and content expectations. A
+                playbook that works for a $99/mo SaaS tool will bankrupt a
+                healthcare clinic. What wins in DTC beauty is illegal in
+                fintech. The difference between a healthy marketing program
+                and an expensive one is usually whether the team knows the
+                industry rules before they write the plan. That&apos;s what
+                every page under /industries is for — specific, tactical,
+                industry-fluent playbooks.
+              </p>
+              <h2>How we build every industry playbook</h2>
+              <p>
+                For each industry we serve, the team that runs those accounts
+                has written a playbook covering the five things that actually
+                differ: who the customer is and how they research, which
+                channels pay back and which are vanity, what regulatory
+                guardrails shape creative and data, what the benchmark CAC /
+                LTV / payback window looks like, and which competitor patterns
+                are worth copying versus avoiding. Click any industry below
+                for the full document — it&apos;s the exact starting point
+                we&apos;d walk you through on a discovery call.
+              </p>
+              <h2>Who this is for</h2>
+              <p>
+                If you&apos;re a founder, marketing lead, or operator whose
+                category shows up on the list below, the playbook will read
+                like a cheat sheet for your next quarter. If your industry
+                isn&apos;t listed, it likely means we haven&apos;t shipped
+                enough engagements there to publish an honest playbook yet —
+                we&apos;ll still take the call, but we won&apos;t pretend to
+                be specialists we&apos;re not.
+              </p>
+            </div>
+          </Reveal>
+          <Reveal delay={0.1}>
+            <div className="sticky top-24 rounded-3xl border border-white/10 bg-white/[0.03] p-6">
+              <div className="text-xs uppercase tracking-[0.2em] text-brand">
+                What each industry page includes
+              </div>
+              <ul className="mt-4 space-y-3 text-sm text-white/75">
+                <li className="flex gap-2">
+                  <span className="mt-1 inline-block h-1.5 w-1.5 flex-shrink-0 rounded-full bg-brand" />
+                  Buyer personas, research behavior, and decision triggers.
+                </li>
+                <li className="flex gap-2">
+                  <span className="mt-1 inline-block h-1.5 w-1.5 flex-shrink-0 rounded-full bg-brand" />
+                  Which channels pay back — ranked, with median CAC.
+                </li>
+                <li className="flex gap-2">
+                  <span className="mt-1 inline-block h-1.5 w-1.5 flex-shrink-0 rounded-full bg-brand" />
+                  Compliance and data guardrails that shape creative.
+                </li>
+                <li className="flex gap-2">
+                  <span className="mt-1 inline-block h-1.5 w-1.5 flex-shrink-0 rounded-full bg-brand" />
+                  Seasonality, pricing cycles, and renewal dynamics.
+                </li>
+                <li className="flex gap-2">
+                  <span className="mt-1 inline-block h-1.5 w-1.5 flex-shrink-0 rounded-full bg-brand" />
+                  Competitor teardowns and patterns worth copying.
+                </li>
+              </ul>
+            </div>
+          </Reveal>
+        </div>
+      </section>
 
       <section className="section relative pt-20">
         <FloatOrb className="-left-20 bottom-20" size={400} color="rgba(0, 179, 164, 0.10)" duration={15} />

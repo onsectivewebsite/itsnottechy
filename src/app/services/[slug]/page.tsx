@@ -65,7 +65,6 @@ export async function generateMetadata({
       title: service.title,
       description: service.summary,
       url: `${SITE.url}/services/${service.slug}`,
-      images: ["/logo.png"],
     },
   };
 }
@@ -199,13 +198,12 @@ export default async function ServicePage({
             <h3 className="mt-8 font-display text-xl font-semibold text-white">Tools we love</h3>
             <div className="mt-3 flex flex-wrap gap-2">
               {service.tools.map((t) => (
-                <Link
+                <span
                   key={t}
-                  href={`/blog?q=${encodeURIComponent(t)}`}
-                  className="rounded-full border border-white/10 bg-white/5 px-3 py-1 text-xs text-white/70 transition hover:border-brand/40 hover:text-brand"
+                  className="rounded-full border border-white/10 bg-white/5 px-3 py-1 text-xs text-white/70"
                 >
                   {t}
-                </Link>
+                </span>
               ))}
             </div>
           </div>

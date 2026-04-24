@@ -9,11 +9,12 @@ import {
   Spotlight,
   Magnetic,
 } from "@/components/Reveal";
+import { BreadcrumbSchema } from "@/components/Breadcrumbs";
 import { CTA } from "@/components/CTA";
 import { TiltCard } from "@/components/TiltCard";
 import { Marquee } from "@/components/Marquee";
 import { ClientOnly } from "@/components/ClientOnly";
-import { CubeField } from "@/components/ThreeAccents";
+import { LazyCubeField as CubeField } from "@/components/Lazy3D";
 import { SITE } from "@/lib/site";
 import { ArrowUpRight, TrendingUp, Users, DollarSign } from "lucide-react";
 
@@ -96,7 +97,8 @@ const CASES = [
 export default function PortfolioPage() {
   return (
     <>
-      <section className="section relative overflow-hidden pt-32">
+      <BreadcrumbSchema items={[{ name: "Home", path: "/" }, { name: "Portfolio", path: "/portfolio" }]} />
+      <section className="section relative isolate overflow-hidden pt-32">
         <FloatOrb className="-left-32 top-0" size={520} />
         <ClientOnly>
           <CubeField className="inset-y-0 right-[-8%] hidden w-[42%] md:block" />
@@ -141,6 +143,83 @@ export default function PortfolioPage() {
           ]}
         />
       </div>
+
+      <section className="section">
+        <div className="grid gap-10 md:grid-cols-[1.1fr,0.9fr]">
+          <Reveal>
+            <div className="prose prose-invert max-w-none prose-p:text-white/75 prose-strong:text-white prose-h2:font-display prose-h2:text-3xl prose-h2:tracking-tight prose-h2:text-white md:prose-h2:text-4xl">
+              <h2>What real marketing case studies look like</h2>
+              <p>
+                Most agency portfolios are theater. Cherry-picked vanity
+                metrics, no context, no cost, no payback window — just
+                &ldquo;3x growth&rdquo; in a big font. We share the numbers
+                most agencies hide: what the engagement cost, what the
+                attributed revenue actually was, how long payback took, and
+                where the program stumbled before it worked. The summaries
+                below are written for operators and CFOs — people who need to
+                decide whether this kind of work could move their own P&amp;L,
+                not be impressed by stock-photo growth charts.
+              </p>
+              <h2>Why client names aren&apos;t always public</h2>
+              <p>
+                A lot of our best work happens under NDA. Enterprise SaaS
+                won&apos;t let us publish SQL conversion rates. A healthcare
+                client can&apos;t share pipeline specifics without clearance.
+                Private equity portfolio companies often want metrics
+                confidential until exit. We respect that. Every case on this
+                page is real; the ones with generic descriptors are confidential
+                engagements where we share the full story — named client,
+                exact numbers, the contract, reference calls — under mutual
+                NDA once a discovery call confirms fit.
+              </p>
+              <h2>How to read a case study honestly</h2>
+              <p>
+                Three questions separate a real case study from a marketing
+                brochure. What was the baseline before we engaged? How long
+                did the lift take to show up and how long did it last? And
+                what did the engagement cost as a percentage of the revenue
+                lift? We answer all three in every full case study we send —
+                because those are the only three numbers that tell you
+                whether the program was worth running. Request one below for
+                any engagement that looks close to your situation.
+              </p>
+            </div>
+          </Reveal>
+          <Reveal delay={0.1}>
+            <div className="sticky top-24 rounded-3xl border border-white/10 bg-white/[0.03] p-6">
+              <div className="text-xs uppercase tracking-[0.2em] text-brand">
+                What a full case study includes
+              </div>
+              <ul className="mt-4 space-y-3 text-sm text-white/75">
+                <li className="flex gap-2">
+                  <span className="mt-1 inline-block h-1.5 w-1.5 flex-shrink-0 rounded-full bg-brand" />
+                  Business context and pre-engagement baseline metrics.
+                </li>
+                <li className="flex gap-2">
+                  <span className="mt-1 inline-block h-1.5 w-1.5 flex-shrink-0 rounded-full bg-brand" />
+                  Scope, staffing, timeline, and the fee structure.
+                </li>
+                <li className="flex gap-2">
+                  <span className="mt-1 inline-block h-1.5 w-1.5 flex-shrink-0 rounded-full bg-brand" />
+                  Tactical playbook — what we shipped in each phase.
+                </li>
+                <li className="flex gap-2">
+                  <span className="mt-1 inline-block h-1.5 w-1.5 flex-shrink-0 rounded-full bg-brand" />
+                  Attributed outcomes with payback window and CAC impact.
+                </li>
+                <li className="flex gap-2">
+                  <span className="mt-1 inline-block h-1.5 w-1.5 flex-shrink-0 rounded-full bg-brand" />
+                  What didn&apos;t work — the experiments we killed.
+                </li>
+                <li className="flex gap-2">
+                  <span className="mt-1 inline-block h-1.5 w-1.5 flex-shrink-0 rounded-full bg-brand" />
+                  Reference call with the client if you want one.
+                </li>
+              </ul>
+            </div>
+          </Reveal>
+        </div>
+      </section>
 
       <section className="section relative pt-20">
         <FloatOrb className="right-0 top-1/2" size={380} color="rgba(102, 231, 218, 0.10)" duration={16} />

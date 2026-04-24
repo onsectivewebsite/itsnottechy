@@ -13,7 +13,7 @@ import {
 import { TiltCard } from "@/components/TiltCard";
 import { Marquee } from "@/components/Marquee";
 import { ClientOnly } from "@/components/ClientOnly";
-import { PrismAccent } from "@/components/ThreeAccents";
+import { LazyPrismAccent as PrismAccent } from "@/components/Lazy3D";
 import { SITE } from "@/lib/site";
 import { Mail, Phone, MapPin, Instagram, Linkedin, Facebook } from "lucide-react";
 
@@ -39,7 +39,7 @@ export default function ContactPage() {
         {JSON.stringify(contactSchema)}
       </Script>
 
-      <section className="section relative overflow-hidden pt-32">
+      <section className="section relative isolate overflow-hidden pt-32">
         <FloatOrb className="-left-32 top-20" size={440} />
         <ClientOnly>
           <PrismAccent className="inset-y-8 right-[-8%] hidden w-[34%] md:block" />

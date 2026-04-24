@@ -10,10 +10,11 @@ import {
   DrawLine,
   Spotlight,
 } from "@/components/Reveal";
+import { BreadcrumbSchema } from "@/components/Breadcrumbs";
 import { CTA } from "@/components/CTA";
 import { TiltCard } from "@/components/TiltCard";
 import { ClientOnly } from "@/components/ClientOnly";
-import { OrbitAccent } from "@/components/ThreeAccents";
+import { LazyOrbitAccent as OrbitAccent } from "@/components/Lazy3D";
 import { SITE } from "@/lib/site";
 import { ArrowUpRight } from "lucide-react";
 
@@ -27,7 +28,8 @@ export const metadata: Metadata = {
 export default function AuthorsPage() {
   return (
     <>
-      <section className="section relative overflow-hidden pt-32">
+      <BreadcrumbSchema items={[{ name: "Home", path: "/" }, { name: "Authors", path: "/authors" }]} />
+      <section className="section relative isolate overflow-hidden pt-32">
         <FloatOrb className="-right-32 top-10" size={460} color="rgba(102, 231, 218, 0.12)" />
         <ClientOnly>
           <OrbitAccent className="inset-y-0 right-[-10%] hidden w-[38%] md:block" />

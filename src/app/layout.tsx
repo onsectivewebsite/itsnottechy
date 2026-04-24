@@ -44,13 +44,11 @@ export const metadata: Metadata = {
     description: SITE.description,
     siteName: SITE.name,
     locale: "en_CA",
-    images: [{ url: "/logo.png", width: 1200, height: 630, alt: SITE.name }],
   },
   twitter: {
     card: "summary_large_image",
     title: `${SITE.name} — ${SITE.tagline}`,
     description: SITE.description,
-    images: ["/logo.png"],
   },
   category: "marketing",
 };
@@ -126,7 +124,6 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="en" className={`${inter.variable} ${display.variable}`}>
       <head>
-        <link rel="icon" href="/favicon.jpg" />
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="" />
         <Script id="ld-org" type="application/ld+json">

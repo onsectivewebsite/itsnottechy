@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import Script from "next/script";
@@ -53,7 +54,6 @@ export async function generateMetadata({
       publishedTime: post.publishedAt,
       authors: [post.author],
       tags: post.tags,
-      images: ["/logo.png"],
     },
   };
 }
@@ -83,12 +83,24 @@ export default async function BlogPostPage({
     "@type": "BlogPosting",
     headline: post.title,
     description: post.excerpt,
-    author: { "@type": "Person", name: post.author },
+    inLanguage: "en",
+    author: authorObj
+      ? {
+          "@type": "Person",
+          name: authorObj.name,
+          url: `${SITE.url}/authors/${authorObj.slug}`,
+        }
+      : { "@type": "Person", name: post.author },
     datePublished: post.publishedAt,
-    dateModified: post.publishedAt,
-    image: `${SITE.url}/logo.png`,
+    dateModified: post.updatedAt ?? post.publishedAt,
+    image: `${SITE.url}/blog/${post.slug}/opengraph-image`,
     url: `${SITE.url}/blog/${post.slug}`,
-    publisher: { "@type": "Organization", name: SITE.name, logo: { "@type": "ImageObject", url: `${SITE.url}/logo.png` } },
+    publisher: {
+      "@type": "Organization",
+      "@id": `${SITE.url}/#organization`,
+      name: SITE.name,
+      logo: { "@type": "ImageObject", url: `${SITE.url}/logo.png` },
+    },
     mainEntityOfPage: `${SITE.url}/blog/${post.slug}`,
     keywords: post.keywords.join(", "),
   };
@@ -122,28 +134,55 @@ export default async function BlogPostPage({
             </Link>
             <span className="inline-flex items-center gap-1.5"><Clock className="h-4 w-4" /> {post.readMinutes} min read</span>
             <span>{new Date(post.publishedAt).toLocaleDateString("en", { day: "numeric", month: "long", year: "numeric" })}</span>
+            {post.updatedAt && post.updatedAt !== post.publishedAt && (
+              <span className="inline-flex items-center gap-1.5 rounded-full border border-brand/40 bg-brand/10 px-2.5 py-0.5 text-[11px] font-medium text-brand">
+                Updated {new Date(post.updatedAt).toLocaleDateString("en", { day: "numeric", month: "short", year: "numeric" })}
+              </span>
+            )}
           </div>
         </Reveal>
 
-        <div className="prose prose-invert mt-10 max-w-none prose-headings:font-display prose-headings:tracking-tight prose-h2:text-3xl prose-h2:mt-10 prose-p:text-white/80 prose-strong:text-white prose-a:text-brand">
-          {post.content.map((block, i) => {
-            if (block.startsWith("## ")) {
-              return <h2 key={i}>{block.replace("## ", "")}</h2>;
-            }
-            return <p key={i}>{block}</p>;
-          })}
+        <div className="prose prose-invert mt-10 max-w-none prose-headings:font-display prose-headings:tracking-tight prose-h2:text-3xl prose-h2:mt-10 prose-p:text-white/80 prose-strong:text-white prose-a:text-brand prose-li:text-white/80">
+          {(() => {
+            const out: React.ReactNode[] = [];
+            let listBuffer: string[] = [];
+            const flushList = (key: string) => {
+              if (listBuffer.length === 0) return;
+              out.push(
+                <ul key={key}>
+                  {listBuffer.map((item, i) => (
+                    <li key={i}>{item}</li>
+                  ))}
+                </ul>,
+              );
+              listBuffer = [];
+            };
+            post.content.forEach((block, i) => {
+              if (block.startsWith("- ")) {
+                listBuffer.push(block.slice(2));
+                return;
+              }
+              flushList(`list-${i}`);
+              if (block.startsWith("## ")) {
+                out.push(<h2 key={i}>{block.replace("## ", "")}</h2>);
+              } else {
+                out.push(<p key={i}>{block}</p>);
+              }
+            });
+            flushList("list-end");
+            return out;
+          })()}
         </div>
 
         <div className="mt-10 flex flex-wrap gap-2">
-          {post.tags.map((t) => (
+          {categoryObj && (
             <Link
-              key={t}
-              href={`/blog?q=${encodeURIComponent(t)}`}
+              href={`/blog/category/${categoryObj.slug}`}
               className="rounded-full border border-white/10 bg-white/5 px-3 py-1 text-xs text-white/70 transition hover:border-brand/40 hover:text-brand"
             >
-              #{t}
+              #{categoryObj.name}
             </Link>
-          ))}
+          )}
         </div>
 
         {contextualService && (
@@ -172,9 +211,11 @@ export default async function BlogPostPage({
         {authorObj && (
           <aside className="mt-8 flex items-center gap-4 rounded-3xl border border-white/10 bg-white/[0.03] p-6">
             <div className="flex h-14 w-14 flex-shrink-0 items-center justify-center overflow-hidden rounded-full ring-1 ring-white/10">
-              <img
+              <Image
                 src={authorObj.image}
                 alt={authorObj.name}
+                width={56}
+                height={56}
                 className="h-full w-full object-cover"
               />
             </div>

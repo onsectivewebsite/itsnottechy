@@ -9,9 +9,10 @@ import {
   DrawLine,
   Spotlight,
 } from "@/components/Reveal";
+import { BreadcrumbSchema } from "@/components/Breadcrumbs";
 import { CTA } from "@/components/CTA";
 import { ClientOnly } from "@/components/ClientOnly";
-import { ParticleField } from "@/components/ThreeAccents";
+import { LazyParticleField as ParticleField } from "@/components/Lazy3D";
 import { SITE } from "@/lib/site";
 import { ArrowUpRight } from "lucide-react";
 
@@ -71,7 +72,8 @@ export default async function BlogPage({
 
   return (
     <>
-      <section className="section relative overflow-hidden pt-32">
+      <BreadcrumbSchema items={[{ name: "Home", path: "/" }, { name: "Blog", path: "/blog" }]} />
+      <section className="section relative isolate overflow-hidden pt-32">
         <FloatOrb className="-right-32 top-10" size={480} color="rgba(102, 231, 218, 0.14)" />
         <ClientOnly>
           <ParticleField className="inset-y-0 right-[-6%] hidden w-[36%] md:block" />

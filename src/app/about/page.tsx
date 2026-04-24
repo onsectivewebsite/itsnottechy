@@ -12,11 +12,16 @@ import {
   Parallax,
 } from "@/components/Reveal";
 import { CTA } from "@/components/CTA";
-import { TiltCard } from "@/components/TiltCard";
 import { AnimatedNumber } from "@/components/AnimatedNumber";
 import { Marquee } from "@/components/Marquee";
 import { ClientOnly } from "@/components/ClientOnly";
-import { CrystalCluster } from "@/components/ThreeAccents";
+import {
+  LazyCrystalCluster as CrystalCluster,
+  LazyOrbitAccent as OrbitAccent,
+  LazyPrismAccent as PrismAccent,
+  LazyParticleField as ParticleField,
+  LazyCubeField as CubeField,
+} from "@/components/Lazy3D";
 import { SITE } from "@/lib/site";
 import { Handshake, Globe2, Zap, ShieldCheck } from "lucide-react";
 
@@ -45,7 +50,7 @@ const STATS = [
 export default function AboutPage() {
   return (
     <>
-      <section className="section relative overflow-hidden pt-32">
+      <section className="section relative isolate overflow-hidden pt-32">
         <ScrollFloat className="pointer-events-none absolute -right-40 top-10 -z-10 h-[520px] w-[520px] rounded-full bg-brand/20 blur-3xl" distance={120}>
           <span className="sr-only" />
         </ScrollFloat>
@@ -92,11 +97,11 @@ export default function AboutPage() {
             { icon: ShieldCheck, title: "No lock-in", body: "All files, data, and accounts live in your systems. You own the work." },
           ].map(({ icon: Icon, title, body }) => (
             <Spotlight key={title} className="h-full rounded-3xl">
-              <TiltCard className="card ring-hover h-full" max={6}>
+              <div className="card ring-hover h-full">
                 <Icon className="h-6 w-6 text-brand" />
                 <h3 className="mt-4 font-display text-lg font-semibold text-white">{title}</h3>
                 <p className="mt-1 text-sm text-white/60">{body}</p>
-              </TiltCard>
+              </div>
             </Spotlight>
           ))}
         </StaggerGroup>
@@ -117,8 +122,11 @@ export default function AboutPage() {
         />
       </div>
 
-      <section className="section relative pt-20">
+      <section className="section relative isolate overflow-hidden pt-20">
         <FloatOrb className="-left-20 top-10" size={360} color="rgba(0, 179, 164, 0.10)" duration={14} />
+        <ClientOnly>
+          <PrismAccent className="inset-y-0 right-[-8%] hidden w-[32%] md:block" />
+        </ClientOnly>
         <h2 className="max-w-4xl font-display text-3xl font-semibold tracking-tight text-white md:text-5xl">
           <CharReveal text="Enterprise engineering, when you need it." accentWords={["when", "you", "need", "it."]} />
         </h2>
@@ -133,7 +141,10 @@ export default function AboutPage() {
         </Reveal>
       </section>
 
-      <section className="section pt-0">
+      <section className="section relative isolate overflow-hidden pt-0">
+        <ClientOnly>
+          <OrbitAccent className="-left-[10%] top-10 hidden w-[36%] md:block" />
+        </ClientOnly>
         <h2 className="font-display text-3xl font-semibold tracking-tight text-white md:text-5xl">
           <CharReveal text="Our global offices" />
         </h2>
@@ -141,44 +152,50 @@ export default function AboutPage() {
         <StaggerGroup className="mt-8 grid gap-4 md:grid-cols-2 lg:grid-cols-4" stagger={0.05}>
           {SITE.offices.map((o) => (
             <Spotlight key={o.city} className="h-full rounded-3xl">
-              <TiltCard className="card ring-hover h-full" max={8}>
-                <div className="text-3xl transition-transform hover:scale-110">{o.flag}</div>
+              <div className="card ring-hover h-full">
+                <div className="text-3xl">{o.flag}</div>
                 <h3 className="mt-3 font-display text-lg font-semibold text-white">{o.city}</h3>
                 <p className="text-sm text-brand">{o.role}</p>
                 <p className="mt-1 text-xs text-white/50">{o.country}</p>
-              </TiltCard>
+              </div>
             </Spotlight>
           ))}
         </StaggerGroup>
       </section>
 
-      <section className="section relative pt-0">
-        <Parallax offset={60} direction="down" className="pointer-events-none absolute right-0 top-10 h-72 w-72 rounded-full bg-brand/10 blur-3xl" />
+      <section className="section relative isolate overflow-hidden pt-0">
+        <Parallax offset={60} direction="down" className="pointer-events-none absolute right-0 top-10 -z-10 h-72 w-72 rounded-full bg-brand/10 blur-3xl" />
+        <ClientOnly>
+          <ParticleField className="inset-y-0 right-[-8%] hidden w-[38%] md:block" />
+        </ClientOnly>
         <h2 className="font-display text-3xl font-semibold tracking-tight text-white md:text-5xl">
           <CharReveal text="Meet the humans behind it." accentWords={["humans"]} />
         </h2>
         <DrawLine className="mt-4 w-24" delay={0.5} />
         <StaggerGroup className="mt-10 grid gap-6 md:grid-cols-3 lg:grid-cols-5" stagger={0.08}>
           {TEAM.map((m) => (
-            <TiltCard key={m.name} className="card ring-hover text-center" max={10}>
+            <div key={m.name} className="card ring-hover text-center">
               <div className="group relative mx-auto aspect-square w-full overflow-hidden rounded-2xl">
                 <Image
                   src={m.image}
                   alt={m.name}
                   fill
-                  className="object-cover transition-transform duration-700 group-hover:scale-110"
+                  className="object-cover transition-transform duration-700 group-hover:scale-105"
                   sizes="(max-width: 768px) 50vw, 20vw"
                 />
                 <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-ink-900/70 via-transparent to-transparent opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
               </div>
               <h3 className="mt-4 font-display text-base font-semibold text-white">{m.name}</h3>
               <p className="text-xs text-brand">{m.role}</p>
-            </TiltCard>
+            </div>
           ))}
         </StaggerGroup>
       </section>
 
-      <section className="section pt-0">
+      <section className="section relative isolate overflow-hidden pt-0">
+        <ClientOnly>
+          <CubeField className="inset-y-0 -left-[10%] hidden w-[36%] md:block" />
+        </ClientOnly>
         <h2 className="font-display text-3xl font-semibold tracking-tight text-white md:text-5xl">
           <CharReveal text="Values we hire for." accentWords={["hire", "for."]} />
         </h2>
@@ -193,10 +210,10 @@ export default function AboutPage() {
             { t: "Transparency by default", d: "Live dashboards, open Slack, weekly readouts. No surprises." },
           ].map(({ t, d }) => (
             <Spotlight key={t} className="h-full rounded-3xl">
-              <TiltCard className="card ring-hover h-full" max={6}>
+              <div className="card ring-hover h-full">
                 <h3 className="font-display text-lg font-semibold text-white">{t}</h3>
                 <p className="mt-2 text-sm text-white/60">{d}</p>
-              </TiltCard>
+              </div>
             </Spotlight>
           ))}
         </StaggerGroup>

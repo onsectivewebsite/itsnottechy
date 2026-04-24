@@ -10,12 +10,13 @@ import {
   Spotlight,
   Parallax,
 } from "@/components/Reveal";
+import { BreadcrumbSchema } from "@/components/Breadcrumbs";
 import { CTA } from "@/components/CTA";
 import { TiltCard } from "@/components/TiltCard";
 import { Marquee } from "@/components/Marquee";
 import { AnimatedNumber } from "@/components/AnimatedNumber";
 import { ClientOnly } from "@/components/ClientOnly";
-import { Globe } from "@/components/Globe";
+import { LazyGlobe as Globe } from "@/components/Lazy3D";
 import { ArrowUpRight, MapPin } from "lucide-react";
 import { SITE } from "@/lib/site";
 
@@ -34,6 +35,7 @@ export const metadata: Metadata = {
 export default function OfficesPage() {
   return (
     <>
+      <BreadcrumbSchema items={[{ name: "Home", path: "/" }, { name: "Offices", path: "/offices" }]} />
       <section className="section relative overflow-hidden pt-32">
         <FloatOrb className="-left-40 top-20" size={520} />
         <Parallax offset={50} direction="up" className="pointer-events-none absolute right-0 top-16 hidden w-[38%] md:block">
@@ -95,6 +97,118 @@ export default function OfficesPage() {
           items={offices.map((o) => `${o.flag} ${o.city}`)}
         />
       </div>
+
+      <section className="section">
+        <div className="grid gap-10 md:grid-cols-[1.1fr,0.9fr]">
+          <Reveal>
+            <div className="prose prose-invert max-w-none prose-p:text-white/75 prose-strong:text-white prose-h2:font-display prose-h2:text-3xl prose-h2:tracking-tight prose-h2:text-white md:prose-h2:text-4xl">
+              <h2>Why local offices matter for global marketing</h2>
+              <p>
+                Running a marketing program across time zones is harder than
+                it looks. Paid media benchmarks are different in the UAE than
+                in the UK. Influencer rate cards in Sydney don&apos;t match
+                New York. GDPR changes what analytics you can collect in
+                Berlin; PIPEDA changes the rules in Toronto; India&apos;s DPDP
+                Act reshapes lifecycle email for Mumbai audiences. A team
+                operating out of one city and pretending to run a global
+                program will either get the compliance wrong, the culture
+                wrong, or the timing wrong — usually all three. Our eight
+                offices exist so every engagement is staffed by people who
+                actually live in the market they&apos;re running.
+              </p>
+              <h2>How we staff multi-region accounts</h2>
+              <p>
+                For single-market brands, your account sits in the office
+                closest to you. For multi-country programs — a Toronto-HQ SaaS
+                expanding into EMEA, say, or a London DTC launching in the GCC
+                — we staff a lead office for strategy plus regional specialists
+                embedded for execution. Same shared dashboard, same account
+                owner, but media buying happens on the ground in each market
+                with practitioners who know the platforms, the creators, and
+                the compliance rules cold.
+              </p>
+              <h2>Which office to pick if you&apos;re not sure</h2>
+              <p>
+                If you&apos;re in Canada or the US, start with Toronto or New
+                York — both cover Americas accounts and hand off work to
+                production teams in Mumbai for 24-hour cycle time when needed.
+                UK and European brands: London handles EMEA; Berlin is the
+                right call if you need heavier engineering (headless commerce,
+                server-side tracking, MarTech architecture). GCC and Middle
+                East: Dubai. India and wider APAC: Mumbai for delivery,
+                Singapore for regional strategy, Sydney for ANZ-specific work.
+                Every office page below goes deep on the industries, services,
+                and specialties each team leads.
+              </p>
+            </div>
+          </Reveal>
+          <Reveal delay={0.1}>
+            <div className="sticky top-24 rounded-3xl border border-white/10 bg-white/[0.03] p-6">
+              <div className="text-xs uppercase tracking-[0.2em] text-brand">
+                What each office contributes
+              </div>
+              <ul className="mt-4 space-y-3 text-sm text-white/75">
+                <li className="flex gap-2">
+                  <span className="mt-1 inline-block h-1.5 w-1.5 flex-shrink-0 rounded-full bg-brand" />
+                  <span>
+                    <strong className="text-white">Toronto</strong> — Global HQ,
+                    strategy, CAD/PIPEDA compliance.
+                  </span>
+                </li>
+                <li className="flex gap-2">
+                  <span className="mt-1 inline-block h-1.5 w-1.5 flex-shrink-0 rounded-full bg-brand" />
+                  <span>
+                    <strong className="text-white">New York</strong> — Americas
+                    paid media, DTC, fintech velocity.
+                  </span>
+                </li>
+                <li className="flex gap-2">
+                  <span className="mt-1 inline-block h-1.5 w-1.5 flex-shrink-0 rounded-full bg-brand" />
+                  <span>
+                    <strong className="text-white">London</strong> — EMEA
+                    programs, GDPR analytics, multi-language SEO.
+                  </span>
+                </li>
+                <li className="flex gap-2">
+                  <span className="mt-1 inline-block h-1.5 w-1.5 flex-shrink-0 rounded-full bg-brand" />
+                  <span>
+                    <strong className="text-white">Dubai</strong> — Arabic /
+                    English bilingual creative, GCC compliance.
+                  </span>
+                </li>
+                <li className="flex gap-2">
+                  <span className="mt-1 inline-block h-1.5 w-1.5 flex-shrink-0 rounded-full bg-brand" />
+                  <span>
+                    <strong className="text-white">Mumbai</strong> — Senior
+                    production capacity, India-market campaigns.
+                  </span>
+                </li>
+                <li className="flex gap-2">
+                  <span className="mt-1 inline-block h-1.5 w-1.5 flex-shrink-0 rounded-full bg-brand" />
+                  <span>
+                    <strong className="text-white">Singapore</strong> — APAC
+                    hub, multi-country Southeast Asia campaigns.
+                  </span>
+                </li>
+                <li className="flex gap-2">
+                  <span className="mt-1 inline-block h-1.5 w-1.5 flex-shrink-0 rounded-full bg-brand" />
+                  <span>
+                    <strong className="text-white">Sydney</strong> — ANZ
+                    creative and compliance, Oceania-fluent media.
+                  </span>
+                </li>
+                <li className="flex gap-2">
+                  <span className="mt-1 inline-block h-1.5 w-1.5 flex-shrink-0 rounded-full bg-brand" />
+                  <span>
+                    <strong className="text-white">Berlin</strong> —
+                    engineering-heavy builds, EU data architecture.
+                  </span>
+                </li>
+              </ul>
+            </div>
+          </Reveal>
+        </div>
+      </section>
 
       <section className="section relative pt-20">
         <FloatOrb className="right-0 top-1/3" size={360} color="rgba(102, 231, 218, 0.10)" duration={18} />

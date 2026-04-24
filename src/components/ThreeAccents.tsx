@@ -63,7 +63,7 @@ function FloatingRings() {
 
 export function OrbitAccent({ className = "" }: { className?: string }) {
   return (
-    <div className={`pointer-events-none absolute ${className}`}>
+    <div className={`pointer-events-none absolute -z-10 ${className}`}>
       <Canvas camera={{ position: [0, 0, 6], fov: 45 }} dpr={[1, 1.6]}>
         <Suspense fallback={null}>
           <ambientLight intensity={0.5} />
@@ -126,7 +126,7 @@ function InstancedCubes({ count = 32 }: { count?: number }) {
 
 export function CubeField({ className = "" }: { className?: string }) {
   return (
-    <div className={`pointer-events-none absolute ${className}`}>
+    <div className={`pointer-events-none absolute -z-10 ${className}`}>
       <Canvas camera={{ position: [0, 0, 7], fov: 50 }} dpr={[1, 1.5]}>
         <Suspense fallback={null}>
           <ambientLight intensity={0.4} />
@@ -190,7 +190,7 @@ function CrystalGroup() {
 
 export function CrystalCluster({ className = "" }: { className?: string }) {
   return (
-    <div className={`pointer-events-none absolute ${className}`}>
+    <div className={`pointer-events-none absolute -z-10 ${className}`}>
       <Canvas camera={{ position: [0, 0, 5.5], fov: 45 }} dpr={[1, 1.7]}>
         <Suspense fallback={null}>
           <ambientLight intensity={0.45} />
@@ -250,7 +250,7 @@ function ParticleSwirl({ count = 600 }: { count?: number }) {
 
 export function ParticleField({ className = "" }: { className?: string }) {
   return (
-    <div className={`pointer-events-none absolute ${className}`}>
+    <div className={`pointer-events-none absolute -z-10 ${className}`}>
       <Canvas camera={{ position: [0, 0, 5], fov: 55 }} dpr={[1, 1.5]}>
         <Suspense fallback={null}>
           <ambientLight intensity={0.5} />
@@ -299,7 +299,7 @@ function PrismCluster() {
 
 export function PrismAccent({ className = "" }: { className?: string }) {
   return (
-    <div className={`pointer-events-none absolute ${className}`}>
+    <div className={`pointer-events-none absolute -z-10 ${className}`}>
       <Canvas camera={{ position: [0, 0, 4.5], fov: 45 }} dpr={[1, 1.6]}>
         <Suspense fallback={null}>
           <ambientLight intensity={0.4} />

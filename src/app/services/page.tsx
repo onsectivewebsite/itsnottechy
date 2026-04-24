@@ -13,12 +13,13 @@ import {
   Magnetic,
   Parallax,
 } from "@/components/Reveal";
+import { BreadcrumbSchema } from "@/components/Breadcrumbs";
 import { CTA } from "@/components/CTA";
 import { ServiceCategories } from "@/components/ServiceCategories";
 import { TiltCard } from "@/components/TiltCard";
 import { Marquee } from "@/components/Marquee";
 import { ClientOnly } from "@/components/ClientOnly";
-import { OrbitAccent } from "@/components/ThreeAccents";
+import { LazyOrbitAccent as OrbitAccent } from "@/components/Lazy3D";
 import { ArrowUpRight, Check } from "lucide-react";
 import { SITE } from "@/lib/site";
 
@@ -97,7 +98,8 @@ const FAQS = [
 export default function ServicesPage() {
   return (
     <>
-      <section className="section relative overflow-hidden pt-32">
+      <BreadcrumbSchema items={[{ name: "Home", path: "/" }, { name: "Services", path: "/services" }]} />
+      <section className="section relative isolate overflow-hidden pt-32">
         <FloatOrb className="-left-40 top-10" size={520} />
         <ClientOnly>
           <OrbitAccent className="inset-y-0 right-[-10%] hidden w-[40%] md:block" />
@@ -137,6 +139,87 @@ export default function ServicesPage() {
             </Magnetic>
           </div>
         </Reveal>
+      </section>
+
+      <section className="section pt-0">
+        <div className="grid gap-10 md:grid-cols-[1.1fr,0.9fr]">
+          <Reveal>
+            <div className="prose prose-invert max-w-none prose-p:text-white/75 prose-strong:text-white prose-h2:font-display prose-h2:text-3xl prose-h2:tracking-tight prose-h2:text-white md:prose-h2:text-4xl">
+              <h2>What a digital marketing agency actually delivers</h2>
+              <p>
+                Most agencies sell you a box. A retainer with a logo swap, a
+                few social posts, maybe a landing page — billed monthly,
+                measured in deliverables instead of outcomes. We operate
+                differently. Every engagement at It&apos;s Not Techy starts
+                from a revenue model: what needs to grow, which channels can
+                move it, what the economics have to look like on the other
+                side. Then we staff a senior-led team against that plan — SEO
+                leads, paid-media strategists, brand designers, web engineers,
+                video producers, lifecycle marketers, analytics architects —
+                orchestrated by a single account owner so nothing runs in
+                isolation.
+              </p>
+              <h2>Who these services are for</h2>
+              <p>
+                Our clients are growth-stage brands and ambitious founders
+                past the MVP phase. Typically $1M–$100M ARR SaaS, DTC doing
+                $500K–$50M/yr, professional service firms ready to scale past
+                referral, and ecommerce operators who need a partner that
+                actually understands contribution margin. If you&apos;re
+                pre-traction or want the cheapest quote in the room, we
+                probably aren&apos;t the right fit — and we&apos;ll say so on
+                the first call. If you want senior practitioners treating
+                your business like it&apos;s their P&amp;L, keep reading.
+              </p>
+              <h2>How our services compound instead of competing</h2>
+              <p>
+                The biggest unlock in marketing isn&apos;t a new channel —
+                it&apos;s channels that talk to each other. SEO research
+                informs paid-search creative. Paid data reveals landing-page
+                CRO opportunities. Brand work raises click-through on every
+                other channel. Lifecycle email rescues the 90% who
+                don&apos;t convert the first time. We design programs where
+                each workstream feeds the next, and we report in one shared
+                dashboard so you see the whole system — not twelve disconnected
+                vanity charts.
+              </p>
+            </div>
+          </Reveal>
+          <Reveal delay={0.1}>
+            <div className="sticky top-24 rounded-3xl border border-white/10 bg-white/[0.03] p-6">
+              <div className="text-xs uppercase tracking-[0.2em] text-brand">
+                Why teams hire us
+              </div>
+              <ul className="mt-4 space-y-3 text-sm text-white/75">
+                <li className="flex gap-2">
+                  <span className="mt-1 inline-block h-1.5 w-1.5 flex-shrink-0 rounded-full bg-brand" />
+                  Senior practitioners on every call, not juniors behind a
+                  layer cake.
+                </li>
+                <li className="flex gap-2">
+                  <span className="mt-1 inline-block h-1.5 w-1.5 flex-shrink-0 rounded-full bg-brand" />
+                  Reporting on pipeline, revenue, CAC, LTV — never impressions
+                  or reach alone.
+                </li>
+                <li className="flex gap-2">
+                  <span className="mt-1 inline-block h-1.5 w-1.5 flex-shrink-0 rounded-full bg-brand" />
+                  All files, data, ad accounts, and tool logins stay in your
+                  systems. Zero lock-in.
+                </li>
+                <li className="flex gap-2">
+                  <span className="mt-1 inline-block h-1.5 w-1.5 flex-shrink-0 rounded-full bg-brand" />
+                  Media cost is always broken out from our fee — we never bill
+                  a percentage of your ad spend.
+                </li>
+                <li className="flex gap-2">
+                  <span className="mt-1 inline-block h-1.5 w-1.5 flex-shrink-0 rounded-full bg-brand" />
+                  Eight global offices means your team sits in your time zone,
+                  language, and culture.
+                </li>
+              </ul>
+            </div>
+          </Reveal>
+        </div>
       </section>
 
       <div className="border-y border-white/5 bg-white/[0.02]">

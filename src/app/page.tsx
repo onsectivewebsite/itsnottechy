@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 import { Hero } from "@/components/Hero";
 import {
@@ -31,7 +32,21 @@ import { blogPosts } from "@/data/blogs";
 import { SITE } from "@/lib/site";
 import { ArrowUpRight } from "lucide-react";
 import { ClientOnly } from "@/components/ClientOnly";
-import { Globe } from "@/components/Globe";
+import { LazyGlobe as Globe } from "@/components/Lazy3D";
+
+export const metadata: Metadata = {
+  title: "Digital Marketing Agency — Toronto, NYC, London, Dubai, Mumbai | It's Not Techy",
+  description:
+    "Full-service digital marketing agency with 8 global offices. Web design, SEO, social media, video production, brand design, paid marketing, and marketing platforms — senior-led delivery from Toronto to Sydney.",
+  alternates: { canonical: SITE.url },
+  openGraph: {
+    title: "Digital Marketing Agency — Toronto, NYC, London, Dubai, Mumbai | It's Not Techy",
+    description:
+      "Full-service digital marketing agency with 8 global offices. Web design, SEO, social media, video production, brand design, paid marketing, and marketing platforms.",
+    url: SITE.url,
+    type: "website",
+  },
+};
 
 export default function HomePage() {
   const featuredServices = SITE.coreServices

@@ -4,11 +4,18 @@ import {
   motion,
   useInView,
   useMotionValue,
+  useReducedMotion,
   useScroll,
   useSpring,
   useTransform,
 } from "framer-motion";
-import { useRef } from "react";
+import { useEffect, useRef, useState } from "react";
+
+function useHydrated() {
+  const [hydrated, setHydrated] = useState(false);
+  useEffect(() => setHydrated(true), []);
+  return hydrated;
+}
 
 export function Reveal({
   children,
@@ -22,12 +29,15 @@ export function Reveal({
   className?: string;
 }) {
   const ref = useRef<HTMLDivElement>(null);
+  const hydrated = useHydrated();
+  const reduceMotion = useReducedMotion();
   const inView = useInView(ref, { once: true, margin: "-80px" });
+  const shouldAnimate = hydrated && !reduceMotion;
   return (
     <motion.div
       ref={ref}
-      initial={{ opacity: 0, y }}
-      animate={inView ? { opacity: 1, y: 0 } : { opacity: 0, y }}
+      initial={shouldAnimate ? { opacity: 0, y } : false}
+      animate={shouldAnimate && inView ? { opacity: 1, y: 0 } : undefined}
       transition={{ duration: 0.65, delay, ease: [0.21, 0.47, 0.32, 0.98] }}
       className={className}
     >
@@ -48,7 +58,10 @@ export function WordReveal({
   delay?: number;
 }) {
   const ref = useRef<HTMLSpanElement>(null);
+  const hydrated = useHydrated();
+  const reduceMotion = useReducedMotion();
   const inView = useInView(ref, { once: true, margin: "-60px" });
+  const shouldAnimate = hydrated && !reduceMotion;
   const words = text.split(" ");
   const accentSet = new Set(accentWords.map((w) => w.toLowerCase()));
 
@@ -59,11 +72,11 @@ export function WordReveal({
         return (
           <motion.span
             key={`${word}-${i}`}
-            initial={{ opacity: 0, y: 28, filter: "blur(10px)" }}
+            initial={shouldAnimate ? { opacity: 0, y: 28, filter: "blur(10px)" } : false}
             animate={
-              inView
+              shouldAnimate && inView
                 ? { opacity: 1, y: 0, filter: "blur(0px)" }
-                : { opacity: 0, y: 28, filter: "blur(10px)" }
+                : undefined
             }
             transition={{
               duration: 0.7,
@@ -73,7 +86,7 @@ export function WordReveal({
             className={`inline-block ${isAccent ? "gradient-text" : ""}`}
           >
             {word}
-            {i < words.length - 1 && " "}
+            {i < words.length - 1 && " "}
           </motion.span>
         );
       })}
@@ -95,12 +108,15 @@ export function StaggerGroup({
   y?: number;
 }) {
   const ref = useRef<HTMLDivElement>(null);
+  const hydrated = useHydrated();
+  const reduceMotion = useReducedMotion();
   const inView = useInView(ref, { once: true, margin: "-80px" });
+  const shouldAnimate = hydrated && !reduceMotion;
   return (
     <motion.div
       ref={ref}
-      initial="hidden"
-      animate={inView ? "visible" : "hidden"}
+      initial={shouldAnimate ? "hidden" : false}
+      animate={shouldAnimate && inView ? "visible" : undefined}
       variants={{
         hidden: {},
         visible: {
@@ -184,7 +200,10 @@ export function CharReveal({
   stagger?: number;
 }) {
   const ref = useRef<HTMLSpanElement>(null);
+  const hydrated = useHydrated();
+  const reduceMotion = useReducedMotion();
   const inView = useInView(ref, { once: true, margin: "-60px" });
+  const shouldAnimate = hydrated && !reduceMotion;
   const words = text.split(" ");
   const accentSet = new Set(accentWords.map((w) => w.toLowerCase()));
   let charIndex = 0;
@@ -208,11 +227,11 @@ export function CharReveal({
               return (
                 <motion.span
                   key={`${ch}-${i}`}
-                  initial={{ opacity: 0, y: "0.55em" }}
+                  initial={shouldAnimate ? { opacity: 0, y: "0.55em" } : false}
                   animate={
-                    inView
+                    shouldAnimate && inView
                       ? { opacity: 1, y: 0 }
-                      : { opacity: 0, y: "0.55em" }
+                      : undefined
                   }
                   transition={{
                     duration: 0.55,
@@ -329,12 +348,15 @@ export function ScaleIn({
   from?: number;
 }) {
   const ref = useRef<HTMLDivElement>(null);
+  const hydrated = useHydrated();
+  const reduceMotion = useReducedMotion();
   const inView = useInView(ref, { once: true, margin: "-80px" });
+  const shouldAnimate = hydrated && !reduceMotion;
   return (
     <motion.div
       ref={ref}
-      initial={{ opacity: 0, scale: from }}
-      animate={inView ? { opacity: 1, scale: 1 } : { opacity: 0, scale: from }}
+      initial={shouldAnimate ? { opacity: 0, scale: from } : false}
+      animate={shouldAnimate && inView ? { opacity: 1, scale: 1 } : undefined}
       transition={{ duration: 0.7, delay, ease: [0.21, 0.47, 0.32, 0.98] }}
       className={className}
     >
@@ -353,12 +375,15 @@ export function DrawLine({
   duration?: number;
 }) {
   const ref = useRef<HTMLDivElement>(null);
+  const hydrated = useHydrated();
+  const reduceMotion = useReducedMotion();
   const inView = useInView(ref, { once: true, margin: "-60px" });
+  const shouldAnimate = hydrated && !reduceMotion;
   return (
     <div ref={ref} className={`relative ${className}`}>
       <motion.div
-        initial={{ scaleX: 0 }}
-        animate={inView ? { scaleX: 1 } : { scaleX: 0 }}
+        initial={shouldAnimate ? { scaleX: 0 } : false}
+        animate={shouldAnimate && inView ? { scaleX: 1 } : undefined}
         transition={{ duration, delay, ease: [0.21, 0.47, 0.32, 0.98] }}
         style={{ transformOrigin: "left center" }}
         className="h-px w-full bg-gradient-to-r from-brand via-brand/60 to-transparent"
@@ -419,14 +444,19 @@ export function FloatOrb({
   color?: string;
   duration?: number;
 }) {
+  const reduceMotion = useReducedMotion();
   return (
     <motion.div
       aria-hidden
-      animate={{
-        y: [0, -24, 0, 18, 0],
-        x: [0, 14, 0, -12, 0],
-        scale: [1, 1.05, 1, 0.97, 1],
-      }}
+      animate={
+        reduceMotion
+          ? undefined
+          : {
+              y: [0, -24, 0, 18, 0],
+              x: [0, 14, 0, -12, 0],
+              scale: [1, 1.05, 1, 0.97, 1],
+            }
+      }
       transition={{ duration, repeat: Infinity, ease: "easeInOut" }}
       className={`pointer-events-none absolute rounded-full blur-3xl ${className}`}
       style={{ width: size, height: size, background: color }}
