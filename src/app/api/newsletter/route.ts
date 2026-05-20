@@ -1,4 +1,6 @@
 import { NextResponse } from "next/server";
+import { SITE } from "@/lib/site";
+import { getTransporter, MAIL_FROM, escapeHtml } from "@/lib/mailer";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -51,10 +53,57 @@ export async function POST(req: Request) {
     );
   }
 
+  const email = body.email.trim();
   console.log(
     "[newsletter-subscribe]",
-    JSON.stringify({ email: body.email, ip, ts: new Date().toISOString() })
+    JSON.stringify({ email, ip, ts: new Date().toISOString() })
   );
+
+  const inbox = process.env.CONTACT_INBOX || SITE.email;
+  const transporter = getTransporter();
+
+  // Notify the team of the new subscriber — must succeed.
+  try {
+    await transporter.sendMail({
+      from: `"${SITE.name} Website" <${MAIL_FROM}>`,
+      to: inbox,
+      replyTo: email,
+      subject: `New newsletter subscriber — ${email}`,
+      text: `Email: ${email}\nIP: ${ip}\nTime: ${new Date().toISOString()}`,
+      html: `<h2 style="margin:0 0 12px">New newsletter subscriber</h2>
+        <p style="font-family:system-ui,sans-serif;font-size:14px">
+          <strong>Email:</strong> ${escapeHtml(email)}<br>
+          <strong>IP:</strong> ${escapeHtml(ip)}<br>
+          <strong>Time:</strong> ${new Date().toISOString()}
+        </p>`,
+    });
+  } catch (err) {
+    console.error("[newsletter-subscribe] notification failed:", err);
+    return NextResponse.json(
+      {
+        ok: false,
+        message: "We couldn't complete your subscription right now. Please try again shortly.",
+      },
+      { status: 502 }
+    );
+  }
+
+  // Welcome email to the subscriber — best effort.
+  try {
+    await transporter.sendMail({
+      from: `"${SITE.name}" <${MAIL_FROM}>`,
+      to: email,
+      subject: `You're subscribed to ${SITE.name}`,
+      text: `Thanks for subscribing to the ${SITE.name} newsletter — see you in your inbox.\n\n${SITE.url}`,
+      html: `<div style="font-family:system-ui,sans-serif;font-size:15px;line-height:1.6;color:#11141c">
+        <p>Thanks for subscribing to the <strong>${SITE.name}</strong> newsletter.</p>
+        <p>You'll hear from us with marketing insights — no noise. See you in your inbox.</p>
+        <p style="margin-top:24px">— The ${SITE.name} team<br><a href="${SITE.url}">${SITE.url}</a></p>
+      </div>`,
+    });
+  } catch (err) {
+    console.error("[newsletter-subscribe] welcome email failed:", err);
+  }
 
   return NextResponse.json({
     ok: true,
