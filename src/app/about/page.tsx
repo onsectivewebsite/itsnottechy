@@ -33,10 +33,10 @@ export const metadata: Metadata = {
 };
 
 const TEAM = [
-  { name: "Rishabh Sharma", role: "Founder & Strategy Lead", image: "/images/team/rishabh.jpg" },
-  { name: "Kavya Mehra", role: "Brand & Creative Director", image: "/images/team/kavya.jpg" },
-  { name: "Kumakshi Verma", role: "Head of Content & Social", image: "/images/team/kumakshi.jpg" },
-  { name: "Shabir Malik", role: "Engineering & Web Lead", image: "/images/team/team-shabir.jpg" },
+  { name: "Rishabh Kumar", role: "Founder & Strategy Lead", image: "/images/team/rishabh.jpg" },
+  { name: "Kavya Sharma", role: "Brand & Creative Director", image: "/images/team/kavya.jpg" },
+  { name: "Kumakshi Khanna", role: "Head of Content & Social", image: "/images/team/kumakshi.jpg" },
+  { name: "Shabir Budzar", role: "Engineering & Web Lead", image: "/images/team/team-shabir.jpg" },
 ];
 
 const STATS = [
