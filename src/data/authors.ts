@@ -48,15 +48,6 @@ export const authors: Author[] = [
     office: "toronto",
   },
   {
-    slug: "riyan-kapoor",
-    name: "Riyan Kapoor",
-    role: "Growth & Paid Media Lead",
-    image: "/images/team/riyan.jpg",
-    bio: "Riyan runs paid media across Meta, Google, LinkedIn, TikTok, and programmatic. Deep focus on creative testing, CAC payback, and media mix modeling — every account ships to clear unit economics.",
-    expertise: ["Paid Marketing", "Performance Marketing", "Ecommerce", "Analytics"],
-    office: "new-york",
-  },
-  {
     slug: "shabir-malik",
     name: "Shabir Malik",
     role: "Engineering & Web Lead",

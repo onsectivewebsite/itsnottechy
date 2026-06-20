@@ -36,7 +36,6 @@ const TEAM = [
   { name: "Rishabh Sharma", role: "Founder & Strategy Lead", image: "/images/team/rishabh.jpg" },
   { name: "Kavya Mehra", role: "Brand & Creative Director", image: "/images/team/kavya.jpg" },
   { name: "Kumakshi Verma", role: "Head of Content & Social", image: "/images/team/kumakshi.jpg" },
-  { name: "Riyan Kapoor", role: "Growth & Paid Media Lead", image: "/images/team/riyan.jpg" },
   { name: "Shabir Malik", role: "Engineering & Web Lead", image: "/images/team/team-shabir.jpg" },
 ];
 

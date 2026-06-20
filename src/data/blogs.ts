@@ -35,7 +35,6 @@ const AUTHORS = [
   "Rishabh Sharma",
   "Kavya Mehra",
   "Kumakshi Verma",
-  "Riyan Kapoor",
   "Shabir Malik",
   "It's Not Techy Editorial",
 ];
