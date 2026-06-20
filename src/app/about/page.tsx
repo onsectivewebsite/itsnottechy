@@ -12,6 +12,7 @@ import {
   Parallax,
 } from "@/components/Reveal";
 import { CTA } from "@/components/CTA";
+import { ScrollStory } from "@/components/ScrollStory";
 import { AnimatedNumber } from "@/components/AnimatedNumber";
 import { Marquee } from "@/components/Marquee";
 import { ClientOnly } from "@/components/ClientOnly";
@@ -120,6 +121,34 @@ export default function AboutPage() {
           ]}
         />
       </div>
+
+      <ScrollStory
+        eyebrow="How we operate"
+        heading="The way we work is the difference."
+        intro="Most agencies sell a box. We run a model — four operating principles on every account. Scroll through them."
+        chapters={[
+          {
+            eyebrow: "Principle 01",
+            title: "Senior in the room.",
+            body: "The people who pitch are the people who do the work. Every account is led by senior practitioners — no bait-and-switch staffing, no juniors hidden behind a layer cake.",
+          },
+          {
+            eyebrow: "Principle 02",
+            title: "Outcomes over outputs.",
+            body: "Posts, pages, and pixels don't pay the bills. We measure success in pipeline, revenue, CAC, and payback — and report it in one shared dashboard, not twelve vanity charts.",
+          },
+          {
+            eyebrow: "Principle 03",
+            title: "Craft plus speed.",
+            body: "AI for speed, humans for craft. We ship small, ship often, and ship on time — blending automation with senior judgment so quality never trades against velocity.",
+          },
+          {
+            eyebrow: "Principle 04",
+            title: "No lock-in, ever.",
+            body: "All files, data, ad accounts, and tool logins live in your systems. Media cost is always broken out from our fee. You own the work — we earn the renewal.",
+          },
+        ]}
+      />
 
       <section className="section relative isolate overflow-hidden pt-20">
         <FloatOrb className="-left-20 top-10" size={360} color="rgba(0, 179, 164, 0.10)" duration={14} />

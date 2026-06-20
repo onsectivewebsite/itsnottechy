@@ -12,6 +12,7 @@ import {
 } from "@/components/Reveal";
 import { BreadcrumbSchema } from "@/components/Breadcrumbs";
 import { CTA } from "@/components/CTA";
+import { ScrollStory } from "@/components/ScrollStory";
 import { TiltCard } from "@/components/TiltCard";
 import { Marquee } from "@/components/Marquee";
 import { ClientOnly } from "@/components/ClientOnly";
@@ -132,6 +133,39 @@ export default function IndustriesPage() {
           </Reveal>
         </div>
       </section>
+
+      <ScrollStory
+        eyebrow="What a playbook covers"
+        heading="Five things that actually differ by industry."
+        intro="Generic advice treats every business the same. Our playbooks start from what's genuinely different — scroll through the five."
+        chapters={[
+          {
+            eyebrow: "01",
+            title: "Who the customer is.",
+            body: "Buyer personas, how they research, and the decision triggers that move them — because what a $99/mo SaaS buyer needs is nothing like a healthcare patient's journey.",
+          },
+          {
+            eyebrow: "02",
+            title: "Which channels pay back.",
+            body: "Channels ranked by return, with median CAC — so budget goes to what compounds, not what's fashionable. What wins in DTC beauty can bankrupt a fintech.",
+          },
+          {
+            eyebrow: "03",
+            title: "The regulatory guardrails.",
+            body: "Compliance and data rules that shape creative and targeting before a single asset ships — the difference between a campaign that scales and one that gets pulled.",
+          },
+          {
+            eyebrow: "04",
+            title: "The benchmark economics.",
+            body: "What healthy CAC, LTV, and payback windows look like in your category — so you know whether a number is a win or a warning sign.",
+          },
+          {
+            eyebrow: "05",
+            title: "The competitor patterns.",
+            body: "Teardowns of what category leaders do — the moves worth copying and the ones worth avoiding — distilled into a starting plan for your next quarter.",
+          },
+        ]}
+      />
 
       <section className="section relative pt-20">
         <FloatOrb className="-left-20 bottom-20" size={400} color="rgba(0, 179, 164, 0.10)" duration={15} />

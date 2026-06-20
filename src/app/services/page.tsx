@@ -16,6 +16,7 @@ import {
 import { BreadcrumbSchema } from "@/components/Breadcrumbs";
 import { CTA } from "@/components/CTA";
 import { ServiceCategories } from "@/components/ServiceCategories";
+import { ScrollStory } from "@/components/ScrollStory";
 import { TiltCard } from "@/components/TiltCard";
 import { Marquee } from "@/components/Marquee";
 import { ClientOnly } from "@/components/ClientOnly";
@@ -246,6 +247,38 @@ export default function ServicesPage() {
           ]}
         />
       </div>
+
+      <ScrollStory
+        eyebrow="How it fits together"
+        heading="Four phases, one growth engine."
+        intro="Every service maps to a phase of the funnel — and each phase feeds the next. Scroll to see how the whole system compounds."
+        chapters={[
+          {
+            eyebrow: "Phase 01",
+            title: "Attract",
+            body: "Earn attention from the right buyers — SEO, content, paid media, video, and PR engineered around how your category actually searches and scrolls.",
+            bullets: ["SEO & content", "Paid search & social", "Video & creative", "Digital PR"],
+          },
+          {
+            eyebrow: "Phase 02",
+            title: "Convert",
+            body: "Turn attention into pipeline. Brand systems, web builds, and CRO that make the decision to buy feel obvious — measured in revenue, not impressions.",
+            bullets: ["Brand & design", "Web development", "Landing pages", "Conversion rate optimization"],
+          },
+          {
+            eyebrow: "Phase 03",
+            title: "Engage",
+            body: "Keep customers close and lifetime value climbing — lifecycle email, social, and community that rescue the 90% who don't convert the first time.",
+            bullets: ["Lifecycle & email", "Social media", "Influencer", "Retention programs"],
+          },
+          {
+            eyebrow: "Phase 04",
+            title: "Operate",
+            body: "Run it like an engine. Analytics, marketing platforms, and clean data contracts so every channel talks to the next and the system keeps compounding.",
+            bullets: ["Analytics architecture", "Marketing platforms", "Automation", "Live dashboards"],
+          },
+        ]}
+      />
 
       <div id="categories">
         <ServiceCategories />
