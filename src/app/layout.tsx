@@ -5,6 +5,7 @@ import { Nav } from "@/components/Nav";
 import { Footer } from "@/components/Footer";
 import { CookieBanner } from "@/components/CookieBanner";
 import { ScrollProgress } from "@/components/ScrollProgress";
+import { SmoothScroll } from "@/components/SmoothScroll";
 import { BackToTop } from "@/components/BackToTop";
 import { SITE } from "@/lib/site";
 import Script from "next/script";
@@ -134,6 +135,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         </Script>
       </head>
       <body className="min-h-screen font-sans">
+        <SmoothScroll />
         <ScrollProgress />
         <Nav />
         <main>{children}</main>

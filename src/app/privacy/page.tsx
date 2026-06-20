@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { SITE } from "@/lib/site";
+import { Reveal } from "@/components/Reveal";
 
 export const metadata: Metadata = {
   title: "Privacy Policy",
@@ -10,10 +11,12 @@ export const metadata: Metadata = {
 export default function PrivacyPage() {
   return (
     <section className="section max-w-3xl pt-32">
-      <h1 className="font-display text-5xl font-bold tracking-tight text-white">Privacy Policy</h1>
-      <p className="mt-4 text-white/60">Last updated: April 2026</p>
+      <Reveal>
+        <h1 className="font-display text-5xl font-bold tracking-tight text-white">Privacy Policy</h1>
+        <p className="mt-4 text-white/60">Last updated: April 2026</p>
+      </Reveal>
 
-      <div className="prose prose-invert mt-8 max-w-none">
+      <Reveal delay={0.1} className="prose prose-invert mt-8 max-w-none">
         <h2>Who we are</h2>
         <p>
           It's Not Techy (the "Company", "we", "us") is headquartered at {SITE.address.full}. We can be reached at{" "}
@@ -40,7 +43,7 @@ export default function PrivacyPage() {
         <p>We apply industry-standard administrative, technical, and physical safeguards. No system is 100% secure.</p>
         <h2>Changes</h2>
         <p>We may update this policy. Material changes will be posted here with an updated date.</p>
-      </div>
+      </Reveal>
     </section>
   );
 }

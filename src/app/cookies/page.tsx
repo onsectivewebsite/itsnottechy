@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { SITE } from "@/lib/site";
+import { Reveal } from "@/components/Reveal";
 
 export const metadata: Metadata = {
   title: "Cookie Policy",
@@ -10,9 +11,11 @@ export const metadata: Metadata = {
 export default function CookiesPage() {
   return (
     <section className="section max-w-3xl pt-32">
-      <h1 className="font-display text-5xl font-bold tracking-tight text-white">Cookie Policy</h1>
-      <p className="mt-4 text-white/60">Last updated: April 2026</p>
-      <div className="prose prose-invert mt-8 max-w-none">
+      <Reveal>
+        <h1 className="font-display text-5xl font-bold tracking-tight text-white">Cookie Policy</h1>
+        <p className="mt-4 text-white/60">Last updated: April 2026</p>
+      </Reveal>
+      <Reveal delay={0.1} className="prose prose-invert mt-8 max-w-none">
         <h2>What are cookies?</h2>
         <p>Cookies are small text files stored on your device when you visit a website. They help sites remember preferences, understand usage, and enable advertising.</p>
         <h2>Categories we use</h2>
@@ -26,7 +29,7 @@ export default function CookiesPage() {
         <p>Use the cookie banner on your first visit. You can change preferences at any time by clearing localStorage or emailing {SITE.email}.</p>
         <h2>Third parties</h2>
         <p>We use Google, Meta, LinkedIn, TikTok, Microsoft Clarity, HubSpot, Klaviyo, and other reputable partners. Each has its own privacy policy.</p>
-      </div>
+      </Reveal>
     </section>
   );
 }

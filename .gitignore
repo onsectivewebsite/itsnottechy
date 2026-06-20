@@ -8,3 +8,6 @@ out
 .turbo
 .vercel
 tsconfig.tsbuildinfo
+
+# Playwright MCP snapshots
+.playwright-mcp/

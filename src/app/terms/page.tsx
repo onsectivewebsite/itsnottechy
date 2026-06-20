@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { SITE } from "@/lib/site";
+import { Reveal } from "@/components/Reveal";
 
 export const metadata: Metadata = {
   title: "Terms of Service",
@@ -10,9 +11,11 @@ export const metadata: Metadata = {
 export default function TermsPage() {
   return (
     <section className="section max-w-3xl pt-32">
-      <h1 className="font-display text-5xl font-bold tracking-tight text-white">Terms of Service</h1>
-      <p className="mt-4 text-white/60">Last updated: April 2026</p>
-      <div className="prose prose-invert mt-8 max-w-none">
+      <Reveal>
+        <h1 className="font-display text-5xl font-bold tracking-tight text-white">Terms of Service</h1>
+        <p className="mt-4 text-white/60">Last updated: April 2026</p>
+      </Reveal>
+      <Reveal delay={0.1} className="prose prose-invert mt-8 max-w-none">
         <p>These Terms of Service govern your use of {SITE.url}. By accessing the site you agree to these terms.</p>
         <h2>Content</h2>
         <p>All content on this site is owned by It's Not Techy or our licensors. You may share links to content for non-commercial use with attribution.</p>
@@ -26,7 +29,7 @@ export default function TermsPage() {
         <p>These terms are governed by the laws of the Province of Ontario, Canada.</p>
         <h2>Contact</h2>
         <p>Questions? Email <a href={`mailto:${SITE.email}`}>{SITE.email}</a>.</p>
-      </div>
+      </Reveal>
     </section>
   );
 }

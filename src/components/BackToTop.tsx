@@ -16,7 +16,11 @@ export function BackToTop() {
     <AnimatePresence>
       {visible && (
         <motion.button
-          onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
+          onClick={() =>
+            globalThis.__lenis
+              ? globalThis.__lenis.scrollTo(0)
+              : window.scrollTo({ top: 0, behavior: "smooth" })
+          }
           initial={{ opacity: 0, y: 24, scale: 0.8 }}
           animate={{ opacity: 1, y: 0, scale: 1 }}
           exit={{ opacity: 0, y: 24, scale: 0.8 }}
